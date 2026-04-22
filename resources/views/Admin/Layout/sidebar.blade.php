@@ -18,7 +18,7 @@
 
     <!-- DASHBOARD -->
     <li>
-      <a href=""
+      <a href="{{ route('admin.dashboard') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
 
         <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
@@ -29,8 +29,33 @@
       </a>
     </li>
 
+    <!-- KATEGORI MENU -->
+    <li>
+      <a href="{{ route('admin.kategori.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
 
-    <!-- BERANDA WEBSITE -->
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-tags text-sm"></i>
+        </div>
+
+        Kategori Menu
+      </a>
+    </li>
+
+    <!-- MENU RESTAURANT -->
+    <li>
+      <a href="{{ route('admin.menu.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-utensils text-sm"></i>
+        </div>
+
+        Menu Restaurant
+      </a>
+    </li>
+
+    <!-- TRANSAKSI -->
     <li>
       <details class="group">
 
@@ -39,155 +64,10 @@
           <div class="flex items-center">
 
             <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-              <i class="fas fa-home text-sm"></i>
+              <i class="fas fa-shopping-cart text-sm"></i>
             </div>
 
-            Beranda Website
-          </div>
-
-          <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
-
-        </summary>
-
-        <ul class="mt-2 space-y-1 pl-11">
-
-          <li>
-            <a href=""
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-image mr-3 text-orange-200"></i>
-              Hero Image
-
-            </a>
-          </li>
-
-          <li>
-            <a href=""
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-users mr-3 text-orange-200"></i>
-              Our Team
-
-            </a>
-          </li>
-
-          <li>
-            <a href=""
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-handshake mr-3 text-orange-200"></i>
-              Our Partner
-
-            </a>
-          </li>
-
-        </ul>
-      </details>
-    </li>
-
-
-    <!-- BIDANG STUDI -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-graduation-cap text-sm"></i>
-        </div>
-
-        Bidang Studi
-      </a>
-    </li>
-
-
-    <!-- LAYANAN JASA -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-tools text-sm"></i>
-        </div>
-
-        Layanan Jasa
-      </a>
-    </li>
-
-
-    <!-- KARYA SISWA -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-palette text-sm"></i>
-        </div>
-
-        Karya Siswa
-      </a>
-    </li>
-
-
-    <!-- TESTIMONI -->
-    <li>
-      <details class="group">
-
-        <summary class="flex items-center justify-between px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 cursor-pointer">
-
-          <div class="flex items-center">
-
-            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-              <i class="fas fa-comments text-sm"></i>
-            </div>
-
-            Testimoni
-          </div>
-
-          <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
-
-        </summary>
-
-        <ul class="mt-2 space-y-1 pl-11">
-
-          <li>
-            <a href=""
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-comments mr-3 text-orange-200"></i>
-              Testimoni
-
-            </a>
-          </li>
-
-          <li>
-            <a href=""
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fab fa-youtube mr-3 text-orange-200"></i>
-              Video Testimoni
-
-            </a>
-          </li>
-
-        </ul>
-
-      </details>
-    </li>
-
-
-    <!-- ARTIKEL -->
-    <li>
-      <details class="group">
-
-        <summary class="flex items-center justify-between px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 cursor-pointer">
-
-          <div class="flex items-center">
-
-            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-              <i class="fas fa-newspaper text-sm"></i>
-            </div>
-
-            Artikel
+            Transaksi
           </div>
 
           <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
@@ -201,7 +81,7 @@
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
               <i class="fas fa-list mr-3 text-orange-200"></i>
-              Daftar Artikel
+              Daftar Transaksi
 
             </a>
           </li>
@@ -210,26 +90,123 @@
             <a href=""
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
-              <i class="fas fa-comments mr-3 text-orange-200"></i>
-              Komentar
+              <i class="fas fa-plus mr-3 text-orange-200"></i>
+              Tambah Transaksi
 
             </a>
           </li>
-        </ul>
 
+        </ul>
       </details>
     </li>
 
-    <!-- CONTACT INFO -->
+    <!-- STOK BAHAN -->
+    <li>
+      <details class="group">
+
+        <summary class="flex items-center justify-between px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 cursor-pointer">
+
+          <div class="flex items-center">
+
+            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+              <i class="fas fa-boxes text-sm"></i>
+            </div>
+
+            Stok Bahan
+          </div>
+
+          <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
+
+        </summary>
+
+        <ul class="mt-2 space-y-1 pl-11">
+
+          <li>
+            <a href=""
+               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
+
+              <i class="fas fa-box mr-3 text-orange-200"></i>
+              Kelola Stok
+
+            </a>
+          </li>
+
+          <li>
+            <a href=""
+               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
+
+              <i class="fas fa-history mr-3 text-orange-200"></i>
+              Riwayat Stok
+
+            </a>
+          </li>
+
+        </ul>
+      </details>
+    </li>
+
+    <!-- PROMOSI -->
     <li>
       <a href=""
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
 
         <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-map-marker-alt text-sm"></i>
+          <i class="fas fa-bullhorn text-sm"></i>
         </div>
 
-        Contact Info
+        Promosi
+      </a>
+    </li>
+
+    <!-- PREDIKSI PENJUALAN -->
+    <li>
+      <a href=""
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-chart-line text-sm"></i>
+        </div>
+
+        Prediksi Penjualan
+      </a>
+    </li>
+
+    <!-- GALERI -->
+    <li>
+      <a href=""
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-images text-sm"></i>
+        </div>
+
+        Galeri
+      </a>
+    </li>
+
+    <!-- PROFIL USAHA -->
+    <li>
+      <a href=""
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-store text-sm"></i>
+        </div>
+
+        Profil Usaha
+      </a>
+    </li>
+
+    <!-- KELOLA USER -->
+    <li>
+      <a href=""
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-users text-sm"></i>
+        </div>
+
+        Kelola User
       </a>
     </li>
 
@@ -244,6 +221,22 @@
 
         Kembali ke Website
       </a>
+    </li>
+
+    <!-- LOGOUT -->
+    <li>
+      <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit"
+                class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition">
+
+          <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-red-600 mr-3">
+            <i class="fas fa-sign-out-alt text-sm"></i>
+          </div>
+
+          Logout
+        </button>
+      </form>
     </li>
 
   </ul>
