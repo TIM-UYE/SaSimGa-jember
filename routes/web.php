@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\KategoriMenuController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Guest routes (accessible without authentication)
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
         // Kategori Menu CRUD
         Route::resource('kategori', KategoriMenuController::class);
+
+        // User CRUD
+        Route::resource('user', UserController::class);
     });
 
     // User routes (user only)

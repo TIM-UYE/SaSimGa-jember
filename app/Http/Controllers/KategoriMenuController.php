@@ -28,7 +28,9 @@ class KategoriMenuController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        KategoriMenu::create($request->all());
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        KategoriMenu::create($data);
 
         return redirect()->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil ditambahkan!');
@@ -48,7 +50,9 @@ class KategoriMenuController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $kategori->update($request->all());
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        $kategori->update($data);
 
         return redirect()->route('admin.kategori.index')
             ->with('success', 'Kategori berhasil diperbarui!');

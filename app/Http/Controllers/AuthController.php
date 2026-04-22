@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();
@@ -22,7 +22,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function showRegisterForm()
+    public function showRegisterForm(Request $request)
     {
         if (Auth::check()) {
             $user = Auth::user();

@@ -27,7 +27,7 @@ class MenuController extends Controller
             'nama_menu' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'harga' => 'required|numeric|min:0',
-            'kategori_id' => 'nullable|exists:kategori_menu,kategori_id',
+            'kategori_id' => 'nullable|exists:kategori_menu,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
             'stok' => 'nullable|integer|min:0',
@@ -37,11 +37,12 @@ class MenuController extends Controller
         ]);
 
         $data = $request->except('gambar');
+        $data['is_available'] = $request->has('is_available');
 
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
             $filename = time() . '_' . $gambar->getClientOriginalName();
-            $gambar->storeAs('public/menu', $filename);
+            $gambar->move(public_path('storage/menu'), $filename);
             $data['gambar'] = $filename;
         }
 
@@ -69,7 +70,7 @@ class MenuController extends Controller
             'nama_menu' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'harga' => 'required|numeric|min:0',
-            'kategori_id' => 'nullable|exists:kategori_menu,kategori_id',
+            'kategori_id' => 'nullable|exists:kategori_menu,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
             'stok' => 'nullable|integer|min:0',
@@ -79,16 +80,17 @@ class MenuController extends Controller
         ]);
 
         $data = $request->except('gambar');
+        $data['is_available'] = $request->has('is_available');
 
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
-            if ($menu->gambar && Storage::exists('public/menu/' . $menu->gambar)) {
-                Storage::delete('public/menu/' . $menu->gambar);
+            if ($menu->gambar && file_exists(public_path('storage/menu/' . $menu->gambar))) {
+                unlink(public_path('storage/menu/' . $menu->gambar));
             }
 
             $gambar = $request->file('gambar');
             $filename = time() . '_' . $gambar->getClientOriginalName();
-            $gambar->storeAs('public/menu', $filename);
+            $gambar->move(public_path('storage/menu'), $filename);
             $data['gambar'] = $filename;
         }
 
@@ -101,8 +103,8 @@ class MenuController extends Controller
     public function destroy(Menu $menu)
     {
         // Hapus gambar jika ada
-        if ($menu->gambar && Storage::exists('public/menu/' . $menu->gambar)) {
-            Storage::delete('public/menu/' . $menu->gambar);
+        if ($menu->gambar && file_exists(public_path('storage/menu/' . $menu->gambar))) {
+            unlink(public_path('storage/menu/' . $menu->gambar));
         }
 
         $menu->delete();

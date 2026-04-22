@@ -4,8 +4,8 @@
       <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
         <div class="text-sm leading-normal text-center text-slate-500 lg:text-left">
           © <script>document.write(new Date().getFullYear())</script>,
-          made with <i class="fa fa-heart"></i> by
-          <a href="https://www.creative-tim.com" class="font-semibold text-slate-700" target="_blank">Dema</a>
+          made with <i class="fa fa-book"></i> by
+          <a href="https://www.creative-tim.com" class="font-semibold text-slate-700" target="_blank">tim uye</a>
           for a better web.
         </div>
       </div>

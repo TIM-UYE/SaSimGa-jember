@@ -55,7 +55,7 @@
       </a>
     </li>
 
-    <!-- TRANSAKSI -->
+    {{-- <!-- TRANSAKSI -->
     <li>
       <details class="group">
 
@@ -77,7 +77,7 @@
         <ul class="mt-2 space-y-1 pl-11">
 
           <li>
-            <a href=""
+            <a href="{{ route('admin.transaksi.index') }}"
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
               <i class="fas fa-list mr-3 text-orange-200"></i>
@@ -87,7 +87,7 @@
           </li>
 
           <li>
-            <a href=""
+            <a href="{{ route('admin.transaksi.create') }}"
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
               <i class="fas fa-plus mr-3 text-orange-200"></i>
@@ -122,7 +122,7 @@
         <ul class="mt-2 space-y-1 pl-11">
 
           <li>
-            <a href=""
+            <a href="{{ route('admin.stok.index') }}"
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
               <i class="fas fa-box mr-3 text-orange-200"></i>
@@ -132,7 +132,7 @@
           </li>
 
           <li>
-            <a href=""
+            <a href="{{ route('admin.stok.history') }}"
                class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
 
               <i class="fas fa-history mr-3 text-orange-200"></i>
@@ -143,9 +143,9 @@
 
         </ul>
       </details>
-    </li>
+    </li> --}}
 
-    <!-- PROMOSI -->
+    {{-- <!-- PROMOSI -->
     <li>
       <a href=""
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -156,9 +156,9 @@
 
         Promosi
       </a>
-    </li>
+    </li> --}}
 
-    <!-- PREDIKSI PENJUALAN -->
+    {{-- <!-- PREDIKSI PENJUALAN -->
     <li>
       <a href=""
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -169,9 +169,9 @@
 
         Prediksi Penjualan
       </a>
-    </li>
+    </li> --}}
 
-    <!-- GALERI -->
+    {{-- <!-- GALERI -->
     <li>
       <a href=""
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -182,9 +182,9 @@
 
         Galeri
       </a>
-    </li>
+    </li> --}}
 
-    <!-- PROFIL USAHA -->
+    {{-- <!-- PROFIL USAHA -->
     <li>
       <a href=""
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -195,11 +195,11 @@
 
         Profil Usaha
       </a>
-    </li>
+    </li> --}}
 
     <!-- KELOLA USER -->
     <li>
-      <a href=""
+      <a href="{{ route('admin.user.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
 
         <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">

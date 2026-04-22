@@ -44,7 +44,7 @@
                             <select name="kategori_id" id="kategori_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                                 <option value="">Pilih Kategori</option>
                                 @foreach($kategoris as $kategori)
-                                    <option value="{{ $kategori->kategori_id }}" {{ old('kategori_id', $menu->kategori_id) == $kategori->kategori_id ? 'selected' : '' }}>
+                                    <option value="{{ $kategori->id }}" {{ old('kategori_id', $menu->kategori_id) == $kategori->id ? 'selected' : '' }}>
                                         {{ $kategori->nama_kategori }}
                                     </option>
                                 @endforeach
@@ -94,7 +94,7 @@
                         <!-- Status Tersedia -->
                         <div class="mb-4">
                             <label class="flex items-center">
-                                <input type="checkbox" name="is_available" id="is_available" value="1" {{ old('is_available', $menu->is_available) ? 'checked' : '' }}
+                                <input type="checkbox" name="is_available" id="is_available" value="1" {{ old('is_available', $menu->is_available) == 1 ? 'checked' : '' }}
                                     class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
                                 <span class="ml-2 text-sm text-gray-700">Menu Tersedia</span>
                             </label>

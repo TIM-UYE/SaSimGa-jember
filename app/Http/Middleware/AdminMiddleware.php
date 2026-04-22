@@ -15,6 +15,10 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
+        if ($request->is('login') || $request->is('register')) {
+            return $next($request);
+        }
+
         if (Auth::user()->role !== 'admin') {
             // If user is not admin, redirect to user dashboard
             return redirect()->route('user.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman admin.');
