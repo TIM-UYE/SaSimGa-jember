@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('prediksi_penjualan', function (Blueprint $table) {
-            $table->id();
+            $table->id('prediksi_id');
+            $table->unsignedBigInteger('menu_id');
+            $table->string('periode');
+            $table->integer('jumlah_prediksi');
             $table->timestamps();
+
+            $table->foreign('menu_id')->references('menu_id')->on('menu')->onDelete('cascade');
         });
     }
 

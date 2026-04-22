@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('galeri', function (Blueprint $table) {
-            $table->id();
+            $table->id('galeri_id');
+            $table->string('judul');
+            $table->string('gambar');
+            $table->unsignedBigInteger('profil_id');
+            $table->unsignedBigInteger('promosi_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('profil_id')->references('profil_id')->on('profil_usaha')->onDelete('cascade');
+            $table->foreign('promosi_id')->references('promosi_id')->on('promosi')->onDelete('set null');
         });
     }
 
