@@ -43,8 +43,8 @@
                                 </span>
                             </td>
                             <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <a href="{{ route('admin.kategori.edit', $kategori->id) }}" class="btn-admin-secondary">Edit</a>
-                                <form action="{{ route('admin.kategori.destroy', $kategori->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
+                                <a href="{{ route('admin.kategori.edit', $kategori) }}" class="btn-admin-secondary">Edit</a>
+                                <form action="{{ route('admin.kategori.destroy', $kategori) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn-admin-danger">Hapus</button>
