@@ -6,11 +6,11 @@ use App\Http\Controllers\KategoriMenuController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-<<<<<<< HEAD
+// Default route - redirect to login
 Route::get('/', function () {
-    return view('frontend.pages.home');
-    // return view('Admin.Layout.main');
-=======
+    return redirect()->route('login');
+});
+
 // Guest routes (accessible without authentication)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -44,13 +44,7 @@ Route::middleware('auth')->group(function () {
     // User routes (user only)
     Route::middleware('user')->prefix('user')->name('user.')->group(function () {
         Route::get('/dashboard', function () {
-            return view('users.dashboard');
+            return view('frontend.pages.home');
         })->name('dashboard');
     });
-});
-
-// Default route - redirect to login
-Route::get('/', function () {
-    return redirect()->route('login');
->>>>>>> 7ae211a5d2e60a2fabcbcd898482cbf0f2b021b3
 });
