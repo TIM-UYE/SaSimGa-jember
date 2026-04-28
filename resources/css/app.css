@@ -6,6 +6,46 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* COLORS */
+    --color-primary: #eb8132;
+    --color-dark: #000000;
+    --color-light: #ffffff;
+    --color-muted: #9ca3af;
+
+    /* FONT */
+    --font-body: 'Poppins', sans-serif;
+    --font-title: 'DM Serif Text', serif;
+
+    /* Default Tailwind font */
+    --font-sans: 'Poppins', sans-serif;
+
+    /* SIZE */
+    --text-title: 48px;
+    --text-subtitle: 20px;
+    --text-body: 14px;
+
+    /* RADIUS */
+    --radius-main: 16px;
+
+    /* SHADOW */
+    --shadow-main: 0 10px 25px rgba(0,0,0,0.2);
 }
+
+@layer base {
+
+    body {
+        @apply bg-black text-white font-sans;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-title);
+    }
+
+    p {
+        @apply text-gray-400;
+    }
+
+}
+
+@import './components.css';

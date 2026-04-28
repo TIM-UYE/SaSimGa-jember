@@ -3,5 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('Admin.Layout.main');
+    return view('frontend.pages.home');
+    // return view('Admin.Layout.main');
 });
