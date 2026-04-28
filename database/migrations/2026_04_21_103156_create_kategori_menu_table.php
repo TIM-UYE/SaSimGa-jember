@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('kategori_menu', function (Blueprint $table) {
-            $table->id();
+            $table->id('kategori_id');
+            $table->string('nama_kategori');
+            $table->text('deskripsi')->nullable();
+            $table->string('ikon')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('kategori_menu');
