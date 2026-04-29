@@ -1,24 +1,23 @@
 <nav class="absolute top-0 left-0 w-full z-50">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
 
-        {{-- Logo --}}
-        {{-- <div>
-            <img src="{{ asset('images/logo/logo.png') }}">
-        </div> --}}
-        <div class="title-main font-bold text-lg">
-            SIMPANGTIGA
+        <div class="flex items-center gap-10">
+            {{-- Logo --}}
+            <div class=" w-1/20 h-full">
+                <img src="{{ asset('images/logo/logo.png') }}">
+            </div>
+
+            {{-- Menu --}}
+            <div class="space-x-8 hidden md:flex text-sm">
+                <a href="#" class="hover:text-orange-400">Home</a>
+                <a href="#" class="hover:text-orange-400">Menu</a>
+                <a href="#" class="hover:text-orange-400">Reservasi</a>
+                <a href="#" class="hover:text-orange-400">About</a>
+            </div>
+
         </div>
-
-        {{-- Menu --}}
-        <div class="space-x-8 hidden md:flex text-sm">
-            <a href="#" class="hover:text-orange-400">Home</a>
-            <a href="#" class="hover:text-orange-400">Menu</a>
-            <a href="#" class="hover:text-orange-400">Reservasi</a>
-            <a href="#" class="hover:text-orange-400">About</a>
-        </div>
-
-        {{-- Dot kanan --}}
-        <div class="w-4 h-4 bg-white rounded-full"></div>
+            
+        <div class="absolute top-6 right-6 w-10 h-10 bg-primary rounded-full z-30 border border-b-black"></div>
 
     </div>
 </nav>
