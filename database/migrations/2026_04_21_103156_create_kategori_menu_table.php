@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kategori_menu', function (Blueprint $table) {
-            $table->id('kategori_id');
+            $table->id();
             $table->string('nama_kategori');
             $table->text('deskripsi')->nullable();
             $table->string('ikon')->nullable();
