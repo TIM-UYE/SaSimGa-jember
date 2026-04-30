@@ -17,7 +17,7 @@
             <div class="bg-white rounded-2xl overflow-hidden shadow-lg">
 
                 {{-- IMAGE --}}
-                <img src="{{ asset('images/testimoni/testi1.jpg') }}"
+                <img src="{{ asset('images/menu/sate.jpg') }}"
                      class="w-full h-40 object-cover">
 
                 {{-- CONTENT --}}

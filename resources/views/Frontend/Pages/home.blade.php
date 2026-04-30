@@ -7,5 +7,6 @@
     @include('frontend.Sections.hero')
     @include('frontend.sections.about')
     @include('frontend.sections.menu')
+    @include('frontend.sections.testimoni')
 
 @endsection
