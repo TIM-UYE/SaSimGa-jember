@@ -10,7 +10,7 @@ class KategoriMenu extends Model
     use HasFactory;
 
     protected $table = 'kategori_menu';
-        public $timestamps = true;
+    public $timestamps = true;
 
     protected $fillable = [
         'nama_kategori',
@@ -23,8 +23,8 @@ class KategoriMenu extends Model
         'is_active' => 'boolean',
     ];
 
-public function menus()
-{
-    return $this->hasMany(Menu::class, 'kategori_id', 'id');
-}
+    public function menus()
+    {
+        return $this->hasMany(Menu::class, 'kategori_id', 'id');
+    }
 }
