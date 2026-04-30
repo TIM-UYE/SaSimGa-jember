@@ -9,8 +9,8 @@
 
             {{-- Menu --}}
             <div class="space-x-8 hidden md:flex text-sm">
-                <a href="#" class="hover:text-orange-400">Home</a>
-                <a href="#" class="hover:text-orange-400">Menu</a>
+                <a href="{{ route('frontend.home') }}" class="hover:text-orange-400">Home</a>
+                <a href="{{ route('frontend.home') }}#menu" class="hover:text-orange-400">Menu</a>
                 <a href="#" class="hover:text-orange-400">Reservasi</a>
                 <a href="#" class="hover:text-orange-400">About</a>
                 @auth
