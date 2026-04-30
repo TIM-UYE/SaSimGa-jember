@@ -13,10 +13,17 @@
                 <a href="#" class="hover:text-orange-400">Menu</a>
                 <a href="#" class="hover:text-orange-400">Reservasi</a>
                 <a href="#" class="hover:text-orange-400">About</a>
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-orange-400">Dashboard</a>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="hover:text-orange-400">Login</a>
+                @endauth
             </div>
 
         </div>
-            
+
         <div class="absolute top-6 right-6 w-10 h-10 bg-primary rounded-full z-30 border border-b-black"></div>
 
     </div>
