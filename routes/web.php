@@ -30,6 +30,13 @@ Route::middleware('guest')->group(function () {
 // Logout route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Profile settings
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [AuthController::class, 'updatePassword'])->name('profile.password');
+});
+
 // Protected routes - redirect to appropriate dashboard if already authenticated
 Route::middleware('auth')->group(function () {
     // Admin routes (admin only)

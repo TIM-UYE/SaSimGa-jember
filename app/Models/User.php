@@ -19,7 +19,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'user_id';
     protected $table = 'users';
-    protected $fillable = ['nama', 'email', 'password', 'role'];
+    protected $fillable = ['nama', 'email', 'password', 'role', 'profile_photo'];
 
     /**
      * Get the attributes that should be cast.
