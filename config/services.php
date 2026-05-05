@@ -40,4 +40,8 @@ return [
         'place_id' => env('GOOGLE_PLACE_ID'),
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+    ],
+
 ];

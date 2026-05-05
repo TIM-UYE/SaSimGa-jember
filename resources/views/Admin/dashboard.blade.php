@@ -1,7 +1,7 @@
 @extends('admin.layout.main')
 
 @section('content')
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
     <div class="bg-gradient-to-r from-purple-600 to-purple-400 rounded-xl p-6 text-white shadow-lg">
         <div class="flex justify-between items-center">
             <div>
@@ -46,6 +46,18 @@
             </div>
             <div class="bg-white/20 p-3 rounded-lg">
                 <i class="fas fa-wallet text-2xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-xl p-6 text-white shadow-lg">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-sm opacity-80">Reservasi Pending</p>
+                <p class="text-3xl font-bold">{{ \App\Models\Reservasi::where('status', 'pending')->count() }}</p>
+            </div>
+            <div class="bg-white/20 p-3 rounded-lg">
+                <i class="fas fa-calendar-alt text-2xl"></i>
             </div>
         </div>
     </div>

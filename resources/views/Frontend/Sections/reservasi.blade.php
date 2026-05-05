@@ -22,36 +22,71 @@
             {{-- FORM --}}
             <div class="bg-black p-4 md:p-8">
 
-                <form class="space-y-2">
+                <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-2">
+                    @csrf
 
                     {{-- NAME --}}
                     <div>
-                        <label class="text-white text-sm">Name</label>
+                        <label class="text-white text-sm">Nama <span class="text-red-500">*</span></label>
                         <input type="text"
-                               placeholder="Enter your name"
-                               class="input-style">
+                               name="nama"
+                               value="{{ old('nama') }}"
+                               placeholder="Masukkan nama Anda"
+                               class="input-style @error('nama') border-red-500 @enderror" required>
+                        @error('nama')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- NO. WHATSAPP --}}
+                    <div>
+                        <label class="text-white text-sm">No. WhatsApp <span class="text-red-500">*</span></label>
+                        <input type="tel"
+                               name="nomor_wa"
+                               value="{{ old('nomor_wa') }}"
+                               placeholder="Contoh: 081234567890"
+                               class="input-style @error('nomor_wa') border-red-500 @enderror" required>
+                        @error('nomor_wa')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- DATE --}}
                     <div>
-                        <label class="text-white text-sm">Date</label>
+                        <label class="text-white text-sm">Tanggal Reservasi <span class="text-red-500">*</span></label>
                         <input type="date"
-                               class="input-style">
+                               name="tanggal_reservasi"
+                               value="{{ old('tanggal_reservasi') }}"
+                               class="input-style @error('tanggal_reservasi') border-red-500 @enderror" required>
+                        @error('tanggal_reservasi')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- TIME --}}
                     <div>
-                        <label class="text-white text-sm">Time</label>
+                        <label class="text-white text-sm">Waktu <span class="text-red-500">*</span></label>
                         <input type="time"
-                               class="input-style">
+                               name="waktu_reservasi"
+                               value="{{ old('waktu_reservasi') }}"
+                               class="input-style @error('waktu_reservasi') border-red-500 @enderror" required>
+                        @error('waktu_reservasi')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- PEOPLE --}}
                     <div>
-                        <label class="text-white text-sm">People</label>
+                        <label class="text-white text-sm">Jumlah Orang <span class="text-red-500">*</span></label>
                         <input type="number"
-                               placeholder="Enter number of people"
-                               class="input-style">
+                               name="jumlah_orang"
+                               value="{{ old('jumlah_orang') }}"
+                               min="1"
+                               placeholder="Masukkan jumlah orang"
+                               class="input-style @error('jumlah_orang') border-red-500 @enderror" required>
+                        @error('jumlah_orang')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- BUTTON --}}

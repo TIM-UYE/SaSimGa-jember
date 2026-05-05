@@ -16,6 +16,8 @@
 
 <body class="bg-black text-white font-sans">
 
+    @include('sweetalert::alert')
+
     @include('frontend.Sections.navbar')
 
     <main>

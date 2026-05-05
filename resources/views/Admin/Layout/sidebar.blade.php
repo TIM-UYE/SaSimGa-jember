@@ -210,6 +210,19 @@
       </a>
     </li> --}}
 
+    <!-- RESERVASI -->
+    <li>
+      <a href="{{ route('admin.reservasi.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-calendar-alt text-sm"></i>
+        </div>
+
+        Reservasi
+      </a>
+    </li>
+
     <!-- KELOLA USER -->
     <li>
       <a href="{{ route('admin.user.index') }}"

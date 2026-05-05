@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\KategoriMenuController;
+use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,9 @@ Route::get('/menu', [MenuController::class, 'frontend'])->name('frontend.menu');
 Route::get('/about', function () {
     return view('Frontend.About.index');
 })->name('frontend.about');
+
+// Reservasi - Frontend (public)
+Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
 
 // Default route - redirect to login
 Route::get('/login', function () {
@@ -55,6 +59,11 @@ Route::middleware('auth')->group(function () {
         // Testimoni CRUD
         Route::post('testimoni/sync', [TestimoniController::class, 'syncGoogleMaps'])->name('testimoni.sync');
         Route::resource('testimoni', TestimoniController::class)->except(['show']);
+
+        // Reservasi CRUD
+        Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi.index');
+        Route::patch('/reservasi/{id}/status', [ReservasiController::class, 'updateStatus'])->name('reservasi.updateStatus');
+        Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])->name('reservasi.destroy');
 
         // User CRUD
         Route::resource('user', UserController::class);
