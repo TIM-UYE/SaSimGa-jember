@@ -8,6 +8,7 @@ services:
     environment:
       APP_NAME: SaSimGa
       APP_ENV: production
+      APP_KEY: base64:wjil6F6VCWOz5QwvUMaDbRIyEuB3T4DTbN7wFsuniio=
       APP_DEBUG: "false"
       APP_URL: http://localhost:8090
 
