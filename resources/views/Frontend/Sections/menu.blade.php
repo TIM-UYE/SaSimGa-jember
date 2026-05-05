@@ -6,7 +6,7 @@
              class="w-full h-full object-cover opacity-30">
     </div>
 
-    <div class="text-center mb-12">
+    <div class="text-center mb-12 reveal">
         <h2 class="text-4xl font-bold">
             <span class="text-white">Semua</span>
             <span class="text-[var(--color-primary)]">Menu</span>
@@ -18,7 +18,7 @@
         {{-- HEADER --}}
         <div class="flex items-center gap-8 mb-10 flex-wrap">
 
-            <div class="flex gap-6 text-gray-400 text-sm flex-wrap">
+            <div class="flex gap-6 text-gray-400 text-sm flex-wrap reveal delay-200">
                 <button onclick="filterMenuByCategory(0)"
                    class="px-4 py-2 rounded transition text-white bg-orange-500 kategori-btn" data-kategori-id="0">
                     Semua
@@ -35,10 +35,13 @@
 
         {{-- GRID MENU --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-            {{-- CARD --}}
             @forelse($menus as $menu)
-            <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition transform hover:scale-105 menu-card" data-kategori-id="{{ $menu->kategori_id }}">
+            <div class="bg-white rounded-xl overflow-hidden shadow-lg 
+            hover:shadow-[0_10px_30px_rgba(235,129,50,0.3)] 
+            transition transform hover:scale-105 hover:-translate-y-2 
+            menu-card reveal"
+            style="--delay: {{ $loop->index * 0.1 }}s"
+            data-kategori-id="{{ $menu->kategori_id }}">
 
                 <div class="relative">
                     @if($menu->gambar)
