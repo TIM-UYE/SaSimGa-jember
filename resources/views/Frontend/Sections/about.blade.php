@@ -1,5 +1,12 @@
 <section class="relative bg-black py-24 overflow-hidden">
 
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold">
+            <span class="text-white">Tentang</span>
+            <span class="text-[var(--color-primary)]">Kami</span>
+        </h2>
+    </div>
+
     <div class="container-main grid grid-cols-1 md:grid-cols-2 items-center gap-12">
 
         {{-- KIRI: IMAGE --}}
@@ -7,17 +14,6 @@
 
             <img src="{{ asset('images/about/depan.jpg') }}"
                  class="w-full h-[500px] object-cover">
-
-            {{-- TEXT OVER IMAGE --}}
-            <div class="absolute top-10 left-10">
-                <h2 class="text-[var(--color-primary)] text-3xl font-bold">
-                    About us
-                </h2>
-
-                <p class="text-white text-sm mt-2 max-w-xs">
-
-                </p>
-            </div>
 
         </div>
 

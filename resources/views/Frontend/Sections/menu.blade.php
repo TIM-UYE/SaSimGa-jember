@@ -6,14 +6,17 @@
              class="w-full h-full object-cover opacity-30">
     </div>
 
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold">
+            <span class="text-white">Semua</span>
+            <span class="text-[var(--color-primary)]">Menu</span>
+        </h2>
+    </div>
+
     <div class="relative z-10 container-main">
 
         {{-- HEADER --}}
         <div class="flex items-center gap-8 mb-10 flex-wrap">
-
-            <h2 class="text-3xl font-bold text-white">
-                Semua Menu
-            </h2>
 
             <div class="flex gap-6 text-gray-400 text-sm flex-wrap">
                 <button onclick="filterMenuByCategory(0)"
