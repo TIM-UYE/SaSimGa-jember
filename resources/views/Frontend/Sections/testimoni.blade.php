@@ -24,7 +24,7 @@
                 <div class="p-4">
 
                     <h3 class="font-semibold text-black text-lg">
-                        Abdul
+                        Dema
                     </h3>
 
                     <p class="text-gray-500 text-sm mt-1">

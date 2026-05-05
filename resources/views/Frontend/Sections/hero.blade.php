@@ -10,7 +10,7 @@
      <div class="absolute top-0 left-0 w-[75%] h-full bg-black z-10"
          style="clip-path: ellipse(85% 100% at 0% 50%);">
     </div>
-    
+
     {{-- Content --}}
     <div class="relative z-20 container-main flex items-center min-h-screen">
 
@@ -21,12 +21,11 @@
             </p>
 
             <h1 class="title-main text-white">
-                SATE <span class="text-[var(--color-primary)]">SIMPANGTIGA</span>
+                SATE <span class="text-[var(--color-primary)]">SIMPANG TIGA</span>
             </h1>
 
             <p class="text-gray-400 -mt-2 text-sm leading-relaxed">
-                Lorem ipsum has been the industry’s standard dummy text ever since the 1500s,
-                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                Sate Simpang Tiga adalah tempat kuliner yang menghadirkan cita rasa sate khas Indonesia dengan kualitas terbaik, menggunakan bahan segar dan bumbu autentik yang diolah dengan resep pilihan. Setiap tusuk sate dibakar menggunakan arang untuk menghasilkan aroma khas yang menggugah selera, lalu disajikan dengan bumbu yang kaya rasa dan nikmat. Kami berkomitmen untuk memberikan pengalaman makan yang lezat, hangat, dan berkesan bagi setiap pelanggan, baik dinikmati sendiri maupun bersama keluarga dan orang terdekat.
             </p>
 
             <div class="mt-6 flex gap-4">
@@ -50,5 +49,5 @@
     </div>
 
     {{-- Lingkaran kecil kanan atas --}}
-    
+
 </section>

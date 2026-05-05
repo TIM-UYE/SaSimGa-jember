@@ -12,7 +12,6 @@ class HomeController extends Controller
         $menus = Menu::where('is_available', true)
             ->with('kategori')
             ->orderBy('created_at', 'desc')
-            ->limit(8)
             ->get();
 
         $kategoris = KategoriMenu::where('is_active', true)

@@ -15,7 +15,7 @@
                 </h2>
 
                 <p class="text-white text-sm mt-2 max-w-xs">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
                 </p>
             </div>
 
@@ -25,13 +25,11 @@
         <div class="relative z-10">
 
             <h2 class="title-main text-[var(--color-primary)]">
-                Rumah Makan <br> Sate Simpangtiga
+                Rumah Makan <br> Sate Simpang Tiga
             </h2>
 
             <p class="text-gray-400 mt-4 text-sm leading-relaxed max-w-md">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                Sate Simpang Tiga adalah tempat kuliner yang menghadirkan cita rasa sate khas Indonesia dengan kualitas terbaik, menggunakan bahan segar dan bumbu autentik yang diolah dengan resep pilihan. Setiap tusuk sate dibakar menggunakan arang untuk menghasilkan aroma khas yang menggugah selera, lalu disajikan dengan bumbu yang kaya rasa dan nikmat. Kami berkomitmen untuk memberikan pengalaman makan yang lezat, hangat, dan berkesan bagi setiap pelanggan, baik dinikmati sendiri maupun bersama keluarga dan orang terdekat.
             </p>
 
         </div>
@@ -48,6 +46,6 @@
     </div> --}}
 
     {{-- ORANGE BAR BAWAH --}}
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-[300px] h-[20px] bg-[var(--color-primary)]"></div>
+    {{-- <div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-[300px] h-[20px] bg-[var(--color-primary)]"></div> --}}
 
 </section>

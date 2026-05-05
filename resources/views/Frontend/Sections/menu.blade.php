@@ -16,8 +16,8 @@
             </h2>
 
             <div class="flex gap-6 text-gray-400 text-sm flex-wrap">
-                <button onclick="filterMenuByCategory(null)"
-                   class="px-4 py-2 rounded transition text-white bg-orange-500 kategori-btn" data-kategori-id="null">
+                <button onclick="filterMenuByCategory(0)"
+                   class="px-4 py-2 rounded transition text-white bg-orange-500 kategori-btn" data-kategori-id="0">
                     Semua
                 </button>
                 @foreach($kategoris as $kat)
@@ -35,7 +35,7 @@
 
             {{-- CARD --}}
             @forelse($menus as $menu)
-            <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition transform hover:scale-105 menu-card" data-kategori-id="{{ $menu->kategori_id ?? 'null' }}">
+            <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition transform hover:scale-105 menu-card" data-kategori-id="{{ $menu->kategori_id }}">
 
                 <div class="relative">
                     @if($menu->gambar)
@@ -94,13 +94,6 @@
             @endforelse
 
         </div>
-
-        {{-- LIHAT SELENGKAPNYA --}}
-        @if($menus->count() >= 8)
-        <div class="text-center mt-10 text-gray-300 text-sm cursor-pointer hover:text-white transition">
-            &lt;&lt; Tampilkan Lebih Banyak &gt;&gt;
-        </div>
-        @endif
 
     </div>
 
@@ -193,18 +186,28 @@
             btn.classList.add('hover:text-white');
         });
 
-        event.target.classList.add('text-white', 'bg-orange-500');
-        event.target.classList.remove('hover:text-white');
+        // Set the clicked button as active
+        const activeBtn = document.querySelector(`.kategori-btn[data-kategori-id="${categoryId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('text-white', 'bg-orange-500');
+            activeBtn.classList.remove('hover:text-white');
+        }
 
         // Filter menu cards
         const menuCards = document.querySelectorAll('.menu-card');
-        const allMenus = Array.from(menuCards);
         let visibleCount = 0;
 
         menuCards.forEach(card => {
-            const menuCategoryId = card.getAttribute('data-kategori-id');
+            const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+            const filterCategoryId = parseInt(categoryId);
 
-            if (categoryId === null || menuCategoryId == categoryId) {
+            // Jika Semua (0) dipilih, tampilkan semua menu
+            if (filterCategoryId === 0) {
+                card.style.display = 'block';
+                visibleCount++;
+            }
+            // Jika kategori spesifik dipilih, tampilkan menu dengan kategori yang sama
+            else if (menuCategoryId === filterCategoryId) {
                 card.style.display = 'block';
                 visibleCount++;
             } else {
