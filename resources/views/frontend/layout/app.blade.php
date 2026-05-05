@@ -16,13 +16,13 @@
 
 <body class="bg-black text-white font-sans">
 
-    @include('frontend.Sections.navbar')
+    @include('frontend.sections.navbar')
 
     <main>
         @yield('content')
     </main>
 
-    @include('frontend.Sections.footer')
+    @include('frontend.sections.footer')
 
     <script>
     const observer = new IntersectionObserver((entries) => {

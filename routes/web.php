@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
 Route::get('/menu', [MenuController::class, 'frontend'])->name('frontend.menu');
 Route::get('/about', function () {
-    return view('Frontend.About.index');
+    return view('frontend.About.index');
 })->name('frontend.about');
 
 // Default route - redirect to login

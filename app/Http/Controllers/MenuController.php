@@ -28,7 +28,7 @@ class MenuController extends Controller
             ->orderBy('nama_kategori')
             ->get();
 
-        return view('Frontend.Menu.index', compact('menus', 'kategoris'));
+        return view('frontend.Menu.index', compact('menus', 'kategoris'));
     }
 
     public function create()
