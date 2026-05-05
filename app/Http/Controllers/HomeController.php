@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\KategoriMenu;
+use App\Models\Testimoni;
 
 class HomeController extends Controller
 {
@@ -20,6 +21,11 @@ class HomeController extends Controller
             }])
             ->get();
 
-        return view('frontend.pages.home', compact('menus', 'kategoris'));
+        $testimonis = Testimoni::where('is_active', true)
+            ->orderByDesc('review_date')
+            ->limit(3)
+            ->get();
+
+        return view('frontend.pages.home', compact('menus', 'kategoris', 'testimonis'));
     }
 }

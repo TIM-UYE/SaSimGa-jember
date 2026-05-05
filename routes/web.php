@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\KategoriMenuController;
+use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,10 @@ Route::middleware('auth')->group(function () {
 
         // Kategori Menu CRUD
         Route::resource('kategori', KategoriMenuController::class);
+
+        // Testimoni CRUD
+        Route::post('testimoni/sync', [TestimoniController::class, 'syncGoogleMaps'])->name('testimoni.sync');
+        Route::resource('testimoni', TestimoniController::class)->except(['show']);
 
         // User CRUD
         Route::resource('user', UserController::class);
