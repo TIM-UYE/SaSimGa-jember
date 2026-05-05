@@ -85,7 +85,7 @@
 
                         <div class="flex items-center justify-between gap-4">
                             <span class="text-orange-500 font-bold text-lg">Rp {{ number_format($menu->harga, 0, ',', '.') }}</span>
-                            <button onclick="openMenuDetail(@json($menu))"
+                            <button onclick='openMenuDetail({!! $menu->toJson() !!})'
                                     class="inline-flex items-center rounded-full bg-slate-900 text-white px-4 py-2 text-sm font-semibold hover:bg-orange-500 transition">
                                 Detail
                             </button>
@@ -98,7 +98,7 @@
 </section>
 
 {{-- MODAL DETAIL MENU --}}
-<div id="menuDetailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 grid place-items-center p-4" style="display: none;" onclick="closeMenuDetail(event)">
+<div id="menuDetailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onclick="closeMenuDetail(event)">
     <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
         <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-800" id="modalTitle">Detail Menu</h2>
@@ -190,16 +190,23 @@ function filterMenuByCategory(categoryId) {
 }
 
 function openMenuDetail(menu) {
-    const imagePath = menu.gambar ? `{{ asset('storage/menu/') }}/${menu.gambar}` : '{{ asset('images/placeholder.jpg') }}';
-    document.getElementById('modalImage').src = imagePath;
+    // Set image
+    const imagePath = menu.gambar ? `{{ asset('storage/menu/') }}/${menu.gambar}` : '';
+    document.getElementById('modalImage').src = imagePath || '{{ asset('images/placeholder.jpg') }}';
 
+    // Set title
     document.getElementById('modalMenuName').textContent = menu.nama_menu;
-    document.getElementById('modalCategory').textContent = menu.kategori?.nama_kategori || 'Menu Pilihan';
+
+    // Set category
+    const categoryHtml = menu.kategori ? `<span>${menu.kategori.nama_kategori}</span>` : '';
+    document.getElementById('modalCategory').innerHTML = categoryHtml;
     document.getElementById('modalCategory').classList.toggle('hidden', !menu.kategori);
 
+    // Set price
     const price = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(menu.harga);
     document.getElementById('modalPrice').textContent = price;
 
+    // Set status
     const statusHtml = menu.is_available
         ? `<div class="flex items-center gap-2">
                 <span class="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
@@ -212,8 +219,10 @@ function openMenuDetail(menu) {
             </div>`;
     document.getElementById('modalStatus').innerHTML = statusHtml;
 
+    // Set description
     document.getElementById('modalDescription').textContent = menu.deskripsi || 'Tidak ada deskripsi';
 
+    // Set bahan
     if (menu.bahan) {
         document.getElementById('modalBahan').textContent = menu.bahan;
         document.getElementById('bahanSection').classList.remove('hidden');
@@ -221,6 +230,7 @@ function openMenuDetail(menu) {
         document.getElementById('bahanSection').classList.add('hidden');
     }
 
+    // Set ukuran
     if (menu.ukuran) {
         document.getElementById('modalUkuran').textContent = menu.ukuran;
         document.getElementById('ukuranInfo').classList.remove('hidden');
@@ -228,6 +238,7 @@ function openMenuDetail(menu) {
         document.getElementById('ukuranInfo').classList.add('hidden');
     }
 
+    // Set durasi persiapan
     if (menu.durasi_persiapan) {
         document.getElementById('modalDurasi').textContent = `${menu.durasi_persiapan} menit`;
         document.getElementById('durasiInfo').classList.remove('hidden');
@@ -244,13 +255,13 @@ function openMenuDetail(menu) {
         orderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 
-    document.getElementById('menuDetailModal').style.display = 'grid';
+    document.getElementById('menuDetailModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
 function closeMenuDetail(event) {
     if (event && event.target.id !== 'menuDetailModal') return;
-    document.getElementById('menuDetailModal').style.display = 'none';
+    document.getElementById('menuDetailModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
 }
 
