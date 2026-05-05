@@ -9,70 +9,78 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #111827;
             min-height: 100vh;
+        }
+
+        .login-container {
+            box-shadow: 0 35px 80px rgba(15, 23, 42, 0.35);
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div class="p-8">
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-gray-800">SaSimGa</h1>
-                    <p class="text-gray-500 mt-2">Masuk ke akun Anda</p>
+<body class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-6xl login-container rounded-[32px] overflow-hidden bg-slate-900">
+        <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[700px]">
+            <div class="relative hidden lg:block bg-cover bg-center" style="background-image: url('{{ asset('images/login/login.jpeg') }}');">
+                <div class="absolute inset-0 bg-slate-950/35"></div>
+                <div class="absolute inset-0 flex flex-col items-center justify-center px-8">
+                    <div class="mb-8 rounded-full bg-white/80 p-4 shadow-lg">
+                        <img src="{{ asset('images/logo/logo.png') }}" alt="Simpang Tiga" class="h-16 w-auto">
+                    </div>
+                    <div class="text-center text-white max-w-xs">
+                        <h2 class="text-3xl font-semibold tracking-tight">Selamat Datang di SaSimGa</h2>
+                        <p class="mt-4 text-sm text-slate-200">Masuk untuk mengelola menu dan pesanan dengan cepat.</p>
+                    </div>
                 </div>
+            </div>
 
-                @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form action="{{ route('login') }}" method="POST">
-                    @csrf
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                            Email
-                        </label>
-                        <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('email') border-red-500 @enderror"
-                            type="email"
-                            id="email"
-                            name="email"
-                            value="{{ old('email') }}"
-                            placeholder="Masukkan email Anda"
-                            required>
+            <div class="bg-white px-8 py-10 sm:px-12 sm:py-12 flex items-center justify-center">
+                <div class="w-full max-w-md">
+                    <div class="mb-10">
+                        <h1 class="text-3xl font-bold text-orange-600">Masuk</h1>
+                        <p class="mt-3 text-sm text-slate-500">Masukkan nama dan kata sandi untuk melanjutkan.</p>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                            Password
-                        </label>
-                        <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('password') border-red-500 @enderror"
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Masukkan password Anda"
-                            required>
+                    @if ($errors->any())
+                        <div class="mb-6 rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                            <ul class="list-disc list-inside space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('login') }}" method="POST" class="space-y-6">
+                        @csrf
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-slate-700">Nama</label>
+                            <input id="email" name="email" type="email" value="{{ old('email') }}"
+                                placeholder="Nama"
+                                required
+                                class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('email') border-red-400 ring-red-200 @enderror" />
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-slate-700">Kata sandi</label>
+                            <input id="password" name="password" type="password"
+                                placeholder="Kata sandi"
+                                required
+                                class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('password') border-red-400 ring-red-200 @enderror" />
+                        </div>
+
+                        <button type="submit"
+                            class="w-full rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600">
+                            MASUK
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-sm text-slate-500 text-center">
+                        Belum punya akun?
+                        <a href="{{ route('register') }}" class="font-semibold text-orange-600 hover:text-orange-700">Daftar sekarang</a>
                     </div>
-
-                    <button type="submit"
-                        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                        Masuk
-                    </button>
-                </form>
-
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600">Belum punya akun?
-                        <a href="{{ route('register') }}" class="text-purple-600 hover:text-purple-700 font-semibold">
-                            Daftar sekarang
-                        </a>
-                    </p>
                 </div>
             </div>
         </div>

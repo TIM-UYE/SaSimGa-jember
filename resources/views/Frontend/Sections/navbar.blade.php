@@ -10,9 +10,13 @@
             {{-- Menu --}}
             <div class="space-x-8 hidden md:flex text-sm">
                 <a href="{{ route('frontend.home') }}" class="hover:text-orange-400">Home</a>
-                <a href="{{ route('frontend.home') }}#menu" class="hover:text-orange-400">Menu</a>
+                <a href="{{ route('frontend.menu') }}" class="hover:text-orange-400">Menu</a>
                 <a href="#" class="hover:text-orange-400">Reservasi</a>
-                <a href="#" class="hover:text-orange-400">About</a>
+                <a href="{{ route('frontend.about') }}"
+                class="hover:text-orange-400 {{ request()->routeIs('frontend.about') ? 'text-orange-500' : '' }}">
+                About
+                </a>
+
                 @auth
                     @if(auth()->user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}" class="hover:text-orange-400">Dashboard</a>

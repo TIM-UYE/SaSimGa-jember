@@ -8,6 +8,10 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::get('/menu', [MenuController::class, 'frontend'])->name('frontend.menu');
+Route::get('/about', function () {
+    return view('Frontend.About.index');
+})->name('frontend.about');
 
 // Default route - redirect to login
 Route::get('/login', function () {
@@ -46,8 +50,6 @@ Route::middleware('auth')->group(function () {
 
     // User routes (user only)
     Route::middleware('user')->prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('frontend.pages.home');
-        })->name('dashboard');
+        Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     });
 });

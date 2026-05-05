@@ -15,6 +15,16 @@ class MenuController extends Controller
         return view('admin.menu.index', compact('menus'));
     }
 
+    public function frontend()
+    {
+        $menus = Menu::with('kategori')
+            ->where('is_available', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('Frontend.Menu.index', compact('menus'));
+    }
+
     public function create()
     {
         $kategoris = KategoriMenu::where('is_active', true)->orderBy('nama_kategori')->get();
