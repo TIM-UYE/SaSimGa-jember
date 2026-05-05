@@ -1,4 +1,4 @@
-<nav class="absolute top-0 left-0 w-full z-50">
+<nav class="fixed bg-black top-0 left-0 w-full z-50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
 
         <div class="flex items-center gap-10">
@@ -8,7 +8,7 @@
             </div>
 
             {{-- Menu --}}
-            <div class="space-x-8 hidden md:flex text-sm">
+            <div class="space-x-16 hidden md:flex text-sm">
                 <a href="{{ route('frontend.home') }}" class="hover:text-orange-400">Home</a>
                 <a href="{{ route('frontend.menu') }}" class="hover:text-orange-400">Menu</a>
                 <a href="#" class="hover:text-orange-400">Reservasi</a>
