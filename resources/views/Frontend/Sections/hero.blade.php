@@ -20,8 +20,8 @@
                 SATE <span class="text-[var(--color-primary)]">SIMPANG TIGA</span>
             </h1>
 
-            <p class="text-gray-400 -mt-2 text-sm leading-relaxed reveal delay-300">
-                Sate Simpang Tiga adalah tempat kuliner yang menghadirkan cita rasa sate khas Indonesia dengan kualitas terbaik, menggunakan bahan segar dan bumbu autentik yang diolah dengan resep pilihan. Setiap tusuk sate dibakar menggunakan arang untuk menghasilkan aroma khas yang menggugah selera, lalu disajikan dengan bumbu yang kaya rasa dan nikmat. Kami berkomitmen untuk memberikan pengalaman makan yang lezat, hangat, dan berkesan bagi setiap pelanggan, baik dinikmati sendiri maupun bersama keluarga dan orang terdekat.
+            <p class="text-gray-400 mt-2 text-sm leading-relaxed reveal delay-300">
+                Sate Simpang Tiga menghadirkan sate khas Indonesia dengan bahan segar dan bumbu autentik. Dibakar dengan arang untuk aroma khas, kami menyajikan rasa terbaik untuk pengalaman makan yang hangat dan berkesan.
             </p>
 
             <div class="mt-6 flex gap-4 reveal delay-500">
@@ -44,6 +44,8 @@
         class="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] reveal-scale ">
     </div>
 
-    {{-- Lingkaran kecil kanan atas --}}
+    <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-black z-40">
+
+    </div>
 
 </section>
