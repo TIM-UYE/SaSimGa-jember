@@ -1,10 +1,10 @@
-@extends('frontend.Layout.app')
+@extends('frontend.layout.app')
 
 @section('title', 'Home')
 
 @section('content')
 
-    @include('frontend.Sections.hero')
+    @include('frontend.sections.hero')
     @include('frontend.sections.about')
     @include('frontend.sections.menu')
     @include('frontend.sections.reservasi')

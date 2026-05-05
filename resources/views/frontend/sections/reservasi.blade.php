@@ -3,7 +3,7 @@
     <div class="container-main">
 
         {{-- TITLE --}}
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 reveal">
             <h2 class="text-4xl font-bold">
                 <span class="text-white">Reservasi</span>
                 <span class="text-[var(--color-primary)]">Sekarang</span>
@@ -14,13 +14,13 @@
         <div class="grid md:grid-cols-2 rounded-3xl overflow-hidden border border-white/20">
 
             {{-- IMAGE --}}
-            <div class="h-[300px] md:h-[500px]">
+            <div class="h-[300px] md:h-[450px] reveal-scale">
                 <img src="{{ asset('images/reservasi/sate.jpg') }}"
-                     class="w-full h-full object-cover">
+                class="w-full object-cover object-center">
             </div>
 
             {{-- FORM --}}
-            <div class="bg-black p-4 md:p-8">
+            <div class="bg-black p-4 md:p-8 reveal delay-200">
 
                 <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-2">
                     @csrf
@@ -91,7 +91,7 @@
 
                     {{-- BUTTON --}}
                     <button type="submit"
-                            class="w-full bg-[var(--color-primary)] text-black py-3 rounded-lg font-semibold hover:scale-[1.02] transition">
+                            class="w-full bg-[var(--color-primary)] text-black py-3 rounded-lg font-semibold reveal delay-700 hover:scale-[1.02] transition">
                         Reservasi Sekarang
                     </button>
 
