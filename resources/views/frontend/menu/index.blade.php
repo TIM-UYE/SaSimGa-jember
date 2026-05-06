@@ -3,473 +3,430 @@
 @section('content')
 
 <!-- HERO / HEADER -->
-<section class="bg-black text-white pt-32 pb-16 px-6 border-b border-gray-800">
+<section class="relative bg-gradient-to-br from-black via-gray-900 to-black text-white pt-40 pb-24 px-6 overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 left-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-orange-600 rounded-full blur-3xl"></div>
+    </div>
 
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto relative z-10 text-center">
+        <span class="inline-block px-4 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-400 text-sm font-semibold mb-6">
+            <i class="fas fa-fire mr-2"></i>Hot Menu
+        </span>
 
-        <h1 class="text-4xl font-bold mb-2">
-            Semua <span class="text-orange-500">Menu</span>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+            Semua <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Menu</span>
         </h1>
 
-        <p class="text-gray-400">
-            Nikmati berbagai pilihan menu terbaik dari Simpang Tiga
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+            Nikmati berbagai pilihan menu terbaik dari Simpang Tiga, dibuat dengan bahan berkualitas dan penuh cinta
         </p>
 
-        <div class="mt-4 text-sm text-gray-500">
-
-            <a href="/" class="hover:text-orange-500">
-                Home
+        <div class="flex justify-center gap-4">
+            <a href="#menu-section" class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:scale-105">
+                <i class="fas fa-utensils mr-2"></i>Lihat Menu
             </a>
-
-            <span class="mx-2">/</span>
-
-            <span class="text-white">
-                Menu
-            </span>
-
+            <a href="{{ route('frontend.home') }}" class="border-2 border-gray-600 hover:border-orange-500 text-white px-8 py-3 rounded-full font-semibold transition-all">
+                <i class="fas fa-home mr-2"></i>Home
+            </a>
         </div>
-
     </div>
-
 </section>
 
-
-
-<!-- FILTER -->
-<section class="bg-black px-6 py-6">
-
-    <div class="max-w-7xl mx-auto flex flex-wrap gap-3">
-
-        <button
-            onclick="filterMenuByCategory(0)"
-            class="px-4 py-2 rounded-lg text-sm kategori-btn text-white bg-orange-500"
-            data-kategori-id="0"
-        >
-            Semua
-        </button>
-
-        @foreach($kategoris as $kat)
-
-            <button
-                onclick="filterMenuByCategory({{ $kat->id }})"
-                class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-orange-500 transition kategori-btn"
-                data-kategori-id="{{ $kat->id }}"
-            >
-                {{ $kat->nama_kategori }} ({{ $kat->menus_count }})
-            </button>
-
-        @endforeach
-
-    </div>
-
-</section>
-
-
-
-<!-- MENU -->
-<section class="bg-black px-6 pb-24">
-
+<!-- SEARCH & FILTER -->
+<section class="bg-black/50 backdrop-blur-sm border-y border-gray-800 px-6 py-6 sticky top-16 z-30">
     <div class="max-w-7xl mx-auto">
-
-        @if($menus->isEmpty())
-
-            <div class="mb-8 rounded-3xl bg-orange-500/10 border border-orange-500/20 p-5 text-orange-50">
-
-                <strong>Perhatian:</strong> Belum ada menu tersedia saat ini.
-
+        <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <!-- Search -->
+            <div class="relative w-full lg:w-96">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Cari menu..."
+                    class="w-full bg-gray-800 border border-gray-700 rounded-full px-5 py-3 pl-12 text-white focus:outline-none focus:border-orange-500 transition-all"
+                >
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
             </div>
 
+            <!-- Category Filters -->
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button
+                    onclick="filterMenuByCategory(0)"
+                    class="px-5 py-2.5 rounded-full text-sm font-semibold kategori-btn text-white bg-orange-500 hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/25"
+                    data-kategori-id="0"
+                >
+                    <i class="fas fa-th mr-2"></i>Semua
+                </button>
+
+                @foreach($kategoris as $kat)
+                    <button
+                        onclick="filterMenuByCategory({{ $kat->id }})"
+                        class="px-5 py-2.5 rounded-full text-sm font-semibold kategori-btn bg-gray-800 text-gray-300 hover:bg-orange-500 hover:text-white transition-all"
+                        data-kategori-id="{{ $kat->id }}"
+                    >
+                        {{ $kat->nama_kategori }}
+                        <span class="ml-2 text-xs opacity-70">({{ $kat->menus_count }})</span>
+                    </button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MENU GRID -->
+<section id="menu-section" class="bg-black px-6 pb-32">
+    <div class="max-w-7xl mx-auto">
+        @if($menus->isEmpty())
+            <div class="text-center py-20">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-800 mb-6">
+                    <i class="fas fa-utensils text-4xl text-gray-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-400 mb-2">Belum Ada Menu</h3>
+                <p class="text-gray-500">Menu akan segera tersedia</p>
+            </div>
         @endif
 
-
-
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
             @foreach ($menus as $menu)
-
                 <div
-                    class="group bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300 menu-card"
+                    class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30"
                     data-kategori-id="{{ $menu->kategori_id ?? 0 }}"
                 >
-
-                    {{-- IMAGE --}}
-                    <div class="relative overflow-hidden">
-
+                    <!-- IMAGE -->
+                    <div class="relative overflow-hidden h-56">
                         @if($menu->gambar)
-
                             <img
                                 src="{{ asset('storage/menu/' . $menu->gambar) }}"
                                 alt="{{ $menu->nama_menu }}"
-                                class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             >
-
                         @else
-
-                            <div class="w-full h-56 bg-gray-200 flex items-center justify-center">
-
-                                <i class="fas fa-utensils text-gray-500 text-3xl"></i>
-
+                            <div class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                <i class="fas fa-utensils text-gray-600 text-5xl"></i>
                             </div>
-
                         @endif
 
+                        <!-- Overlay on hover -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-
-                        {{-- CATEGORY --}}
-                        <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-
-                            <p class="text-xs uppercase tracking-[0.25em] text-white/80">
-
-                                {{ $menu->kategori->nama_kategori ?? 'Menu Pilihan' }}
-
-                            </p>
-
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
+                                {{ $menu->kategori->nama_kategori ?? 'Menu' }}
+                            </span>
                         </div>
 
-
-
-                        {{-- STATUS --}}
-                        <span class="absolute top-4 left-4 rounded-full bg-orange-500 text-white text-[11px] px-3 py-1 uppercase">
-
-                            {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
-
-                        </span>
-
+                        <!-- Availability Badge -->
+                        <div class="absolute top-4 right-4">
+                            @if($menu->is_available)
+                                <span class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1">
+                                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                    Tersedia
+                                </span>
+                            @else
+                                <span class="px-3 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
+                                    Habis
+                                </span>
+                            @endif
+                        </div>
                     </div>
 
-
-
-                    {{-- CONTENT --}}
+                    <!-- CONTENT -->
                     <div class="p-5">
-
-                        {{-- NAMA --}}
-                        <h3 class="font-semibold text-xl text-slate-900 mb-2">
-
+                        <h3 class="font-bold text-xl text-white mb-2 line-clamp-1 group-hover:text-orange-400 transition-colors">
                             {{ $menu->nama_menu }}
-
                         </h3>
 
-
-
-                        {{-- DESKRIPSI --}}
-                        <p class="text-sm text-slate-500 mb-4 leading-relaxed min-h-[48px]">
-
+                        <p class="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[40px]">
                             {{ $menu->deskripsi ?? 'Tidak ada deskripsi' }}
-
                         </p>
 
-
-
-                        {{-- HARGA --}}
+                        <!-- Price & Actions -->
                         <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-2xl font-bold text-orange-400">
+                                    Rp {{ number_format($menu->harga, 0, ',', '.') }}
+                                </span>
+                            </div>
 
-                            <span class="text-orange-500 font-bold text-lg">
-
-                                Rp {{ number_format($menu->harga, 0, ',', '.') }}
-
-                            </span>
-
-                        </div>
-
-
-
-                        {{-- BUTTON --}}
-                        <div class="flex items-center gap-2 mt-4">
-
-                            {{-- PESAN --}}
-                            <form
-                                action="{{ route('cart.add', $menu->id) }}"
-                                method="POST"
-                                class="flex-1"
-                            >
-
-                                @csrf
-
+                            <div class="flex gap-2">
+                                <!-- Quick Add Button -->
                                 <button
-                                    type="submit"
-                                    class="w-full inline-flex items-center justify-center rounded-full bg-orange-500 text-white px-4 py-2 text-sm font-semibold hover:bg-orange-600 transition-all duration-300 hover:scale-[1.02]"
+                                    type="button"
+                                    onclick="quickAddToCart({{ $menu->id }})"
+                                    class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    {{ !$menu->is_available ? 'disabled' : '' }}
+                                    title="Tambah ke keranjang"
                                 >
-
-                                    <i class="fas fa-cart-shopping mr-2"></i>
-
-                                    Pesan
-
+                                    <i class="fas fa-plus"></i>
                                 </button>
 
-                            </form>
-
-
-
-                            {{-- DETAIL --}}
-                            <button
-                                onclick='openMenuDetail(@json($menu))'
-                                class="inline-flex items-center justify-center rounded-full bg-slate-900 text-white px-4 py-2 text-sm font-semibold hover:bg-slate-800 transition-all duration-300"
-                            >
-
-                                <i class="fas fa-eye mr-2"></i>
-
-                                Detail
-
-                            </button>
-
+                                <!-- Detail Button -->
+                                <button
+                                    onclick='openMenuDetail(@json($menu))'
+                                    class="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center transition-all hover:scale-110"
+                                    title="Lihat detail"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
-
             @endforeach
-
         </div>
 
+        <!-- No Results Message -->
+        <div id="noResults" class="hidden text-center py-20">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-800 mb-6">
+                <i class="fas fa-search text-4xl text-gray-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-400 mb-2">Menu Tidak Ditemukan</h3>
+            <p class="text-gray-500">Coba dengan kata kunci lain</p>
+        </div>
     </div>
-
 </section>
 
-
-
-{{-- MODAL DETAIL --}}
+<!-- MODAL DETAIL -->
 <div
     id="menuDetailModal"
-    class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+    class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
     onclick="closeMenuDetail(event)"
 >
-
     <div
-        class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        class="bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-gray-800 shadow-2xl"
         onclick="event.stopPropagation()"
     >
-
-        {{-- HEADER --}}
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-
-            <h2 class="text-2xl font-bold text-gray-800">
+        <!-- HEADER -->
+        <div class="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex items-center justify-between z-10">
+            <h2 class="text-2xl font-bold text-white">
+                <i class="fas fa-info-circle mr-2 text-orange-500"></i>
                 Detail Menu
             </h2>
-
             <button
                 onclick="closeMenuDetail()"
-                class="text-gray-500 hover:text-gray-700 text-2xl"
+                class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center transition-all"
             >
-                &times;
+                <i class="fas fa-times"></i>
             </button>
-
         </div>
 
-
-
-        {{-- BODY --}}
+        <!-- BODY -->
         <div class="p-6">
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-                {{-- IMAGE --}}
+                <!-- IMAGE -->
                 <div>
-
-                    <div class="bg-gray-200 rounded-xl overflow-hidden mb-4">
-
+                    <div class="rounded-2xl overflow-hidden mb-4">
                         <img
                             id="modalImage"
                             src=""
                             alt="Menu"
-                            class="w-full h-64 object-cover"
+                            class="w-full h-72 object-cover"
                         >
-
                     </div>
-
                 </div>
 
-
-
-                {{-- CONTENT --}}
-                <div>
-
+                <!-- CONTENT -->
+                <div class="text-white">
                     <div
                         id="modalCategory"
-                        class="inline-block bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold mb-4"
+                        class="inline-block bg-orange-500/20 text-orange-400 px-4 py-2 rounded-full text-sm font-semibold mb-4"
                     ></div>
-
-
 
                     <h1
                         id="modalMenuName"
-                        class="text-3xl font-bold text-gray-800 mb-3"
+                        class="text-3xl font-bold text-white mb-3"
                     ></h1>
-
-
 
                     <p
                         id="modalPrice"
-                        class="text-3xl font-bold text-orange-500 mb-4"
+                        class="text-3xl font-bold text-orange-400 mb-4"
                     ></p>
-
-
 
                     <div id="modalStatus" class="mb-4"></div>
 
-                    <hr class="my-4">
+                    <hr class="border-gray-700 my-4">
 
-
-
-                    {{-- DESKRIPSI --}}
+                    <!-- DESCRIPTION -->
                     <div class="mb-4">
-
-                        <h3 class="font-bold text-gray-800 mb-2">
+                        <h3 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-align-left mr-2 text-orange-500"></i>
                             Deskripsi
                         </h3>
-
                         <p
                             id="modalDescription"
-                            class="text-gray-600 leading-relaxed"
+                            class="text-gray-400 leading-relaxed"
                         ></p>
-
                     </div>
 
-
-
-                    {{-- BAHAN --}}
+                    <!-- BAHAN -->
                     <div id="bahanSection" class="mb-4 hidden">
-
-                        <h3 class="font-bold text-gray-800 mb-2">
+                        <h3 class="font-bold text-white mb-2 flex items-center">
+                            <i class="fas fa-leaf mr-2 text-green-500"></i>
                             Bahan Utama
                         </h3>
-
-                        <p id="modalBahan" class="text-gray-600"></p>
-
+                        <p id="modalBahan" class="text-gray-400"></p>
                     </div>
 
-
-
-                    {{-- INFO --}}
+                    <!-- INFO -->
                     <div id="infoTambahanSection" class="grid grid-cols-2 gap-3 mb-4">
-
-                        <div id="ukuranInfo" class="bg-gray-100 p-3 rounded-lg hidden">
-
-                            <p class="text-xs text-gray-600">
-                                Ukuran
-                            </p>
-
-                            <p id="modalUkuran" class="font-semibold text-gray-800"></p>
-
+                        <div id="ukuranInfo" class="bg-gray-800 p-3 rounded-xl hidden">
+                            <p class="text-xs text-gray-500">Ukuran</p>
+                            <p id="modalUkuran" class="font-semibold text-white"></p>
                         </div>
 
-
-
-                        <div id="durasiInfo" class="bg-gray-100 p-3 rounded-lg hidden">
-
-                            <p class="text-xs text-gray-600">
-                                Durasi Persiapan
-                            </p>
-
-                            <p id="modalDurasi" class="font-semibold text-gray-800"></p>
-
+                        <div id="durasiInfo" class="bg-gray-800 p-3 rounded-xl hidden">
+                            <p class="text-xs text-gray-500">Durasi Persiapan</p>
+                            <p id="modalDurasi" class="font-semibold text-white"></p>
                         </div>
-
                     </div>
 
-                    <hr class="my-4">
-
-
-
-                    {{-- BUTTON --}}
-                    <div class="flex gap-3">
-
-                        {{-- FORM CART --}}
-                        <form id="modalCartForm" method="POST" class="flex-1">
-
-                            @csrf
-
+                    <!-- QUANTITY SELECTOR -->
+                    <div class="mb-6">
+                        <label class="font-bold text-white mb-3 block">Quantity:</label>
+                        <div class="flex items-center gap-4">
                             <button
-                                type="submit"
-                                id="modalOrderBtn"
-                                class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition"
+                                type="button"
+                                onclick="decreaseModalQty()"
+                                class="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center text-xl font-bold transition-all"
                             >
-
-                                <i class="fas fa-shopping-cart mr-2"></i>
-
-                                Tambah ke Keranjang
-
+                                -
                             </button>
-
-                        </form>
-
-
-
-                        {{-- FAVORITE --}}
-                        <button
-                            class="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-xl font-bold hover:bg-orange-50 transition"
-                        >
-
-                            <i class="fas fa-heart"></i>
-
-                        </button>
-
+                            <input
+                                type="number"
+                                id="modalQtyInput"
+                                value="1"
+                                min="1"
+                                max="99"
+                                class="w-24 text-center bg-gray-800 border border-gray-700 rounded-xl py-3 text-white font-bold text-lg"
+                            >
+                            <button
+                                type="button"
+                                onclick="increaseModalQty()"
+                                class="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center text-xl font-bold transition-all"
+                            >
+                                +
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- ACTION BUTTON -->
+                    <button
+                        type="button"
+                        id="modalOrderBtn"
+                        onclick="addToCartFromModal()"
+                        class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 rounded-xl font-bold transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+                    >
+                        <i class="fas fa-shopping-cart"></i>
+                        Tambah ke Keranjang
+                    </button>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-
+<!-- FLOATING CHECKOUT BUTTON -->
+<div id="floatingCheckout" class="hidden fixed bottom-6 right-6 z-40">
+    <a
+        href="{{ route('checkout.index') }}"
+        class="flex items-center gap-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-orange-500/30 transition-all duration-300 hover:scale-105"
+    >
+        <div class="text-right">
+            <p class="text-xs opacity-80">Total</p>
+            <p id="floatingTotal" class="text-lg font-bold">Rp 0</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="font-semibold">Checkout</span>
+            <i class="fas fa-arrow-right"></i>
+        </div>
+    </a>
+</div>
 
 <script>
+// Store current modal menu ID
+let currentModalMenuId = null;
 
-function filterMenuByCategory(categoryId) {
+// Search functionality
+document.getElementById('searchInput')?.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const menuCards = document.querySelectorAll('.menu-card');
+    let hasResults = false;
 
-    document.querySelectorAll('.kategori-btn').forEach(btn => {
+    menuCards.forEach(card => {
+        const menuName = card.querySelector('h3').textContent.toLowerCase();
+        const menuDesc = card.querySelector('p').textContent.toLowerCase();
 
-        btn.classList.remove('text-white', 'bg-orange-500');
-
-        btn.classList.add('hover:text-white');
-
+        if (menuName.includes(searchTerm) || menuDesc.includes(searchTerm)) {
+            card.style.display = 'block';
+            hasResults = true;
+        } else {
+            card.style.display = 'none';
+        }
     });
 
-
-    const activeBtn = document.querySelector(`.kategori-btn[data-kategori-id="${categoryId}"]`);
-
-    if (activeBtn) {
-
-        activeBtn.classList.add('text-white', 'bg-orange-500');
-
-        activeBtn.classList.remove('hover:text-white');
-
+    // Show/hide no results message
+    const noResults = document.getElementById('noResults');
+    if (noResults) {
+        noResults.classList.toggle('hidden', hasResults || !searchTerm);
     }
+});
 
+function filterMenuByCategory(categoryId) {
+    // Update button styles
+    document.querySelectorAll('.kategori-btn').forEach(btn => {
+        if (parseInt(btn.dataset.kategoriId) === parseInt(categoryId)) {
+            btn.classList.remove('bg-gray-800', 'text-gray-300');
+            btn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+        } else {
+            btn.classList.add('bg-gray-800', 'text-gray-300');
+            btn.classList.remove('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+        }
+    });
 
     const menuCards = document.querySelectorAll('.menu-card');
 
-
     menuCards.forEach(card => {
-
         const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
-
         const filterCategoryId = parseInt(categoryId);
 
-
         if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-
             card.style.display = 'block';
-
+            card.style.animation = 'fadeIn 0.3s ease-in-out';
         } else {
-
             card.style.display = 'none';
-
         }
-
     });
-
 }
 
+// Quick add to cart (direct add without showing quantity selector)
+function quickAddToCart(menuId) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/cart/add/' + menuId;
 
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = '{{ csrf_token() }}';
+
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'hidden';
+    qtyInput.name = 'qty';
+    qtyInput.value = '1';
+
+    form.appendChild(csrfInput);
+    form.appendChild(qtyInput);
+    document.body.appendChild(form);
+    form.submit();
+}
 
 function openMenuDetail(menu) {
+    currentModalMenuId = menu.id;
+
+    // Reset modal quantity
+    document.getElementById('modalQtyInput').value = 1;
 
     // IMAGE
     const imagePath = menu.gambar
@@ -479,177 +436,243 @@ function openMenuDetail(menu) {
     document.getElementById('modalImage').src =
         imagePath || '{{ asset('images/placeholder.jpg') }}';
 
-
     // TITLE
     document.getElementById('modalMenuName').textContent =
         menu.nama_menu;
-
 
     // CATEGORY
     document.getElementById('modalCategory').innerHTML =
         menu.kategori
             ? `<span>${menu.kategori.nama_kategori}</span>`
-            : '';
-
+            : '<span>Menu Pilihan</span>';
 
     // PRICE
     const price = new Intl.NumberFormat(
         'id-ID',
         {
             style: 'currency',
-            currency: 'IDR'
+            currency: 'IDR',
+            minimumFractionDigits: 0
         }
     ).format(menu.harga);
 
     document.getElementById('modalPrice').textContent = price;
 
-
     // STATUS
     document.getElementById('modalStatus').innerHTML = menu.is_available
-
         ? `
             <div class="flex items-center gap-2">
-
-                <span class="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
-
-                <span class="text-green-700 font-semibold">
-                    Tersedia
-                </span>
-
+                <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-green-400 font-semibold">Tersedia</span>
             </div>
         `
-
         : `
             <div class="flex items-center gap-2">
-
                 <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
-
-                <span class="text-red-700 font-semibold">
-                    Tidak Tersedia
-                </span>
-
+                <span class="text-red-400 font-semibold">Tidak Tersedia</span>
             </div>
         `;
-
 
     // DESCRIPTION
     document.getElementById('modalDescription').textContent =
         menu.deskripsi || 'Tidak ada deskripsi';
 
-
     // BAHAN
     if (menu.bahan) {
-
         document.getElementById('modalBahan').textContent = menu.bahan;
-
         document.getElementById('bahanSection').classList.remove('hidden');
-
     } else {
-
         document.getElementById('bahanSection').classList.add('hidden');
-
     }
-
 
     // UKURAN
     if (menu.ukuran) {
-
         document.getElementById('modalUkuran').textContent = menu.ukuran;
-
         document.getElementById('ukuranInfo').classList.remove('hidden');
-
     } else {
-
         document.getElementById('ukuranInfo').classList.add('hidden');
-
     }
-
 
     // DURASI
     if (menu.durasi_persiapan) {
-
         document.getElementById('modalDurasi').textContent =
             `${menu.durasi_persiapan} menit`;
-
         document.getElementById('durasiInfo').classList.remove('hidden');
-
     } else {
-
         document.getElementById('durasiInfo').classList.add('hidden');
-
     }
-
 
     // BUTTON
     const orderBtn = document.getElementById('modalOrderBtn');
 
     if (!menu.is_available) {
-
         orderBtn.disabled = true;
-
         orderBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
     } else {
-
         orderBtn.disabled = false;
-
         orderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-
     }
-
-
-    // ACTION CART
-    document.getElementById('modalCartForm').action =
-        `/cart/add/${menu.id}`;
-
 
     // OPEN MODAL
     document.getElementById('menuDetailModal').classList.remove('hidden');
-
     document.body.style.overflow = 'hidden';
-
 }
 
+// Modal quantity controls
+function increaseModalQty() {
+    const input = document.getElementById('modalQtyInput');
+    let value = parseInt(input.value) || 1;
+    if (value < 99) {
+        input.value = value + 1;
+    }
+}
 
+function decreaseModalQty() {
+    const input = document.getElementById('modalQtyInput');
+    let value = parseInt(input.value) || 1;
+    if (value > 1) {
+        input.value = value - 1;
+    }
+}
+
+// Add to cart from modal
+function addToCartFromModal() {
+    if (!currentModalMenuId) return;
+
+    const qty = document.getElementById('modalQtyInput').value;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/cart/add/' + currentModalMenuId;
+
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = '{{ csrf_token() }}';
+
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'hidden';
+    qtyInput.name = 'qty';
+    qtyInput.value = qty;
+
+    form.appendChild(csrfInput);
+    form.appendChild(qtyInput);
+    document.body.appendChild(form);
+    form.submit();
+}
 
 function closeMenuDetail(event) {
-
     if (event && event.target.id !== 'menuDetailModal') return;
 
     document.getElementById('menuDetailModal').classList.add('hidden');
-
     document.body.style.overflow = 'auto';
 
+    currentModalMenuId = null;
 }
 
-
-
 document.addEventListener('keydown', function(event) {
-
     if (event.key === 'Escape') {
-
         closeMenuDetail();
-
     }
-
 });
 
+// Floating checkout button
+function updateFloatingCheckout() {
+    fetch('{{ route("cart.count") }}')
+        .then(response => response.json())
+        .then(data => {
+            const floatingCheckout = document.getElementById('floatingCheckout');
+            const floatingTotal = document.getElementById('floatingTotal');
 
+            if (data.count > 0) {
+                floatingCheckout.classList.remove('hidden');
+                floatingTotal.textContent = data.total_formatted;
+            } else {
+                floatingCheckout.classList.add('hidden');
+            }
+        })
+        .catch(() => {
+            document.getElementById('floatingCheckout').classList.add('hidden');
+        });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-
+    // Set initial active category button
     const firstBtn = document.querySelector('.kategori-btn');
-
     if (firstBtn) {
-
-        firstBtn.classList.add('text-white', 'bg-orange-500');
-
-        firstBtn.classList.remove('hover:text-white');
-
+        firstBtn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+        firstBtn.classList.remove('bg-gray-800', 'text-gray-300');
     }
 
+    // Initialize floating checkout
+    updateFloatingCheckout();
 });
 
+// Re-check floating checkout when page regains focus
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        updateFloatingCheckout();
+    }
+});
+
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
 </script>
+
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;
+}
+</style>
 
 @endsection

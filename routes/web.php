@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriMenuController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\OrderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -92,6 +94,37 @@ Route::post('/cart/add/{id}', [CartController::class, 'add'])
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
     ->name('cart.remove');
 
+Route::post('/cart/increment/{id}', [CartController::class, 'increment'])
+    ->name('cart.increment');
+
+Route::post('/cart/decrement/{id}', [CartController::class, 'decrement'])
+    ->name('cart.decrement');
+
+Route::post('/cart/update/{id}', [CartController::class, 'update'])
+    ->name('cart.update');
+
+Route::post('/cart/clear', [CartController::class, 'clear'])
+    ->name('cart.clear');
+
+Route::get('/cart/count', [CartController::class, 'count'])
+    ->name('cart.count');
+
+
+/*
+|--------------------------------------------------------------------------
+| CHECKOUT
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/checkout', [CheckoutController::class, 'index'])
+    ->name('checkout.index');
+
+Route::post('/checkout', [CheckoutController::class, 'store'])
+    ->name('checkout.store');
+
+Route::get('/checkout/success/{kodeOrder}', [CheckoutController::class, 'success'])
+    ->name('checkout.success');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -168,6 +201,31 @@ Route::middleware(['auth', 'admin'])
             return view('admin.dashboard');
 
         })->name('dashboard');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ORDER MANAGEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/orders/stats', [OrderController::class, 'stats'])
+            ->name('orders.stats');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+
+        Route::patch('/orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])
+            ->name('orders.updatePaymentStatus');
+
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
+            ->name('orders.destroy');
 
 
         /*
