@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+
+  app:
+    image: sihiy1/sasimga-jember:latest
+
+    deploy:
+      replicas: 2
+
+    networks:
+      - laravel
+
+  nginx:
+    image: nginx:latest
+
+    ports:
+      - "80:80"
+
+    deploy:
+      replicas: 1
+
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: overlay
