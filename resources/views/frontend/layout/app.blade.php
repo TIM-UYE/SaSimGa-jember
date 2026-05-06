@@ -18,8 +18,6 @@
 
     @include('sweetalert::alert')
 
-    @include('sweetalert::alert')
-
     @include('frontend.sections.navbar')
 
     <main>
