@@ -1,5 +1,61 @@
 <section id="reservasi" class="relative bg-zinc-950 py-24 overflow-hidden">
 
+    {{-- SUCCESS POPUP --}}
+    @if(session('success'))
+    <div id="successPopup" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        {{-- Overlay --}}
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSuccessPopup()"></div>
+        {{-- Modal --}}
+        <div class="relative bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl shadow-black/50 max-w-md w-full p-8 text-center animate-fade-in-up">
+            {{-- Close button --}}
+            <button onclick="closeSuccessPopup()" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            {{-- Success icon --}}
+            <div class="mx-auto mb-6 h-20 w-20 rounded-full bg-linear-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+
+            {{-- Text --}}
+            <h3 class="text-2xl font-bold text-white mb-2">Reservasi Berhasil! 🎉</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-2">
+                {{ session('success') }}
+            </p>
+            <p class="text-zinc-500 text-xs">
+                Silakan cek WhatsApp Anda untuk detail reservasi.
+            </p>
+
+            {{-- Button --}}
+            <button onclick="closeSuccessPopup()"
+                    class="mt-6 w-full rounded-xl bg-linear-to-r from-orange-500 to-amber-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0">
+                Tutup
+            </button>
+
+            {{-- Decorative dots --}}
+            <div class="flex justify-center gap-1.5 mt-4">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/50"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/30"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/10"></span>
+            </div>
+        </div>
+    </div>
+    <script>
+        function closeSuccessPopup() {
+            document.getElementById('successPopup').style.display = 'none';
+        }
+        // Auto close after 10 seconds
+        setTimeout(() => {
+            const popup = document.getElementById('successPopup');
+            if (popup) {
+                popup.style.transition = 'opacity 0.5s';
+                popup.style.opacity = '0';
+                setTimeout(() => popup.style.display = 'none', 500);
+            }
+        }, 10000);
+    </script>
+    @endif
+
     {{-- Background Effects --}}
     <div class="absolute inset-0">
         <div class="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-[128px]"></div>
