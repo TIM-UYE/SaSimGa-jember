@@ -1,191 +1,210 @@
-<footer class="bg-[var(--color-primary)] text-black py-16">
+<footer class="relative bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 overflow-hidden">
 
-    <div class="container-main grid md:grid-cols-4 gap-10">
+    {{-- BACKGROUND GLOW --}}
+    <div class="absolute inset-0 opacity-20">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-amber-300 rounded-full blur-3xl"></div>
+    </div>
 
-        {{-- BRAND --}}
-        <div>
+    <div class="relative z-10 container-main py-24">
 
-            {{-- DOT --}}
-            <div class="flex gap-3 mb-4">
+        {{-- TOP --}}
+        <div
+            class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 lg:p-12 shadow-2xl">
 
-                <div class="w-3 h-3 bg-black rounded-full"></div>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
+            {{-- BRAND --}}
+            <div>
+
+                {{-- BADGE --}}
+                <span
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 text-white text-xs font-medium tracking-[0.2em] uppercase ring-1 ring-white/10 mb-6">
+
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+
+                    Sate Simpang Tiga
+
+                </span>
+
+                {{-- TITLE --}}
+                <h2 class="text-3xl font-bold text-white leading-tight mb-5">
+
+                    Cita Rasa Autentik
+                    <span class="block text-black">
+                        Khas Indonesia
+                    </span>
+
+                </h2>
+
+                {{-- DESC --}}
+                <p class="text-black/80 leading-relaxed text-sm max-w-sm">
+
+                    Menghadirkan sate khas Indonesia dengan bahan segar,
+                    bumbu autentik, dan pengalaman makan yang hangat
+                    serta berkesan.
+
+                </p>
 
             </div>
 
-            <p class="text-sm text-gray-900">
-                Rumah Makan
+            {{-- GOOGLE MAPS --}}
+            <div>
+
+                <h3 class="text-xl font-bold text-white mb-5">
+                    Lokasi Kami
+                </h3>
+
+                <div class="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.1226353399134!2d113.64975941055611!3d-8.190399582096555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd6915b16ade4f7%3A0x67dfee97e6b4020e!2sSate%20Simpang%20Tiga%20Mangli%20Jember!5e0!3m2!1sid!2sid!4v1778102290206!5m2!1sid!2sid"
+                        width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+
+                </div>
+
+            </div>
+
+            {{-- INFORMATION --}}
+            <div>
+
+                <h3 class="text-xl font-bold text-white mb-5">
+                    Information
+                </h3>
+
+                <ul class="space-y-4 text-sm">
+
+                    <li>
+                        <a href="{{ route('frontend.faq') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
+
+                            FAQ'S
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('frontend.about') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
+
+                            About
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('frontend.privacy') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
+
+                            Privacy Policy
+
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('frontend.terms') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
+
+                            Terms & Conditions
+
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            {{-- CONTACT --}}
+            <div>
+
+                <h3 class="text-xl font-bold text-white mb-5">
+                    Contact Us
+                </h3>
+
+                <div class="space-y-5 text-sm">
+
+                    {{-- ADDRESS --}}
+                    <div class="flex gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+
+                            <i class="fas fa-map-marker-alt text-white"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-black/80 leading-relaxed">
+                                Jln. Jendral Sudirman Nomor 12 Plumpungrejo
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {{-- PHONE --}}
+                    <div class="flex gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+
+                            <i class="fas fa-phone text-white"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-black/80">
+                                +62 812-3456-7890
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {{-- EMAIL --}}
+                    <div class="flex gap-3">
+
+                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+
+                            <i class="fas fa-envelope text-white"></i>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-black/80">
+                                satesimpangtiga@gmail.com
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- BOTTOM --}}
+        <div class="mt-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-black/70">
+
+            <p>
+                © 2025 Sate Simpang Tiga. All Rights Reserved.
             </p>
 
-            <h2 class="text-2xl font-bold mt-1">
-                Sate Simpangtiga
-            </h2>
+            <div class="flex items-center gap-5">
 
-            <p class="text-sm mt-4 leading-relaxed max-w-xs text-gray-900">
-                Menawarkan beragam masakan yang mewakili cita rasa dan budaya kuliner Blitar,
-                restoran ini merupakan destinasi kuliner yang menarik bagi pecinta masakan tradisional Indonesia.
-            </p>
+                <a href="#" class="hover:text-white transition">
+                    Instagram
+                </a>
 
-        </div>
+                <a href="#" class="hover:text-white transition">
+                    TikTok
+                </a>
 
-
-        {{-- QUICK LINK --}}
-        <div>
-
-            <h3 class="font-semibold mb-4 text-lg">
-                Quick Link
-            </h3>
-
-            <ul class="space-y-3 text-sm">
-
-                <li>
-
-                    <a
-                        href="{{ route('frontend.home') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Home
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a
-                        href="{{ route('frontend.menu') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Menu
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a
-                        href="{{ route('frontend.about') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        About
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a
-                        href="{{ route('frontend.reservasi') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Reservasi
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        {{-- INFORMATION --}}
-        <div>
-
-            <h3 class="font-semibold mb-4 text-lg">
-                Information
-            </h3>
-
-            <ul class="space-y-3 text-sm">
-
-                {{-- FAQ --}}
-                <li>
-
-                    <a
-                        href="{{ route('frontend.faq') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        FAQ'S
-                    </a>
-
-                </li>
-
-
-                {{-- ABOUT --}}
-                <li>
-
-                    <a
-                        href="{{ route('frontend.about') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        About
-                    </a>
-
-                </li>
-
-
-                {{-- PRIVACY --}}
-                <li>
-
-                    <a
-                        href="{{ route('frontend.privacy') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Privacy Policy
-                    </a>
-
-                </li>
-
-
-                {{-- TERMS --}}
-                <li>
-
-                    <a
-                        href="{{ route('frontend.terms') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Terms & Conditions
-                    </a>
-
-                </li>
-
-
-                {{-- SUPPORT --}}
-                <li>
-
-                    <a
-                        href="{{ route('frontend.support') }}"
-                        class="hover:text-white transition duration-300"
-                    >
-                        Support
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </div>
-
-
-        {{-- CONTACT --}}
-        <div>
-
-            <h3 class="font-semibold mb-4 text-lg">
-                Contact Us
-            </h3>
-
-            <div class="space-y-4 text-sm text-gray-900">
-
-                <p class="leading-relaxed">
-                    Jln. Jendral Sudirman Nomor 12 Plumpungrejo
-                </p>
-
-                <p>
-                    📞 +62 812-3456-7890
-                </p>
-
-                <p>
-                    ✉️ satesimpangtiga@gmail.com
-                </p>
+                <a href="#" class="hover:text-white transition">
+                    WhatsApp
+                </a>
 
             </div>
 

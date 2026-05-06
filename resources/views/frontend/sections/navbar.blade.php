@@ -32,6 +32,13 @@
                 </a>
 
                 <a
+                    href="{{ route('frontend.about') }}"
+                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
+                >
+                    About
+                </a>
+
+                <a
                     href="{{ route('frontend.menu') }}"
                     class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
                 >
@@ -43,13 +50,6 @@
                     class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
                 >
                     Reservasi
-                </a>
-
-                <a
-                    href="{{ route('frontend.about') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300"
-                >
-                    About
                 </a>
 
                 @auth
