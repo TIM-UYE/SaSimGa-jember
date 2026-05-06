@@ -2,12 +2,14 @@
 
     {{-- Background kanan --}}
     <div class="absolute top-0 right-0 w-1/2 h-full">
-        <img src="{{ asset('images/hero/hero.png') }}"
-             class="w-full h-full object-cover">
+        <img
+            src="{{ asset('images/hero/hero.png') }}"
+            class="w-full h-full object-cover"
+        >
     </div>
 
 
-    {{-- Content --}}
+    {{-- CONTENT --}}
     <div class="relative z-20 container-main flex items-center min-h-screen">
 
         <div class="max-w-xl reveal-scale">
@@ -21,31 +23,48 @@
             </h1>
 
             <p class="text-gray-400 mt-2 text-sm leading-relaxed reveal delay-300">
-                Sate Simpang Tiga menghadirkan sate khas Indonesia dengan bahan segar dan bumbu autentik. Dibakar dengan arang untuk aroma khas, kami menyajikan rasa terbaik untuk pengalaman makan yang hangat dan berkesan.
+                Sate Simpang Tiga menghadirkan sate khas Indonesia dengan bahan segar dan bumbu autentik.
+                Dibakar dengan arang untuk aroma khas, kami menyajikan rasa terbaik untuk pengalaman
+                makan yang hangat dan berkesan.
             </p>
 
-            <div class="mt-6 flex gap-4 reveal delay-500">
-                <button class="btn-primary">
-                    Pesan Sekarang
-                </button>
 
-                <button class="btn-outline">
+            {{-- BUTTON --}}
+            <div class="mt-6 flex gap-4 reveal delay-500">
+
+                {{-- MENU --}}
+                <a href="{{ route('frontend.menu') }}"
+                   class="btn-primary inline-flex items-center justify-center">
+                    Pesan Sekarang
+                </a>
+
+
+                {{-- RESERVASI --}}
+                <a href="{{ route('frontend.reservasi') }}"
+                   class="btn-outline inline-flex items-center justify-center">
                     Reservasi Sekarang
-                </button>
+                </a>
+
             </div>
 
         </div>
 
     </div>
 
-    {{-- Gambar utama (piring sate) --}}
+
+    {{-- GAMBAR UTAMA --}}
     <div class="absolute right-[15%] top-1/2 -translate-y-1/2 z-30 w-[380px] md:w-[500px]">
-        <img src="{{ asset('images/hero/sate.png') }}"
-        class="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] reveal-scale ">
+
+        <img
+            src="{{ asset('images/hero/sate.png') }}"
+            class="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] reveal-scale"
+        >
+
     </div>
 
-    <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-black z-40">
 
+    {{-- GRADIENT BOTTOM --}}
+    <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-black z-40">
     </div>
 
 </section>

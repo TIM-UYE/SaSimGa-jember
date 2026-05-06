@@ -5,21 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Reservasi;
 use App\Notifications\ReservasiStatusNotification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ReservasiController extends Controller
 {
     /**
-     * Display a listing of the resource for admin.
+     * =========================
+     * FRONTEND RESERVASI PAGE
+     * =========================
+     */
+    public function frontend()
+    {
+        return view('frontend.reservasi.index');
+    }
+
+    /**
+     * =========================
+     * ADMIN RESERVASI LIST
+     * =========================
      */
     public function index()
     {
         $reservasis = Reservasi::orderBy('created_at', 'desc')->get();
+
         return view('admin.reservasi.index', compact('reservasis'));
     }
 
     /**
-     * Store a newly created resource in storage (from frontend).
+     * =========================
+     * STORE RESERVASI
+     * =========================
      */
     public function store(Request $request)
     {
@@ -48,19 +63,26 @@ class ReservasiController extends Controller
             'status' => 'pending',
         ]);
 
-        // Send WhatsApp notification for pending status
+        /**
+         * SEND WHATSAPP NOTIFICATION
+         */
         try {
             $reservasi->notify(new ReservasiStatusNotification($reservasi));
         } catch (\Exception $e) {
-            // Log error but don't break the flow
-            \Illuminate\Support\Facades\Log::error('Failed to send WA pending: ' . $e->getMessage());
+
+            Log::error('Failed to send WhatsApp notification: ' . $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'Reservasi berhasil dikirim! Silakan cek WhatsApp Anda untuk detail reservasi.');
+        return redirect()->back()->with(
+            'success',
+            'Reservasi berhasil dikirim! Silakan cek WhatsApp Anda untuk detail reservasi.'
+        );
     }
 
     /**
-     * Update the status of a reservation and send WhatsApp notification.
+     * =========================
+     * UPDATE STATUS RESERVASI
+     * =========================
      */
     public function updateStatus(Request $request, $id)
     {
@@ -69,22 +91,35 @@ class ReservasiController extends Controller
         ]);
 
         $reservasi = Reservasi::findOrFail($id);
-        $oldStatus = $reservasi->status;
+
         $reservasi->update([
             'status' => $request->status,
         ]);
 
-        return redirect()->route('admin.reservasi.index')->with('success', 'Status reservasi berhasil diperbarui. Notifikasi WhatsApp telah dikirim.');
+        return redirect()
+            ->route('admin.reservasi.index')
+            ->with(
+                'success',
+                'Status reservasi berhasil diperbarui. Notifikasi WhatsApp telah dikirim.'
+            );
     }
 
     /**
-     * Remove the specified resource from storage.
+     * =========================
+     * DELETE RESERVASI
+     * =========================
      */
     public function destroy($id)
     {
         $reservasi = Reservasi::findOrFail($id);
+
         $reservasi->delete();
 
-        return redirect()->route('admin.reservasi.index')->with('success', 'Reservasi berhasil dihapus.');
+        return redirect()
+            ->route('admin.reservasi.index')
+            ->with(
+                'success',
+                'Reservasi berhasil dihapus.'
+            );
     }
 }
