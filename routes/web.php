@@ -32,6 +32,40 @@ Route::get('/about', function () {
 
 /*
 |--------------------------------------------------------------------------
+| STATIC PAGES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/faq', function () {
+
+    return view('frontend.sections.faq');
+
+})->name('frontend.faq');
+
+
+Route::get('/privacy-policy', function () {
+
+    return view('frontend.sections.privacy');
+
+})->name('frontend.privacy');
+
+
+Route::get('/terms-conditions', function () {
+
+    return view('frontend.sections.terms');
+
+})->name('frontend.terms');
+
+
+Route::get('/support', function () {
+
+    return view('frontend.sections.support');
+
+})->name('frontend.support');
+
+
+/*
+|--------------------------------------------------------------------------
 | RESERVASI
 |--------------------------------------------------------------------------
 */
@@ -66,7 +100,7 @@ Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
 */
 
 // Redirect login lama
-Route::get('/login', function () {
+Route::get('/login-redirect', function () {
 
     return redirect()->route('login');
 
