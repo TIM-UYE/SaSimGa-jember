@@ -50,23 +50,9 @@
         {{-- GRID MENU --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse($menus as $menu)
-<<<<<<< Updated upstream
                 <div class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30 reveal"
                      style="--delay: {{ $loop->index * 0.1 }}s"
                      data-kategori-id="{{ $menu->kategori_id }}">
-=======
-            
-            <div class="bg-white rounded-xl overflow-hidden shadow-lg 
-            hover:shadow-[0_10px_30px_rgba(235,129,50,0.3)] 
-            transition transform hover:scale-105 hover:-translate-y-2 
-            menu-card reveal
-
-            {{ $loop->index >= 4 ? 'hidden md:block' : '' }}
-            {{ $loop->index >= 8 ? 'md:hidden extra-menu' : '' }}"
-            
-            style="--delay: {{ $loop->index * 0.1 }}s"
-            data-kategori-id="{{ $menu->kategori_id }}">
->>>>>>> Stashed changes
 
                     <!-- IMAGE -->
                     <div class="relative overflow-hidden h-56">
@@ -157,20 +143,6 @@
                 </div>
             @endforelse
         </div>
-<<<<<<< Updated upstream
-=======
-
-        @if($menus->count() > 8)
-        <div class="text-center mt-10 reveal delay-400">
-            <a href="{{ route('frontend.menu') }}"
-   class="inline-block text-[var(--color-primary)] font-semibold hover:underline transition">
-    Lihat Selengkapnya
-</a>
-
-</div>
-@endif
-
->>>>>>> Stashed changes
     </div>
 
     {{-- SHAPE BAWAH --}}
