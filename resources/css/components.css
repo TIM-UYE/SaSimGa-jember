@@ -1,0 +1,40 @@
+@layer components {
+
+    .container-main {
+        @apply max-w-7xl mx-auto px-6;
+    }
+
+    .btn-primary {
+        @apply bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition hover:bg-orange-600;
+    }
+
+    .btn-outline {
+        @apply border border-orange-500 text-orange-500 px-6 py-3 rounded-lg transition hover:bg-orange-500 hover:text-white;
+    }
+
+    .title-main {
+        font-family: var(--font-title);
+        @apply text-4xl md:text-6xl leading-tight;
+    }
+
+    .subtitle {
+        @apply text-gray-400 text-sm;
+    }
+
+    .card {
+        @apply bg-white text-black rounded-2xl shadow-md p-4 hover:shadow-lg transition;
+    }
+
+    .nav-link {
+        @apply hover:text-orange-400 transition;
+    }
+
+    .section {
+        @apply py-20;
+    }
+
+    .input-style {
+    @apply w-full mt-2 px-4 py-3 bg-transparent border border-white/30 rounded-lg text-white focus:outline-none focus:border-[var(--color-primary)];
+}
+
+}

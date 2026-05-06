@@ -6,6 +6,77 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-primary: #eb8132;
+    --color-dark: #000000;
+    --color-light: #ffffff;
+    --color-muted: #9ca3af;
+
+    --font-body: 'Poppins', sans-serif;
+    --font-title: 'DM Serif Text', serif;
+
+    --font-sans: 'Poppins', sans-serif;
+
+    --radius-main: 16px;
+    --shadow-main: 0 10px 25px rgba(0,0,0,0.2);
 }
+
+@layer base {
+    body {
+        @apply bg-black text-white font-sans;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-title);
+    }
+
+    p {
+        @apply text-gray-400;
+    }
+}
+
+/* ========================= */
+/* 🔥 SCROLL REVEAL */
+/* ========================= */
+
+.reveal,
+.reveal-left,
+.reveal-right,
+.reveal-scale {
+    opacity: 0;
+    transition: all 0.8s ease;
+    will-change: transform, opacity;
+}
+
+.reveal {
+    transform: translateY(40px);
+}
+
+.reveal-left {
+    transform: translateX(-60px);
+}
+
+.reveal-right {
+    transform: translateX(60px);
+}
+
+.reveal-scale {
+    transform: scale(0.9);
+}
+
+.reveal.active,
+.reveal-left.active,
+.reveal-right.active,
+.reveal-scale.active {
+    opacity: 1;
+    transform: translate(0) scale(1);
+}
+
+.reveal[style*="--delay"] {
+    transition-delay: var(--delay);
+}
+
+/* ========================= */
+/* COMPONENT */
+/* ========================= */
+
+@import './components.css';
