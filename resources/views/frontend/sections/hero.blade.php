@@ -1,21 +1,32 @@
-<section class="relative min-h-screen overflow-hidden bg-black">
+<section class="relative overflow-hidden bg-black min-h-screen">
 
-    {{-- Background kanan --}}
-    <div class="absolute top-0 right-0 w-1/2 h-full">
-        <img src="{{ asset('images/hero/hero.png') }}" class="w-full h-full object-cover">
+    {{-- BACKGROUND --}}
+    <div class="absolute inset-0">
+        <img src="{{ asset('images/hero/backgroundsate.png') }}" class="w-full h-full object-cover opacity-30 md:opacity-100">
+        {{-- DARK OVERLAY --}}
+        <div class="absolute inset-0 bg-black/90 md:bg-black/60"></div>
+        {{-- GRADIENT --}}
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+
     </div>
 
-
     {{-- CONTENT --}}
-    <div class="relative z-20 container-main flex items-center min-h-screen">
+    <div class="relative z-20 container-main min-h-screen grid lg:grid-cols-2 items-center gap-10 pt-32 pb-20">
 
-        <div class="max-w-xl reveal-scale">
+        {{-- LEFT --}}
+        <div class="max-w-2xl text-center lg:text-left order-2 lg:order-1">
 
-            <p class="text-gray-400 text-lg reveal delay-100">
-                Rumah Makan
-            </p>
-            <h1 class="text-3xl md:text-5xl xl:text-6xl font-bold leading-[0.95] tracking-tight reveal delay-200">
-                <span class=" text-white">
+            {{-- LITTLE TITLE --}}
+            <div class="reveal delay-100">
+                <p class="text-gray-400 text-lg reveal delay-100">
+                    Rumah Makan
+                </p>
+            </div>
+
+            {{-- TITLE --}}
+            <h1
+                class="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold leading-[1] tracking-tight reveal delay-200">
+                <span class="text-white">
                     SATE
                 </span>
                 <span
@@ -23,40 +34,53 @@
                     SIMPANG TIGA
                 </span>
             </h1>
-            <p class="text-zinc-400 mt-2 text-base md:text-lg leading-relaxed max-w-xl reveal delay-300">
-                Sate Simpang Tiga menghadirkan cita rasa sate khas Indonesia dengan bahan segar,
-                bumbu autentik, dan aroma bakaran arang yang menggugah selera.
+
+            {{-- DESCRIPTION --}}
+            <p
+                class="text-zinc-400 mt-5 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 reveal delay-300">
+
+                Sate Simpang Tiga menghadirkan cita rasa sate khas Indonesia
+                dengan bahan segar, bumbu autentik, dan aroma bakaran arang
+                yang menggugah selera.
+
             </p>
-            <div class="mt-6 flex gap-4 reveal delay-500">
+
+            {{-- BUTTON --}}
+            <div class="mt-8 flex flex-col sm:flex-row items-center lg:items-start gap-4 reveal delay-500">
 
                 {{-- MENU --}}
-                <a href="{{ route('frontend.menu') }}" class="btn-primary inline-flex items-center justify-center">
+                <a href="{{ route('frontend.menu') }}"
+                    class="btn-primary inline-flex items-center justify-center w-full sm:w-auto">
+
                     Pesan Sekarang
+
                 </a>
 
-
                 {{-- RESERVASI --}}
-                <a href="{{ route('frontend.reservasi') }}" class="btn-outline inline-flex items-center justify-center">
+                <a href="{{ route('frontend.reservasi') }}"
+                    class="btn-outline inline-flex items-center justify-center w-full sm:w-auto">
+
                     Reservasi Sekarang
+
                 </a>
 
             </div>
 
         </div>
 
+        {{-- RIGHT IMAGE --}}
+        <div class="relative flex justify-center lg:justify-end order-1 lg:order-2">
+
+            <img src="{{ asset('images/hero/sate.png') }}"
+                class="w-[260px] sm:w-[340px] md:w-[420px] xl:w-[520px]
+                drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)]
+                reveal-scale animate-float">
+
+        </div>
+
     </div>
 
-
-    {{-- GAMBAR UTAMA --}}
-    <div class="absolute right-[15%] top-1/2 -translate-y-1/2 z-30 w-[380px] md:w-[500px]">
-
-        <img src="{{ asset('images/hero/sate.png') }}"
-            class="w-full drop-shadow-[0_30px_60px_rgba(0,0,0,0.6)] reveal-scale">
-
-    </div>
-
-
-    {{-- GRADIENT BOTTOM --}}
+    {{-- BOTTOM SHADOW --}}
     <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-black z-40">
     </div>
 

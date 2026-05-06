@@ -134,7 +134,7 @@
                         <div>
 
                             <p class="text-black/80 leading-relaxed">
-                                Jln. Jendral Sudirman Nomor 12 Plumpungrejo
+                                Jl. Otto Iskandardinata No.2, Karang Miuwo, Mangli, Kec. Kaliwates, Kabupaten Jember, Jawa Timur 68131
                             </p>
 
                         </div>
@@ -189,7 +189,7 @@
         <div class="mt-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-black/70">
 
             <p>
-                © 2025 Sate Simpang Tiga. All Rights Reserved.
+                © 2026 Sate Simpang Tiga. All Rights Reserved.
             </p>
 
             <div class="flex items-center gap-5">
