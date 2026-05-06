@@ -94,22 +94,37 @@
                             @csrf
                             @method('PUT')
 
-                            <div>
+                            <div class="relative">
                                 <label for="current_password" class="block text-sm font-medium text-slate-700">Password Saat Ini</label>
-                                <input id="current_password" name="current_password" type="password" required
-                                    class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                <div class="relative mt-2">
+                                    <input id="current_password" name="current_password" type="password" required
+                                        class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                    <button type="button" onclick="togglePassword('current_password', 'eyeIconCurrent')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                                        <i id="eyeIconCurrent" class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div>
+                            <div class="relative">
                                 <label for="password" class="block text-sm font-medium text-slate-700">Password Baru</label>
-                                <input id="password" name="password" type="password" required
-                                    class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                <div class="relative mt-2">
+                                    <input id="password" name="password" type="password" required
+                                        class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                    <button type="button" onclick="togglePassword('password', 'eyeIconNew')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                                        <i id="eyeIconNew" class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div>
+                            <div class="relative">
                                 <label for="password_confirmation" class="block text-sm font-medium text-slate-700">Konfirmasi Password Baru</label>
-                                <input id="password_confirmation" name="password_confirmation" type="password" required
-                                    class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                <div class="relative mt-2">
+                                    <input id="password_confirmation" name="password_confirmation" type="password" required
+                                        class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-slate-900 outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-200" />
+                                    <button type="button" onclick="togglePassword('password_confirmation', 'eyeIconConfirm')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                                        <i id="eyeIconConfirm" class="fa-solid fa-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition">Ubah Password</button>
@@ -127,6 +142,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
 </body>
 
 </html>
