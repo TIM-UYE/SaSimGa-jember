@@ -50,7 +50,10 @@
         {{-- GRID MENU --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse($menus as $menu)
-                <div class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30 reveal"
+                <div class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30 reveal
+                {{ $loop->index >= 4 ? 'hidden md:block' : '' }}
+{{ $loop->index >= 8 ? 'md:hidden extra-menu' : '' }}"
+ 
                      style="--delay: {{ $loop->index * 0.1 }}s"
                      data-kategori-id="{{ $menu->kategori_id }}">
 
@@ -143,6 +146,23 @@
                 </div>
             @endforelse
         </div>
+         @if($menus->count() > 8)
+
+<div class="text-center mt-12 reveal">
+
+    <a href="{{ route('frontend.menu') }}"
+       class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold transition-all hover:scale-105 shadow-lg shadow-orange-500/20">
+
+        <span>Lihat Selengkapnya</span>
+
+        <i class="fas fa-arrow-right"></i>
+
+    </a>
+
+</div>
+
+@endif 
+
     </div>
 
     {{-- SHAPE BAWAH --}}
