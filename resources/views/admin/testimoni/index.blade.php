@@ -2,103 +2,170 @@
 
 @section('content')
 @if(session('success'))
-    <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-        {{ session('success') }}
+    <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
     </div>
 @endif
 @if(session('error'))
-    <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-        {{ session('error') }}
+    <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
     </div>
 @endif
 
-<div class="flex flex-wrap -mx-3 mb-4">
-    <div class="w-full px-3">
-        <div class="relative flex flex-col min-w-0 mb-4 wrap-break-words bg-white shadow-soft-xl rounded-2xl">
-            <div class="p-4 flex justify-between items-center">
-                <h5 class="font-bold">Testimoni</h5>
-                <div class="flex flex-wrap gap-2">
-                    <form action="{{ route('admin.testimoni.sync') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="btn-admin">
-                            <i class="fas fa-sync-alt mr-1"></i> Sync Google Maps
-                        </button>
-                    </form>
-                    <a href="{{ route('admin.testimoni.create') }}" class="btn-admin">
-                        <i class="fas fa-plus mr-1"></i> Tambah Testimoni
-                    </a>
-                </div>
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-800 md:text-3xl">Kelola Testimoni</h1>
+            <p class="mt-1 text-sm text-slate-500">Kelola ulasan pelanggan dari Google Maps maupun input manual.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <form action="{{ route('admin.testimoni.sync') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" class="btn-admin">
+                    <i class="fas fa-sync-alt mr-1"></i> Sync Google Maps
+                </button>
+            </form>
+            <a href="{{ route('admin.testimoni.create') }}" class="btn-admin">
+                <i class="fas fa-plus mr-1"></i> Tambah Testimoni
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+    <!-- Total Testimoni -->
+    <div class="group flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 hover:ring-blue-200">
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-400">
+                Total Testimoni
+            </p>
+            <p class="mt-1 text-3xl font-bold text-slate-800">
+                {{ $testimonis->count() }}
+            </p>
+        </div>
+
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-200/50">
+            <i class="fas fa-comments text-lg"></i>
+        </div>
+    </div>
+
+    <!-- Testimoni Aktif -->
+    <div class="group flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/10 hover:ring-emerald-200">
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-400">
+                Testimoni Aktif
+            </p>
+            <p class="mt-1 text-3xl font-bold text-slate-800">
+                {{ $testimonis->where('is_active', true)->count() }}
+            </p>
+        </div>
+
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50">
+            <i class="fas fa-check-circle text-lg"></i>
+        </div>
+    </div>
+
+    <!-- Sumber Google Maps -->
+    <div class="group flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10 hover:ring-red-200">
+        <div>
+            <p class="text-xs font-medium uppercase tracking-wider text-slate-400">
+                Sumber Google Maps
+            </p>
+            <p class="mt-1 text-3xl font-bold text-slate-800">
+                {{ $testimonis->where('source', 'google_maps')->count() }}
+            </p>
+        </div>
+
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white shadow-lg shadow-red-200/50">
+            <i class="fab fa-google text-lg"></i>
+        </div>
+    </div>
+
+</div>
+
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-comments text-slate-400"></i>
+                <span class="text-sm font-semibold text-slate-700">Daftar Testimoni</span>
+                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500"><i class="fas fa-database"></i>{{ $testimonis->count() }} Data</span>
             </div>
-            <div class="p-4 overflow-x-auto">
-                <table class="items-center w-full mb-0 align-top border-gray-200 text-gray-700">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Reviewer</th>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Rating</th>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Sumber</th>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Tanggal</th>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Status</th>
-                            <th class="px-6 py-3 text-left uppercase font-semibold text-xs">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($testimonis as $testimoni)
-                        <tr>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <div class="flex items-center gap-3">
-                                    @if($testimoni->profile_photo_url)
-                                        <img src="{{ $testimoni->profile_photo_url }}" alt="{{ $testimoni->author_name }}" class="w-10 h-10 rounded-full object-cover">
-                                    @else
-                                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    @endif
-                                    <div>
-                                        <h6 class="mb-0 text-sm leading-normal">{{ $testimoni->author_name }}</h6>
-                                        <p class="mb-0 text-xs text-gray-500">{{ Str::limit($testimoni->text, 60) }}</p>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[940px] text-left text-sm text-slate-600">
+                <thead>
+                    <tr class="bg-slate-50/80">
+                            <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Reviewer</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Rating</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Sumber</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tanggal</th>
+                            <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                            <th class="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($testimonis as $testimoni)
+                    <tr class="group transition-all duration-200 hover:bg-slate-50/60">
+                        <td class="px-6 py-4 align-middle">
+                            <div class="flex items-center gap-3">
+                                @if($testimoni->profile_photo_url)
+                                    <img src="{{ $testimoni->profile_photo_url }}" alt="{{ $testimoni->author_name }}" class="h-10 w-10 rounded-full object-cover ring-1 ring-slate-200">
+                                @else
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                                        <i class="fas fa-user"></i>
                                     </div>
+                                @endif
+                                <div>
+                                    <h6 class="mb-0 text-sm font-semibold leading-normal text-slate-700">{{ $testimoni->author_name }}</h6>
+                                    <p class="mb-0 text-xs text-slate-500">{{ Str::limit($testimoni->text, 70) }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 align-middle">
+                            <span class="text-yellow-500 text-sm">{{ str_repeat('★', max(1, min(5, $testimoni->rating))) }}</span>
+                            <span class="text-slate-500 text-xs">({{ $testimoni->rating }})</span>
+                        </td>
+                        <td class="px-6 py-4 align-middle">
+                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $testimoni->source === 'google_maps' ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-600' }}">
+                                {{ $testimoni->source === 'google_maps' ? 'Google Maps' : 'Manual' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 align-middle">
+                            {{ $testimoni->review_date ? $testimoni->review_date->format('d M Y') : '-' }}
+                        </td>
+                        <td class="px-6 py-4 align-middle">
+                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $testimoni->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }}">
+                                {{ $testimoni->is_active ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 align-middle">
+                            <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.testimoni.edit', $testimoni->id) }}" class="btn-admin-secondary">Edit</a>
+                            <form action="{{ route('admin.testimoni.destroy', $testimoni->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus testimoni ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-admin-danger">Hapus</button>
+                            </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-16 text-center">
+                                <div class="mx-auto max-w-sm text-slate-500">
+                                    <i class="fas fa-comment-dots mb-3 text-2xl text-slate-300"></i>
+                                    <p class="mb-1 font-semibold text-slate-600">Belum ada testimoni</p>
+                                    <p class="mb-0 text-sm">Tambahkan testimoni manual atau sinkronkan dari Google Maps.</p>
                                 </div>
                             </td>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <span class="text-yellow-500 text-sm">{{ str_repeat('★', max(1, min(5, $testimoni->rating))) }}</span>
-                                <span class="text-gray-500 text-xs">({{ $testimoni->rating }})</span>
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <span class="px-2 py-1 text-xs rounded-full {{ $testimoni->source === 'google_maps' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ $testimoni->source === 'google_maps' ? 'Google Maps' : 'Manual' }}
-                                </span>
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                {{ $testimoni->review_date ? $testimoni->review_date->format('d M Y') : '-' }}
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <span class="px-2 py-1 text-xs rounded-full {{ $testimoni->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ $testimoni->is_active ? 'Aktif' : 'Nonaktif' }}
-                                </span>
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                <a href="{{ route('admin.testimoni.edit', $testimoni->id) }}" class="btn-admin-secondary">Edit</a>
-                                <form action="{{ route('admin.testimoni.destroy', $testimoni->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Yakin ingin menghapus testimoni ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn-admin-danger">Hapus</button>
-                                </form>
-                            </td>
                         </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-gray-500">
-                                Belum ada testimoni. Silakan tambahkan testimoni atau lakukan sinkronisasi.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-            <div class="p-4">
-                {{ $testimonis->links() }}
-            </div>
+        <div class="px-6 py-4">
+            {{ $testimonis->links() }}
         </div>
     </div>
 </div>

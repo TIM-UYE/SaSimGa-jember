@@ -46,45 +46,7 @@
         {{-- RIGHT --}}
         <div class="flex items-center gap-4 mt-2 sm:mt-0">
 
-            {{-- CART --}}
-            <a
-                href="{{ route('cart.index') }}"
-                class="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-md hover:border-orange-500 hover:bg-orange-50 transition-all duration-300 hover:scale-105"
-            >
-
-                {{-- ICON --}}
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-slate-700"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-1 5h12m-9 0a1 1 0 102 0m6 0a1 1 0 102 0"
-                    />
-                </svg>
-
-                {{-- BADGE --}}
-                @php
-                    $cartCount = count(session('cart', []));
-                @endphp
-
-                @if($cartCount > 0)
-
-                    <span
-                        id="cartBadge"
-                        class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold shadow-lg shadow-orange-500/40 animate-pulse"
-                    >
-                        {{ $cartCount }}
-                    </span>
-
-                @endif
-
-            </a>
+          
 
 
             {{-- HIDE SIDEBAR BUTTON --}}

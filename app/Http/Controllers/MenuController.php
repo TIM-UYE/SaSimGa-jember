@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\KategoriMenu;
+use App\Models\MenuSpecial;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -21,6 +22,11 @@ class MenuController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $specials = MenuSpecial::with('items')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $kategoris = KategoriMenu::where('is_active', true)
             ->withCount(['menus' => function ($query) {
                 $query->where('is_available', true);
@@ -28,7 +34,7 @@ class MenuController extends Controller
             ->orderBy('nama_kategori')
             ->get();
 
-        return view('frontend.menu.index', compact('menus', 'kategoris'));
+        return view('frontend.menu.index', compact('menus', 'kategoris', 'specials'));
     }
 
     public function create()

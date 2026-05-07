@@ -6,6 +6,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriMenuController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuSpecialController;
+use App\Http\Controllers\MenuSpecialItemController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
@@ -227,6 +229,24 @@ Route::middleware(['auth', 'admin'])
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
             ->name('orders.destroy');
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | SPECIAL MENU CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('menu-specials', MenuSpecialController::class)
+            ->except(['show']);
+
+        Route::post('/menu-specials/{menu_special}/items', [MenuSpecialItemController::class, 'store'])
+            ->name('menu-specials.items.store');
+
+        Route::patch('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'update'])
+            ->name('menu-specials.items.update');
+
+        Route::delete('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'destroy'])
+            ->name('menu-specials.items.destroy');
 
         /*
         |--------------------------------------------------------------------------

@@ -82,7 +82,7 @@
     <!-- REGULAR MENU SECTION -->
     <section id="regularMenuSection" class="bg-black px-6 pb-32">
         <div class="max-w-7xl mx-auto mt-16">
-            
+
             @if ($menus->isEmpty())
                 <div class="text-center py-20">
                     <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-800 mb-6">
@@ -194,58 +194,39 @@
     <section id="specialMenuSection" class="bg-black px-6 pb-32 hidden">
         <div class="max-w-7xl mx-auto mt-16">
 
-            <!-- SPECIAL GRID -->
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            @if($specials->isEmpty())
+                <div class="rounded-3xl border border-orange-500 bg-orange-950/10 p-10 text-center text-orange-200">
+                    <p class="text-lg font-semibold">Belum ada menu specials aktif.</p>
+                    <p class="mt-2 text-sm text-orange-300">Tambah menu specials di panel admin untuk menampilkan paket spesial di halaman ini.</p>
+                </div>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    @foreach($specials as $special)
+                        <div onclick="openSpecialModal({{ $special->id }})"
+                            class="group relative overflow-hidden rounded-3xl h-[420px] cursor-pointer border border-gray-800 hover:border-orange-500/40 transition-all duration-500">
 
-                <!-- CARD -->
-                @for ($i = 1; $i <= 5; $i++)
-                    <div onclick="openSpecialModal()"
-                        class="group relative overflow-hidden rounded-3xl h-[420px] cursor-pointer border border-gray-800 hover:border-orange-500/40 transition-all duration-500">
+                            <img src="{{ $special->banner_image ? asset('storage/' . $special->banner_image) : asset('images/menu-special/tumpeng.jpg') }}"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
 
-                        <!-- IMAGE -->
-                        <img src="{{ asset('images/menu-special/tumpeng.jpg') }}"
-                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
 
-                        <!-- OVERLAY -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
-
-                        <!-- BADGE -->
-                        <div class="absolute top-5 left-5">
-                            <span
-                                class="px-4 py-2 rounded-full bg-orange-500 text-white text-xs font-bold shadow-lg shadow-orange-500/30">
-                                PRE ORDER
-                            </span>
-                        </div>
-
-                        <!-- CONTENT -->
-                        <div class="absolute bottom-0 left-0 p-8 w-full">
-
-                            <h3 class="text-3xl font-bold text-white mb-3">
-                                Tumpeng
-                            </h3>
-
-                            <p class="text-gray-300 mb-5">
-                                Cocok untuk syukuran, ulang tahun, gathering, dan acara spesial lainnya.
-                            </p>
-
-                            <div
-                                class="inline-flex items-center gap-3 text-orange-400 font-semibold group-hover:gap-5 transition-all">
-
-                                <span>Lihat Detail</span>
-
-                                <i class="fas fa-arrow-right"></i>
-
+                            <div class="absolute top-5 left-5">
+                                <span class="px-4 py-2 rounded-full bg-orange-500 text-white text-xs font-bold shadow-lg shadow-orange-500/30">SPECIAL</span>
                             </div>
 
+                            <div class="absolute bottom-0 left-0 p-8 w-full">
+                                <h3 class="text-3xl font-bold text-white mb-3">{{ $special->title }}</h3>
+                                <p class="text-gray-300 mb-5">{{ Str::limit($special->short_description, 120) }}</p>
+                                <div class="inline-flex items-center gap-3 text-orange-400 font-semibold group-hover:gap-5 transition-all">
+                                    <span>Lihat Detail</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
                         </div>
-
-                    </div>
-                @endfor
-
-            </div>
-
+                    @endforeach
+                </div>
+            @endif
         </div>
-
     </section>
 
     <!-- REGULAR MENU MODAL -->
@@ -357,94 +338,33 @@
     <div id="specialMenuModal" onclick="closeSpecialModal(event)"
         class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
 
-        <div
-            class="bg-gradient-to-b from-gray-900 to-black rounded-3xl w-full max-w-5xl border border-gray-800 overflow-hidden">
+        <div class="bg-gradient-to-b from-gray-900 to-black rounded-3xl w-full max-w-6xl border border-gray-800 overflow-hidden">
 
-            <!-- HEADER -->
-            <div
-                class="sticky top-0 z-20 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-
+            <div class="sticky top-0 z-20 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                        <i class="fas fa-star text-orange-500"></i>
-                        Detail Menu
-                    </h2>
-
-                    <p class="text-sm text-gray-400 mt-1">
-                        Pilih varian menu spesial yang tersedia
-                    </p>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3"><i class="fas fa-star text-orange-500"></i> Detail Menu Special</h2>
+                    <p class="text-sm text-gray-400 mt-1">Pilih varian paket special untuk melihat detail dan harga.</p>
                 </div>
-
-                <!-- CLOSE BUTTON -->
-                <button onclick="closeSpecialModal()"
-                    class="w-11 h-11 rounded-full bg-gray-800 hover:bg-red-500/80 text-white flex items-center justify-center transition-all hover:rotate-90">
-
-                    <i class="fas fa-times text-lg"></i>
-
-                </button>
-
+                <button onclick="closeSpecialModal()" class="w-11 h-11 rounded-full bg-gray-800 hover:bg-red-500/80 text-white flex items-center justify-center transition-all hover:rotate-90"><i class="fas fa-times text-lg"></i></button>
             </div>
 
-            <!-- BODY -->
             <div class="grid md:grid-cols-2">
-
-                <!-- LEFT -->
                 <div class="border-r border-gray-800 p-6">
-
-                    <h2 class="text-2xl font-bold text-white mb-6">
-                        Pilih Jenis Tumpeng
-                    </h2>
-
-                    <div class="space-y-4">
-
-                        <button onclick="selectSpecialItem('Mini')"
-                            class="special-item-btn w-full text-left bg-gray-800 hover:bg-orange-500 p-5 rounded-2xl transition-all text-white">
-                            Tumpeng Mini
-                        </button>
-
-                        <button onclick="selectSpecialItem('Medium')"
-                            class="special-item-btn w-full text-left bg-gray-800 hover:bg-orange-500 p-5 rounded-2xl transition-all text-white">
-                            Tumpeng Medium
-                        </button>
-
-                        <button onclick="selectSpecialItem('Premium')"
-                            class="special-item-btn w-full text-left bg-gray-800 hover:bg-orange-500 p-5 rounded-2xl transition-all text-white">
-                            Tumpeng Premium
-                        </button>
-
-                    </div>
-
+                    <h2 class="text-2xl font-bold text-white mb-6">Pilih Varian</h2>
+                    <div id="specialItemButtons" class="space-y-4"></div>
                 </div>
 
-                <!-- RIGHT -->
                 <div class="p-8 text-white">
-
-                    <img src="{{ asset('images/menu-special/tumpeng.jpg') }}"
-                        class="w-full h-64 object-cover rounded-2xl mb-6">
-
-                    <h3 id="specialTitle" class="text-3xl font-bold mb-3">
-                        Tumpeng Mini
-                    </h3>
-
-                    <p class="text-orange-400 text-2xl font-bold mb-5">
-                        Rp 350.000
-                    </p>
-
-                    <p class="text-gray-400 leading-relaxed mb-8">
-                        Paket tumpeng lengkap dengan lauk dan garnish premium.
-                    </p>
-
-                    <button
-                        class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02]">
-                        Pesan Sekarang
-                    </button>
-
+                    <div class="rounded-3xl overflow-hidden mb-6">
+                        <img id="specialImage" src="" alt="Special" class="w-full h-64 object-cover">
+                    </div>
+                    <h3 id="specialTitle" class="text-3xl font-bold mb-3"></h3>
+                    <p id="specialPrice" class="text-orange-400 text-2xl font-bold mb-5"></p>
+                    <p id="specialDescription" class="text-gray-400 leading-relaxed mb-8"></p>
+                    <button class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02]">Pesan Sekarang</button>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- FLOATING CHECKOUT BUTTON -->
@@ -780,29 +700,72 @@
             });
         }
 
-        function openSpecialModal() {
+        const specialData = [
+            @forelse($specials as $special)
+            {
+                id: {{ $special->id }},
+                title: {!! json_encode($special->title) !!},
+                description: {!! json_encode($special->short_description) !!},
+                banner_image: {!! json_encode($special->banner_image ? asset('storage/' . $special->banner_image) : asset('images/menu-special/tumpeng.jpg')) !!},
+                items: [
+                    @foreach($special->items as $item)
+                    {
+                        id: {{ $item->id }},
+                        name: {!! json_encode($item->name) !!},
+                        price: {!! json_encode(number_format($item->price, 0, ',', '.')) !!},
+                        raw_price: {{ $item->price }},
+                        description: {!! json_encode($item->description) !!},
+                        image: {!! json_encode($item->image ? asset('storage/' . $item->image) : asset('images/menu-special/tumpeng.jpg')) !!}
+                    }@if(!$loop->last),@endif
+                    @endforeach
+                ]
+            }@if(!$loop->last),@endif
+            @empty
+            @endforelse
+        ];
+
+        function openSpecialModal(id) {
+            const special = specialData.find(item => item.id === id);
+            if (!special) {
+                return;
+            }
+
+            const actions = document.getElementById('specialItemButtons');
+            actions.innerHTML = '';
+
+            special.items.forEach((item, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'special-item-btn w-full text-left bg-gray-800 hover:bg-orange-500 p-5 rounded-2xl transition-all text-white';
+                button.textContent = item.name;
+                button.addEventListener('click', () => selectSpecialItem(special, item));
+                actions.appendChild(button);
+            });
+
+            selectSpecialItem(special, special.items[0] || null);
             document.getElementById('specialMenuModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function closeSpecialModal() {
-            document.getElementById('specialMenuModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function selectSpecialItem(type) {
-
-            document.getElementById('specialTitle').textContent =
-                `Tumpeng ${type}`;
-        }
-
         function closeSpecialModal(event) {
-
             if (event && event.target.id !== 'specialMenuModal') return;
-
             document.getElementById('specialMenuModal').classList.add('hidden');
-
             document.body.style.overflow = 'auto';
+        }
+
+        function selectSpecialItem(special, item) {
+            if (!item) {
+                document.getElementById('specialTitle').textContent = special.title;
+                document.getElementById('specialPrice').textContent = 'Harga tidak tersedia';
+                document.getElementById('specialDescription').textContent = special.description || '';
+                document.getElementById('specialImage').src = special.banner_image;
+                return;
+            }
+
+            document.getElementById('specialTitle').textContent = item.name;
+            document.getElementById('specialPrice').textContent = `Rp ${item.price}`;
+            document.getElementById('specialDescription').textContent = item.description || special.description || '';
+            document.getElementById('specialImage').src = item.image || special.banner_image;
         }
     </script>
 
