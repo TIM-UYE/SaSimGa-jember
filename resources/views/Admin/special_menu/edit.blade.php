@@ -31,7 +31,7 @@
     </div>
 
     <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200/80">
-        <form action="{{ route('admin.menu-specials.update', $special) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.menu-specials.update', $special) }}" method="POST" enctype="multipart/form-data" id="specialEditForm">
             @csrf
             @method('PUT')
 
@@ -129,7 +129,7 @@
                         <td class="px-6 py-4 align-middle text-slate-600">{{ Str::limit($item->description, 80) }}</td>
                         <td class="px-6 py-4 align-middle text-right">
                             <div class="flex flex-wrap justify-end gap-2">
-                                <button type="button" class="btn-admin-secondary" onclick="openItemModal(@json($item))">Edit</button>
+                                <button type="button" class="btn-admin-secondary" onclick='openEditItemModal(@json($item))'>Edit</button>
                                 <form action="{{ route('admin.menu-specials.items.destroy', [$special, $item]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus varian ini?')">
                                     @csrf
                                     @method('DELETE')
@@ -155,6 +155,7 @@
     </div>
 </div>
 
+<!-- MODAL VARIAN EDIT/CREATE -->
 <div id="itemModal" class="fixed inset-0 z-50 hidden items-center justify-center overflow-y-auto bg-black/70 p-4">
     <div class="w-full max-w-3xl rounded-3xl bg-slate-950 shadow-2xl ring-1 ring-slate-800">
         <div class="flex items-center justify-between border-b border-slate-800 px-6 py-4">
@@ -165,9 +166,10 @@
             <button type="button" onclick="closeItemModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
         </div>
 
-        <form id="itemModalForm" action="{{ route('admin.menu-specials.items.store', $special) }}" method="POST" enctype="multipart/form-data" class="space-y-4 px-6 py-6">
-            @csrf
-            <input type="hidden" name="_method" id="itemFormMethod" value="POST">
+        <form id="itemModalForm" class="space-y-4 px-6 py-6" onsubmit="event.preventDefault(); submitVariant(event);">
+            <!-- Hidden fields for edit mode -->
+            <input type="hidden" id="edit_item_id" value="">
+            <input type="hidden" id="edit_existing_image" value="">
 
             <div class="grid gap-4 md:grid-cols-2">
                 <div>
@@ -213,45 +215,57 @@
 </div>
 
 <script>
-function openItemModal(item = null) {
-    const modal = document.getElementById('itemModal');
-    const title = document.getElementById('itemModalTitle');
-    const form = document.getElementById('itemModalForm');
-    const methodInput = document.getElementById('itemFormMethod');
+// Store action URLs for create and update
+const ITEM_STORE_URL = '{{ route("admin.menu-specials.items.store", $special) }}';
+const ITEM_UPDATE_URL_BASE = '{{ route("admin.menu-specials.items.update", [$special, 0]) }}'.replace('/0', '');
+
+function openItemModal() {
+    // Create mode - reset form
+    setModalCreateMode();
+    document.getElementById('itemModal').classList.remove('hidden');
+    document.getElementById('item_name').focus();
+}
+
+function openEditItemModal(item) {
+    // Edit mode - populate form with item data
+    document.getElementById('itemModalTitle').textContent = 'Edit Varian Menu';
+    document.getElementById('edit_item_id').value = item.id;
+    document.getElementById('edit_existing_image').value = item.image || '';
+
+    setFormValue('item_name', item.name ?? '');
+    setFormValue('item_price', item.price ?? '');
+    setFormValue('item_description', item.description ?? '');
+    document.getElementById('item_is_available').checked = !!item.is_available;
+    document.getElementById('item_image').value = '';
+
     const preview = document.getElementById('item-image-preview');
     const previewImg = document.getElementById('item-preview-img');
-
-    if (item) {
-        title.textContent = 'Edit Varian Menu';
-        form.action = `{{ route('admin.menu-specials.items.store', $special) }}`.replace('/items', `/items/${item.id}`);
-        methodInput.value = 'PATCH';
-        setFormValue('item_name', item.name ?? '');
-        setFormValue('item_price', item.price ?? '');
-        setFormValue('item_description', item.description ?? '');
-        document.getElementById('item_is_available').checked = !!item.is_available;
-        document.getElementById('item_image').value = '';
-        if (item.image) {
-            previewImg.src = `{{ asset('storage') }}/${item.image}`;
-            preview.classList.remove('hidden');
-        } else {
-            previewImg.src = '';
-            preview.classList.add('hidden');
-        }
+    if (item.image) {
+        previewImg.src = '{{ asset("storage") }}/' + item.image;
+        preview.classList.remove('hidden');
     } else {
-        title.textContent = 'Tambah Varian Menu';
-        form.action = '{{ route('admin.menu-specials.items.store', $special) }}';
-        methodInput.value = 'POST';
-        setFormValue('item_name', '');
-        setFormValue('item_price', '');
-        setFormValue('item_description', '');
-        document.getElementById('item_is_available').checked = true;
-        document.getElementById('item_image').value = '';
         previewImg.src = '';
         preview.classList.add('hidden');
     }
 
-    modal.classList.remove('hidden');
+    document.getElementById('itemModal').classList.remove('hidden');
     document.getElementById('item_name').focus();
+}
+
+function setModalCreateMode() {
+    document.getElementById('itemModalTitle').textContent = 'Tambah Varian Menu';
+    document.getElementById('edit_item_id').value = '';
+    document.getElementById('edit_existing_image').value = '';
+
+    setFormValue('item_name', '');
+    setFormValue('item_price', '');
+    setFormValue('item_description', '');
+    document.getElementById('item_is_available').checked = true;
+    document.getElementById('item_image').value = '';
+
+    const preview = document.getElementById('item-image-preview');
+    preview.classList.add('hidden');
+    document.getElementById('item-preview-img').src = '';
 }
 
 function closeItemModal() {
@@ -267,9 +281,7 @@ function setFormValue(id, value) {
 
 function previewItemImage(event) {
     const file = event.target.files[0];
-    if (!file) {
-        return;
-    }
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
         const preview = document.getElementById('item-image-preview');
@@ -282,9 +294,7 @@ function previewItemImage(event) {
 
 function previewBanner(event) {
     const file = event.target.files[0];
-    if (!file) {
-        return;
-    }
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
         const preview = document.getElementById('banner-preview');
@@ -293,6 +303,76 @@ function previewBanner(event) {
         preview.classList.remove('hidden');
     };
     reader.readAsDataURL(file);
+}
+
+function submitVariant(event) {
+    const editId = document.getElementById('edit_item_id').value;
+    const isEdit = editId !== '';
+
+    const name = document.getElementById('item_name').value.trim();
+    const price = document.getElementById('item_price').value;
+    const description = document.getElementById('item_description').value.trim();
+    const isAvailable = document.getElementById('item_is_available').checked;
+    const imageInput = document.getElementById('item_image');
+
+    if (!name || !price) {
+        alert('Nama dan harga wajib diisi');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('price', price);
+    formData.append('description', description || '');
+    formData.append('is_available', isAvailable ? '1' : '0');
+
+    if (imageInput.files.length > 0) {
+        formData.append('image', imageInput.files[0]);
+    }
+
+    // Determine URL and method
+    let url, method;
+    if (isEdit) {
+        url = ITEM_UPDATE_URL_BASE + '/' + editId;
+        method = 'PATCH';
+        formData.append('_method', 'PATCH');
+    } else {
+        url = ITEM_STORE_URL;
+        method = 'POST';
+    }
+
+    // Get CSRF token from main form
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+
+    fetch(url, {
+        method: 'POST', // Always POST, use _method for PATCH
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+        },
+        body: formData,
+    })
+    .then(function(response) {
+        if (response.redirected) {
+            window.location.href = response.url;
+            return;
+        }
+        if (response.ok) {
+            window.location.reload();
+            return;
+        }
+        return response.json().then(function(data) {
+            var errorMsg = data.message || 'Validation error';
+            if (data.errors) {
+                var firstKey = Object.keys(data.errors)[0];
+                if (firstKey) errorMsg = data.errors[firstKey][0];
+            }
+            throw new Error(errorMsg);
+        });
+    })
+    .catch(function(error) {
+        alert('Error: ' + error.message);
+    });
 }
 </script>
 @endsection

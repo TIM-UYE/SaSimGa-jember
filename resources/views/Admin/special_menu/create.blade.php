@@ -371,7 +371,7 @@
         document.body.style.overflow = 'auto';
     }
 
-    // SAVE VARIANT
+    // SAVE VARIANT - Store File object + data in specialItems array
     function saveVariant() {
 
         const name =
@@ -422,7 +422,7 @@
 
         } else {
 
-            // CREATE
+            // CREATE - store File object directly
             specialItems.push({
 
                 name,
@@ -447,18 +447,13 @@
         renderVariantList();
     }
 
-    // RENDER TABLE
+    // RENDER TABLE (cosmetic only - no hidden inputs needed)
     function renderVariantList() {
 
         const tableBody =
             document.getElementById('variantTableBody');
 
-        const hiddenInputs =
-            document.getElementById('variantInputs');
-
         tableBody.innerHTML = '';
-
-        hiddenInputs.innerHTML = '';
 
         if (specialItems.length === 0) {
 
@@ -561,6 +556,20 @@
         reader.readAsDataURL(file);
     }
 
+    // PREVIEW BANNER
+    function previewBanner(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('banner-preview');
+            const image = document.getElementById('banner-preview-img');
+            image.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
     // CLOSE CLICK BACKDROP
     document.getElementById('itemModal')
         .addEventListener('click', function(e) {
@@ -570,5 +579,76 @@
                 closeItemModal();
             }
         });
+
+    // ================================================================
+    // FIX: Intercept form submit to include variant files via FormData
+    // ================================================================
+    document.getElementById('specialForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const formData = new FormData();
+
+        // 1. Standard fields
+        formData.append('title', document.getElementById('title').value);
+        formData.append('short_description', document.getElementById('short_description').value);
+
+        const isActiveCheckbox = document.getElementById('is_active');
+        if (isActiveCheckbox.checked) {
+            formData.append('is_active', '1');
+        }
+
+        // 2. Banner image (if any)
+        const bannerInput = document.getElementById('banner_image');
+        if (bannerInput.files.length > 0) {
+            formData.append('banner_image', bannerInput.files[0]);
+        }
+
+        // 3. Variant items - loop through specialItems array
+        specialItems.forEach(function(item, index) {
+            formData.append(`items[${index}][name]`, item.name);
+            formData.append(`items[${index}][price]`, String(item.price));
+            formData.append(`items[${index}][description]`, item.description || '');
+            formData.append(`items[${index}][is_available]`, item.is_available ? '1' : '0');
+
+            // Append the actual File object if it exists
+            if (item.image && item.image instanceof File) {
+                formData.append(`items[${index}][image]`, item.image);
+            }
+        });
+
+        // 4. Submit via fetch
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'Accept': 'application/json',
+            },
+            body: formData,
+        })
+        .then(function(response) {
+            // If success, redirect to index
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+            // If not redirected, try to get JSON or HTML
+            if (response.ok) {
+                window.location.href = '{{ route("admin.menu-specials.index") }}';
+                return;
+            }
+            return response.json().then(function(data) {
+                throw new Error(data.message || 'Validation error');
+            }).catch(function() {
+                // If not JSON, try HTML
+                return response.text().then(function(html) {
+                    document.write(html);
+                });
+            });
+        })
+        .catch(function(error) {
+            alert('Error: ' + error.message);
+        });
+    });
 </script>
 @endsection
