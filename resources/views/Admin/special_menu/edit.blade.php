@@ -321,6 +321,7 @@ function submitVariant(event) {
     }
 
     const formData = new FormData();
+    formData.append('_token', document.querySelector('input[name="_token"]').value);
     formData.append('name', name);
     formData.append('price', price);
     formData.append('description', description || '');
@@ -331,24 +332,18 @@ function submitVariant(event) {
     }
 
     // Determine URL and method
-    let url, method;
+    let url;
     if (isEdit) {
         url = ITEM_UPDATE_URL_BASE + '/' + editId;
-        method = 'PATCH';
         formData.append('_method', 'PATCH');
     } else {
         url = ITEM_STORE_URL;
-        method = 'POST';
     }
 
-    // Get CSRF token from main form
-    const csrfToken = document.querySelector('input[name="_token"]').value;
-
     fetch(url, {
-        method: 'POST', // Always POST, use _method for PATCH
+        method: 'POST',
         headers: {
-            'X-CSRF-TOKEN': csrfToken,
-            'Accept': 'application/json',
+            'Accept': 'application/json, text/html',
         },
         body: formData,
     })
@@ -361,14 +356,19 @@ function submitVariant(event) {
             window.location.reload();
             return;
         }
-        return response.json().then(function(data) {
-            var errorMsg = data.message || 'Validation error';
-            if (data.errors) {
-                var firstKey = Object.keys(data.errors)[0];
-                if (firstKey) errorMsg = data.errors[firstKey][0];
-            }
-            throw new Error(errorMsg);
-        });
+        if (response.status === 422) {
+            return response.json().then(function(data) {
+                var errorMessages = [];
+                var errors = data.errors || {};
+                for (var key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorMessages.push(errors[key][0]);
+                    }
+                }
+                alert('Validation Error:\n' + errorMessages.join('\n'));
+            });
+        }
+        throw new Error('Server error (HTTP ' + response.status + ')');
     })
     .catch(function(error) {
         alert('Error: ' + error.message);

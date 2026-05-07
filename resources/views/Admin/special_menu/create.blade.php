@@ -589,7 +589,10 @@
         const form = this;
         const formData = new FormData();
 
-        // 1. Standard fields
+        // 1. CSRF token must be in FormData for file uploads
+        formData.append('_token', document.querySelector('input[name="_token"]').value);
+
+        // 2. Standard fields
         formData.append('title', document.getElementById('title').value);
         formData.append('short_description', document.getElementById('short_description').value);
 
@@ -598,13 +601,13 @@
             formData.append('is_active', '1');
         }
 
-        // 2. Banner image (if any)
+        // 3. Banner image (if any)
         const bannerInput = document.getElementById('banner_image');
         if (bannerInput.files.length > 0) {
             formData.append('banner_image', bannerInput.files[0]);
         }
 
-        // 3. Variant items - loop through specialItems array
+        // 4. Variant items - loop through specialItems array
         specialItems.forEach(function(item, index) {
             formData.append(`items[${index}][name]`, item.name);
             formData.append(`items[${index}][price]`, String(item.price));
@@ -617,37 +620,45 @@
             }
         });
 
-        // 4. Submit via fetch
+        // 5. Submit via fetch
         fetch(form.action, {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                'Accept': 'application/json',
+                'Accept': 'application/json, text/html',
             },
             body: formData,
         })
         .then(function(response) {
-            // If success, redirect to index
+            // If redirect (success or validation error redirect)
             if (response.redirected) {
                 window.location.href = response.url;
                 return;
             }
-            // If not redirected, try to get JSON or HTML
+            // If success (200-299)
             if (response.ok) {
                 window.location.href = '{{ route("admin.menu-specials.index") }}';
                 return;
             }
-            return response.json().then(function(data) {
-                throw new Error(data.message || 'Validation error');
-            }).catch(function() {
-                // If not JSON, try HTML
-                return response.text().then(function(html) {
-                    document.write(html);
+            // If 422 validation error with JSON
+            if (response.status === 422) {
+                return response.json().then(function(data) {
+                    var errorMessages = [];
+                    var errors = data.errors || {};
+                    for (var key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorMessages.push(errors[key][0]);
+                        }
+                    }
+                    alert('Validation Error:\n' + errorMessages.join('\n'));
                 });
-            });
+            }
+            // Other errors - fallback to HTML
+            throw new Error('Server error (HTTP ' + response.status + ')');
         })
         .catch(function(error) {
-            alert('Error: ' + error.message);
+            // Fallback: submit normally if fetch fails
+            alert('Terjadi kesalahan. Mengirim ulang form secara normal...');
+            form.submit();
         });
     });
 </script>
