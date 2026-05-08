@@ -13,6 +13,7 @@ use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\OrderController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MidtransWebhookController;
 
 
 /*
@@ -32,6 +33,43 @@ Route::get('/about', function () {
     return view('frontend.about.index');
 
 })->name('frontend.about');
+
+/*
+|--------------------------------------------------------------------------
+| MIDTRANS WEBHOOK ROUTES (NO CSRF, NO AUTH)
+| IMPORTANT: Must be excluded from CSRF validation in bootstrap/app.php
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])
+    ->name('midtrans.webhook');
+
+Route::get('/midtrans/finish', [MidtransWebhookController::class, 'finish'])
+    ->name('midtrans.finish');
+
+Route::get('/midtrans/unfinish', [MidtransWebhookController::class, 'unfinish'])
+    ->name('midtrans.unfinish');
+
+Route::get('/midtrans/error', [MidtransWebhookController::class, 'error'])
+    ->name('midtrans.error');
+
+// Test endpoint - REMOVE IN PRODUCTION
+Route::post('/midtrans/test', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Log::info('Midtrans Test Endpoint Hit', [
+        'method' => $request->method(),
+        'ip' => $request->ip(),
+        'headers' => $request->headers->all(),
+        'payload' => $request->all(),
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Midtrans webhook endpoint is accessible and responding',
+        'timestamp' => now(),
+        'test_mode' => true,
+    ], 200);
+})->name('midtrans.test');
+
 
 
 /*
@@ -126,6 +164,22 @@ Route::post('/checkout', [CheckoutController::class, 'store'])
 
 Route::get('/checkout/success/{kodeOrder}', [CheckoutController::class, 'success'])
     ->name('checkout.success');
+
+
+/*
+|--------------------------------------------------------------------------
+| SNAP PAYMENT ROUTES (Midtrans Snap)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/payment/snap/{kodeOrder}', [\App\Http\Controllers\PaymentController::class, 'showSnap'])
+    ->name('payment.snap');
+
+Route::get('/payment/snap/{kodeOrder}/status', [\App\Http\Controllers\PaymentController::class, 'checkStatus'])
+    ->name('payment.snap.status');
+
+Route::get('/payment/success/{kodeOrder}', [\App\Http\Controllers\PaymentController::class, 'success'])
+    ->name('payment.success');
 
 
 /*
