@@ -1,0 +1,174 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\PaymentTransaction;
+use App\Services\MidtransSnapService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class MidtransWebhookController extends Controller
+{
+    protected $snapService;
+
+    public function __construct(MidtransSnapService $snapService)
+    {
+        $this->snapService = $snapService;
+    }
+
+    /**
+     * Handle Snap webhook notification
+     *
+     * IMPORTANT: Always return 200 OK to acknowledge receipt to Midtrans.
+     * Errors should be in JSON body, not HTTP status code.
+     */
+    public function handle(Request $request)
+    {
+        Log::info('===== MIDTRANS WEBHOOK RECEIVED =====');
+        Log::info('Request Method: ' . $request->method());
+        Log::info('Request IP: ' . $request->ip());
+        Log::info('Content-Type: ' . $request->header('Content-Type'));
+        Log::info('Request Headers: ' . json_encode($request->headers->all()));
+        Log::info('Request Payload: ' . json_encode($request->all()));
+        Log::info('======================================');
+
+        try {
+            $notification = $request->all();
+
+            if (empty($notification)) {
+                Log::warning('Empty webhook payload received');
+                // Still return 200 OK to prevent Midtrans retry
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empty payload',
+                ], 200);
+            }
+
+            // Log the critical fields
+            Log::info('Webhook Processing:', [
+                'order_id' => $notification['order_id'] ?? 'N/A',
+                'transaction_id' => $notification['transaction_id'] ?? 'N/A',
+                'transaction_status' => $notification['transaction_status'] ?? 'N/A',
+                'gross_amount' => $notification['gross_amount'] ?? 'N/A',
+            ]);
+
+            $result = $this->snapService->processWebhookNotification($notification);
+
+            Log::info('✓ Webhook processed successfully', [
+                'order_id' => $result['order']->id,
+                'kode_order' => $result['order']->kode_order,
+                'transaction_status' => $result['transaction_status'],
+                'result_status' => $result['result_status'],
+                'payment_status' => $result['order']->payment_status,
+                'order_status' => $result['order']->status,
+            ]);
+
+            // Always return 200 OK with success message
+            return response()->json([
+                'success' => true,
+                'message' => 'Webhook received and processed successfully',
+                'data' => [
+                    'order_id' => $result['order']->kode_order,
+                    'payment_status' => $result['order']->payment_status,
+                    'transaction_status' => $result['transaction_status'],
+                    'processed_at' => now(),
+                ],
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('✗ Webhook processing failed', [
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
+            ]);
+
+            // Still return 200 OK even on error
+            // Return 200 OK to prevent Midtrans from retrying
+            // But include error details for debugging
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook received but processing failed',
+                'error' => $e->getMessage(),
+            ], 200);
+        }
+    }
+
+    /**
+     * Finish callback - user completed payment
+     */
+    public function finish(Request $request)
+    {
+        $orderId = $request->order_id;
+
+        Log::info('Snap Finish Redirect', ['order_id' => $orderId]);
+
+        $paymentTransaction = PaymentTransaction::where('order_id_midtrans', $orderId)->first();
+
+        if ($paymentTransaction) {
+            // Trigger status check from Midtrans
+            try {
+                $status = \Midtrans\Transaction::status($orderId);
+                if ($status) {
+                    $notification = json_decode(json_encode($status), true);
+                    $this->snapService->processWebhookNotification($notification);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Finish status check failed', ['error' => $e->getMessage()]);
+            }
+
+            $order = $paymentTransaction->order;
+            if ($order) {
+                return redirect()->route('payment.success', $order->kode_order);
+            }
+        }
+
+        return redirect()->route('frontend.home');
+    }
+
+    /**
+     * Unfinish callback - user cancelled/back
+     */
+    public function unfinish(Request $request)
+    {
+        $orderId = $request->order_id;
+
+        Log::info('Snap Unfinish', ['order_id' => $orderId]);
+
+        $paymentTransaction = PaymentTransaction::where('order_id_midtrans', $orderId)->first();
+
+        if ($paymentTransaction) {
+            $order = $paymentTransaction->order;
+            if ($order) {
+                return redirect()->route('payment.snap', $order->kode_order)
+                    ->with('error', 'Pembayaran dibatalkan. Silakan coba lagi.');
+            }
+        }
+
+        return redirect()->route('frontend.home');
+    }
+
+    /**
+     * Error callback
+     */
+    public function error(Request $request)
+    {
+        $orderId = $request->order_id;
+
+        Log::error('Snap Error', ['order_id' => $orderId, 'body' => $request->all()]);
+
+        $paymentTransaction = PaymentTransaction::where('order_id_midtrans', $orderId)->first();
+
+        if ($paymentTransaction) {
+            $order = $paymentTransaction->order;
+            if ($order) {
+                return redirect()->route('payment.snap', $order->kode_order)
+                    ->with('error', 'Terjadi kesalahan pembayaran. Silakan coba lagi.');
+            }
+        }
+
+        return redirect()->route('frontend.home')
+            ->with('error', 'Terjadi kesalahan pembayaran.');
+    }
+}

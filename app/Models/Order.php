@@ -127,6 +127,22 @@ class Order extends Model
     }
 
     /**
+     * Relationship to payment transactions
+     */
+    public function paymentTransactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
+
+    /**
+     * Get the latest payment transaction
+     */
+    public function latestPayment()
+    {
+        return $this->hasOne(PaymentTransaction::class)->latestOfMany();
+    }
+
+    /**
      * Check if order is delivery
      */
     public function isDelivery(): bool

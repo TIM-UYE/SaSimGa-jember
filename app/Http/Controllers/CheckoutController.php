@@ -101,6 +101,11 @@ class CheckoutController extends Controller
             // Clear cart
             session()->forget('cart');
 
+            // If QRIS payment, redirect to Snap payment page
+            if ($order->isQRISPayment()) {
+                return redirect()->route('payment.snap', $order->kode_order);
+            }
+
             return redirect()->route('checkout.success', $order->kode_order)
                 ->with('success', 'Pesanan berhasil dibuat!');
 
