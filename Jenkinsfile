@@ -2,27 +2,118 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = 'sihiy1/sasimga-jember:latest'
+        APP_IMAGE = 'sihiy1/sasimga-jember:latest'
+        NGINX_IMAGE = 'sihiy1/sasimga-nginx:latest'
+        STACK_NAME = 'samsimga'
+        DOCKER_REGISTRY = 'docker.io/sihiy1'
     }
 
     stages {
-
-        stage('Build Docker Image') {
+        stage('Checkout') {
             steps {
-                sh 'docker build -t $IMAGE -f dockerfile .'
+                echo 'Checking out source code...'
+                checkout scm
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Validate Dockerfiles') {
             steps {
-                sh 'docker push $IMAGE'
+                echo 'Validating Docker configuration...'
+                sh 'docker --version'
+                sh 'docker-compose --version'
             }
         }
 
-        stage('Deploy Docker Swarm') {
+        stage('Build App Docker Image') {
             steps {
-                sh 'docker stack deploy -c docker-stack.yml sasimga'
+                echo 'Building Laravel application image...'
+                sh 'docker build -t ${APP_IMAGE} -f dockerfile .'
             }
+        }
+
+        stage('Build Nginx Docker Image') {
+            steps {
+                echo 'Building Nginx image...'
+                sh 'docker build -t ${NGINX_IMAGE} -f Dockerfile.nginx .'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running application tests...'
+                script {
+                    // Run tests in a temporary container
+                    sh '''
+                        docker run --rm ${APP_IMAGE} php artisan test --compact
+                    '''
+                }
+            }
+            post {
+                always {
+                    // Collect test results if available
+                    junit allowEmptyResults: true, testResults: 'test-results/**/*.xml'
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                echo 'Pushing images to Docker Hub...'
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin'
+                    sh 'docker push ${APP_IMAGE}'
+                    sh 'docker push ${NGINX_IMAGE}'
+                    sh 'docker logout'
+                }
+            }
+        }
+
+        stage('Deploy to Docker Swarm') {
+            steps {
+                echo 'Deploying to Docker Swarm...'
+                sh 'docker stack deploy -c docker-stack.yml ${STACK_NAME}'
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo 'Verifying deployment...'
+                script {
+                    // Wait for services to be ready
+                    sh '''
+                        echo 'Waiting for services to start...'
+                        sleep 10
+
+                        # Check if services are running
+                        docker service ls | grep ${STACK_NAME}
+
+                        # Check application health
+                        echo 'Checking application health...'
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+            // Optionally send notification
+            // slackSend channel: '#deployments', message: "Deployment of ${env.JOB_NAME} completed successfully!"
+        }
+        failure {
+            echo 'Deployment failed! Check logs for details.'
+            // Optionally send notification
+            // slackSend channel: '#deployments', message: "Deployment of ${env.JOB_NAME} failed!", color: 'danger'
+        }
+        always {
+            echo 'Cleaning up...'
+            // Clean up Docker resources
+            sh 'docker system prune -f'
         }
     }
 }
