@@ -92,22 +92,16 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'Deployment completed successfully!'
-            // Optionally send notification
-            // slackSend channel: '#deployments', message: "Deployment of ${env.JOB_NAME} completed successfully!"
-        }
-        failure {
-            echo 'Deployment failed! Check logs for details.'
-            // Optionally send notification
-            // slackSend channel: '#deployments', message: "Deployment of ${env.JOB_NAME} failed!", color: 'danger'
-        }
-        always {
-            node {
-                echo 'Cleaning up...'
-                // Clean up Docker resources
-                sh 'docker system prune -f'
-            }
-        }
+    always {
+        echo 'Cleaning up...'
+    }
+
+    success {
+        echo 'Deployment success!'
+    }
+
+    failure {
+        echo 'Deployment failed! Check logs for details.'
+    }
     }
 }
