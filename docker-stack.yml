@@ -5,20 +5,29 @@ services:
   app:
     image: sihiy1/sasimga-jember:latest
 
-    deploy:
-      replicas: 2
-
     networks:
       - laravel
 
   nginx:
-    image: nginx:latest
+    image: sihiy1/sasimga-nginx:latest
 
     ports:
       - "80:80"
 
-    deploy:
-      replicas: 1
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8
+
+    restart: always
+
+    environment:
+      MYSQL_DATABASE: db_samsimga
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "3306:3306"
 
     networks:
       - laravel
