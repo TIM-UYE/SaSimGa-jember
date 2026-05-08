@@ -58,17 +58,9 @@ pipeline {
 
         stage('Push Docker Images') {
             steps {
-                echo 'Pushing images to Docker Hub...'
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-credentials',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh 'echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin'
-                    sh 'docker push ${APP_IMAGE}'
-                    sh 'docker push ${NGINX_IMAGE}'
-                    sh 'docker logout'
-                }
+                echo 'Images built successfully - skipping push (no credentials configured)'
+                // Push is optional - only needed for remote deployment
+                // For local deployment, images are already available
             }
         }
 
@@ -111,9 +103,11 @@ pipeline {
             // slackSend channel: '#deployments', message: "Deployment of ${env.JOB_NAME} failed!", color: 'danger'
         }
         always {
-            echo 'Cleaning up...'
-            // Clean up Docker resources
-            sh 'docker system prune -f'
+            node {
+                echo 'Cleaning up...'
+                // Clean up Docker resources
+                sh 'docker system prune -f'
+            }
         }
     }
 }
