@@ -185,29 +185,29 @@
 
 
                     {{-- PHONE --}}
-                    <div class="flex gap-3">
+<div class="flex items-center gap-3">
 
-                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+    <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
 
-                            <i class="fas fa-phone text-white"></i>
+        <i class="fas fa-phone text-white"></i>
 
-                        </div>
+    </div>
 
-                        <div>
+    <div class="flex items-center h-10">
 
-                            <a
-                                href="https://wa.me/6281234567890"
-                                target="_blank"
-                                class="text-black/80 hover:text-white transition duration-300"
-                            >
+        <a
+            href="https://wa.me/6281234567890"
+            target="_blank"
+            class="text-black/80 hover:text-white transition duration-300 leading-none"
+        >
 
-                                +62 812-3456-7890
+            +62 812-3456-7890
 
-                            </a>
+        </a>
 
-                        </div>
+    </div>
 
-                    </div>
+</div>
 
 
                     {{-- EMAIL --}}
@@ -270,7 +270,8 @@
 
                 {{-- TIKTOK --}}
                 <a
-                    href="#"
+                    href="https://www.tiktok.com/@satesimpangtiga.jember?_r=1&_t=ZS-96DXpAHuZk1"
+                    target="_blank"
                     class="flex items-center gap-2 hover:text-white transition duration-300"
                 >
 
