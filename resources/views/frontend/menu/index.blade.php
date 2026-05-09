@@ -368,19 +368,57 @@
     </div>
 
     <!-- FLOATING CHECKOUT BUTTON -->
-    <div id="floatingCheckout" class="hidden fixed bottom-6 right-6 z-40">
-        <a href="{{ route('checkout.index') }}"
-            class="flex items-center gap-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-4 rounded-2xl shadow-2xl shadow-orange-500/30 transition-all duration-300 hover:scale-105">
-            <div class="text-right">
-                <p class="text-xs opacity-80">Total</p>
-                <p id="floatingTotal" class="text-lg font-bold">Rp 0</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="font-semibold">Checkout</span>
-                <i class="fas fa-arrow-right"></i>
-            </div>
-        </a>
-    </div>
+<div id="floatingCheckout"
+    class="hidden fixed bottom-5 right-5 z-40">
+
+    <a href="{{ route('checkout.index') }}"
+        class="group flex items-center gap-3
+        bg-gradient-to-r from-orange-500 to-orange-600
+        hover:from-orange-600 hover:to-orange-700
+        text-white px-4 py-3 rounded-2xl
+        shadow-2xl shadow-orange-500/30
+        transition-all duration-300 hover:scale-105">
+
+        {{-- ICON --}}
+        <div
+            class="w-10 h-10 rounded-xl
+            bg-white/10 border border-white/10
+            flex items-center justify-center shrink-0">
+
+            <i class="fas fa-shopping-cart text-base text-white"></i>
+
+        </div>
+
+        {{-- TOTAL --}}
+        <div class="leading-tight">
+
+            <p class="text-[10px] text-white/80 font-medium">
+                Total
+            </p>
+
+            <p id="floatingTotal"
+                class="text-lg font-bold text-white">
+
+                Rp 0
+
+            </p>
+
+        </div>
+
+        {{-- CHECKOUT --}}
+        <div class="flex items-center gap-1 ml-1 shrink-0">
+
+            <span class="font-semibold text-sm text-white">
+                Checkout
+            </span>
+
+            <i class="fas fa-arrow-right text-sm text-white"></i>
+
+        </div>
+
+    </a>
+
+</div>
 
     <script>
         // Store current modal menu ID

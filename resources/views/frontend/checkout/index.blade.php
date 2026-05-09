@@ -351,69 +351,108 @@
 
                     </div>
 
-                    {{-- PAYMENT INFO --}}
-                    <div id="payment-info-cash" class="bg-blue-500/10 border border-blue-500/30 rounded-3xl p-6 hidden">
-                        <div class="flex items-start gap-4">
-                            <i class="fas fa-info-circle text-blue-400 text-2xl mt-1"></i>
-                            <div>
-                                <h4 class="font-bold text-blue-400 mb-2">
-                                    <i class="fas fa-money-bill mr-2"></i>Informasi Pembayaran CASH
-                                </h4>
-                                <p class="text-sm text-gray-300">
-                                    Dengan pembayaran <strong class="text-white">CASH</strong>:
-                                </p>
-                                <ul class="text-sm text-gray-300 list-disc list-inside space-y-1 mt-2">
-                                    <li>Anda membayar <strong class="text-orange-400">harga pesanan + ongkos kirim</strong> secara tunai kepada driver</li>
-                                    <li>Pembayaran dilakukan saat pesanan tiba di lokasi Anda</li>
-                                    <li>Pastikan menyiapkan uang pas untuk memudahkan transaksi</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- PAYMENT INFO CASH --}}
+<div id="payment-info-cash"
+    class="hidden bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-3xl p-6 shadow-lg shadow-orange-500/10">
 
-                    <div id="payment-info-qris" class="bg-purple-500/10 border border-purple-500/30 rounded-3xl p-6 hidden">
-                        <div class="flex items-start gap-4">
-                            <i class="fas fa-qrcode text-purple-400 text-2xl mt-1"></i>
-                            <div>
-                                <h4 class="font-bold text-purple-400 mb-2">
-                                    <i class="fas fa-mobile-alt mr-2"></i>Informasi Pembayaran QRIS
-                                </h4>
-                                <p class="text-sm text-gray-300">
-                                    Dengan pembayaran <strong class="text-white">QRIS</strong>:
-                                </p>
-                                <ul class="text-sm text-gray-300 list-disc list-inside space-y-1 mt-2">
-                                    <li>Anda membayar <strong class="text-orange-400">harga pesanan</strong> via QRIS ke restoran</li>
-                                    <li><strong class="text-blue-400">Ongkos kirim dibayar terpisah</strong> secara tunai kepada driver</li>
-                                    <li>Pembayaran ongkir dilakukan saat pesanan tiba di lokasi Anda</li>
-                                    <li>QRIS akan ditampilkan setelah pesanan dikonfirmasi</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+    <div class="flex items-start gap-4">
 
-                    {{-- NOTES --}}
-                    <div class="bg-zinc-900 rounded-3xl p-6">
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/15 flex items-center justify-center shrink-0">
+            <i class="fas fa-money-bill-wave text-2xl text-orange-400"></i>
+        </div>
 
-                        <h2 class="text-2xl font-bold mb-6">
-                            Catatan Tambahan
-                        </h2>
+        <div>
 
-                        <div>
+            <h4 class="text-xl font-bold text-white mb-3">
+                Pembayaran Cash
+            </h4>
 
-                            <textarea
-                                name="catatan"
-                                rows="3"
-                                class="w-full bg-zinc-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500"
-                                placeholder="Catatan untuk pesanan Anda (opsional)"
-                            >{{ old('catatan') }}</textarea>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Pembayaran dilakukan langsung saat pesanan diterima oleh pelanggan.
+            </p>
 
-                            @error('catatan')
-                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+            <ul class="space-y-3 text-sm text-gray-400">
 
-                        </div>
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        Pembayaran dilakukan secara tunai kepada kasir atau driver.
+                    </span>
+                </li>
 
-                    </div>
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        Pastikan menyiapkan uang pas agar transaksi lebih mudah.
+                    </span>
+                </li>
+
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        Ongkir dibayarkan langsung kepada driver jika memilih delivery.
+                    </span>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{{-- PAYMENT INFO QRIS --}}
+<div id="payment-info-qris"
+    class="hidden bg-gradient-to-br from-zinc-800 to-zinc-900 border border-orange-500/20 rounded-3xl p-6 shadow-lg shadow-orange-500/10">
+
+    <div class="flex items-start gap-4">
+
+        <div class="w-14 h-14 rounded-2xl bg-orange-500/15 flex items-center justify-center shrink-0">
+            <i class="fas fa-qrcode text-2xl text-orange-400"></i>
+        </div>
+
+        <div>
+
+            <h4 class="text-xl font-bold text-white mb-3">
+                Pembayaran QRIS
+            </h4>
+
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Pembayaran digital cepat dan praktis menggunakan QRIS semua e-wallet dan mobile banking.
+            </p>
+
+            <ul class="space-y-3 text-sm text-gray-400">
+
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        Mendukung DANA, OVO, GoPay, ShopeePay, dan mobile banking.
+                    </span>
+                </li>
+
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        QR Code pembayaran akan muncul setelah checkout berhasil.
+                    </span>
+                </li>
+
+                <li class="flex gap-3">
+                    <i class="fas fa-check-circle text-orange-400 mt-1"></i>
+                    <span>
+                        Ongkos kirim dibayarkan terpisah kepada driver jika delivery.
+                    </span>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
 
                     {{-- SUBMIT --}}
                     <button
