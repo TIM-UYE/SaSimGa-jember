@@ -10,14 +10,25 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * Redirect user to their appropriate dashboard based on role.
+     */
+    private function redirectToDashboard()
+    {
+        $user = Auth::user();
+
+        return match ($user->role) {
+            'manager' => redirect()->route('admin.dashboard'),
+            'admin' => redirect()->route('admin.dashboard'),
+            'owner' => redirect()->route('owner.dashboard'),
+            default => redirect()->route('user.dashboard'),
+        };
+    }
+
     public function showLoginForm(Request $request)
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('user.dashboard');
+            return $this->redirectToDashboard();
         }
         return view('auth.login');
     }
@@ -25,11 +36,7 @@ class AuthController extends Controller
     public function showRegisterForm(Request $request)
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('user.dashboard');
+            return $this->redirectToDashboard();
         }
         return view('auth.register');
     }
@@ -53,11 +60,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-
-        return redirect()->route('user.dashboard');
+        return $this->redirectToDashboard();
     }
 
     public function register(Request $request)

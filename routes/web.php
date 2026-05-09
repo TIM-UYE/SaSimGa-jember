@@ -12,6 +12,7 @@ use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
 
@@ -237,11 +238,27 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ROUTES
+| OWNER ROUTES (Read-only analytics dashboard)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth', 'role:owner'])
+    ->prefix('owner')
+    ->name('owner.')
+    ->group(function () {
+
+        Route::get('/dashboard', [AnalyticsController::class, 'index'])
+            ->name('dashboard');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN / MANAGER ROUTES (Full access backend)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin,manager'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -286,62 +303,74 @@ Route::middleware(['auth', 'admin'])
 
         /*
         |--------------------------------------------------------------------------
-        | SPECIAL MENU CRUD
+        | SPECIAL MENU CRUD (Manager only - sensitive)
         |--------------------------------------------------------------------------
         */
 
-        Route::resource('menu-specials', MenuSpecialController::class)
-            ->except(['show']);
+        Route::middleware('role:manager')->group(function () {
 
-        Route::post('/menu-specials/{menu_special}/items', [MenuSpecialItemController::class, 'store'])
-            ->name('menu-specials.items.store');
+            Route::resource('menu-specials', MenuSpecialController::class)
+                ->except(['show']);
 
-        Route::patch('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'update'])
-            ->name('menu-specials.items.update');
+            Route::post('/menu-specials/{menu_special}/items', [MenuSpecialItemController::class, 'store'])
+                ->name('menu-specials.items.store');
 
-        Route::delete('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'destroy'])
-            ->name('menu-specials.items.destroy');
+            Route::patch('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'update'])
+                ->name('menu-specials.items.update');
+
+            Route::delete('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'destroy'])
+                ->name('menu-specials.items.destroy');
+
+            /*
+            |--------------------------------------------------------------------------
+            | MENU CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('menu', MenuController::class)
+                ->except(['show']);
+
+            Route::get('/menu/{menu}', [MenuController::class, 'show'])
+                ->name('menu.show');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('kategori', KategoriMenuController::class);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TESTIMONI CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/testimoni/sync',
+                [TestimoniController::class, 'syncGoogleMaps']
+            )->name('testimoni.sync');
+
+            Route::resource('testimoni', TestimoniController::class)
+                ->except(['show']);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | USER CRUD (Manager only)
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('user', UserController::class);
+        });
+
 
         /*
         |--------------------------------------------------------------------------
-        | MENU CRUD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource('menu', MenuController::class)
-            ->except(['show']);
-
-        Route::get('/menu/{menu}', [MenuController::class, 'show'])
-            ->name('menu.show');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | KATEGORI CRUD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource('kategori', KategoriMenuController::class);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TESTIMONI CRUD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::post(
-            '/testimoni/sync',
-            [TestimoniController::class, 'syncGoogleMaps']
-        )->name('testimoni.sync');
-
-        Route::resource('testimoni', TestimoniController::class)
-            ->except(['show']);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | RESERVASI CRUD
+        | RESERVASI CRUD (Admin & Manager)
         |--------------------------------------------------------------------------
         */
 
@@ -353,25 +382,16 @@ Route::middleware(['auth', 'admin'])
 
         Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])
             ->name('reservasi.destroy');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | USER CRUD
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource('user', UserController::class);
     });
 
 
 /*
 |--------------------------------------------------------------------------
-| USER ROUTES
+| USER ROUTES (Public frontend users)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'user'])
+Route::middleware(['auth'])
     ->prefix('user')
     ->name('user.')
     ->group(function () {

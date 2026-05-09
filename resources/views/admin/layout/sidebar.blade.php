@@ -6,7 +6,15 @@
       <img src="{{ asset('admin_assets/img/logo.png') }}" class="h-10 w-10 rounded-full mr-3 shadow-md">
       <div>
         <div class="font-bold text-lg">SaSimGa</div>
-        <div class="text-xs opacity-80">Admin Panel</div>
+        <div class="text-xs opacity-80">
+          @if(Auth::user()->role === 'manager')
+            Manager Panel
+          @elseif(Auth::user()->role === 'admin')
+            Admin Panel
+          @else
+            Backend Panel
+          @endif
+        </div>
       </div>
     </a>
   </div>
@@ -29,7 +37,8 @@
       </a>
     </li>
 
-    <!-- KATEGORI MENU -->
+    {{-- MANAGER ONLY: KATEGORI MENU --}}
+    @if(Auth::user()->role === 'manager')
     <li>
       <a href="{{ route('admin.kategori.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -41,8 +50,10 @@
         Kategori Menu
       </a>
     </li>
+    @endif
 
-    <!-- MENU RESTAURANT -->
+    {{-- MANAGER ONLY: MENU RESTAURANT --}}
+    @if(Auth::user()->role === 'manager')
     <li>
       <a href="{{ route('admin.menu.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -54,176 +65,43 @@
         Menu Restaurant
       </a>
     </li>
+    @endif
 
-    <!-- SPECIAL MENU -->
+    {{-- MANAGER ONLY: SPECIAL MENU --}}
+    @if(Auth::user()->role === 'manager')
     <li>
-      <a href="{{ route('admin.menu-specials.index') }}"
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-star text-sm"></i>
-        </div>
-
-        Menu Specials
-      </a>
-    </li>
-
-    <!-- TESTIMONI -->
-    <li>
-      <a href="{{ route('admin.testimoni.index') }}"
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-star text-sm"></i>
-        </div>
-
-        Testimoni
-      </a>
-    </li>
-
-    {{-- <!-- TRANSAKSI -->
-    <li>
-      <details class="group">
-
-        <summary class="flex items-center justify-between px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 cursor-pointer">
-
-          <div class="flex items-center">
+        <a
+            href="{{ route('admin.menu-specials.index') }}"
+            class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition"
+        >
 
             <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-              <i class="fas fa-shopping-cart text-sm"></i>
+                <i class="fas fa-fire text-sm"></i>
             </div>
 
-            Transaksi
-          </div>
-
-          <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
-
-        </summary>
-
-        <ul class="mt-2 space-y-1 pl-11">
-
-          <li>
-            <a href="{{ route('admin.transaksi.index') }}"
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-list mr-3 text-orange-200"></i>
-              Daftar Transaksi
-
-            </a>
-          </li>
-
-          <li>
-            <a href="{{ route('admin.transaksi.create') }}"
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-plus mr-3 text-orange-200"></i>
-              Tambah Transaksi
-
-            </a>
-          </li>
-
-        </ul>
-      </details>
+            Menu Specials
+        </a>
     </li>
+    @endif
 
-    <!-- STOK BAHAN -->
+    {{-- MANAGER ONLY: TESTIMONI --}}
+    @if(Auth::user()->role === 'manager')
     <li>
-      <details class="group">
-
-        <summary class="flex items-center justify-between px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 cursor-pointer">
-
-          <div class="flex items-center">
+        <a
+            href="{{ route('admin.testimoni.index') }}"
+            class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition"
+        >
 
             <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-              <i class="fas fa-boxes text-sm"></i>
+                <i class="fas fa-comments text-sm"></i>
             </div>
 
-            Stok Bahan
-          </div>
+            Testimoni
+        </a>
+    </li>
+    @endif
 
-          <i class="fas fa-chevron-down transition group-open:rotate-180"></i>
-
-        </summary>
-
-        <ul class="mt-2 space-y-1 pl-11">
-
-          <li>
-            <a href="{{ route('admin.stok.index') }}"
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-box mr-3 text-orange-200"></i>
-              Kelola Stok
-
-            </a>
-          </li>
-
-          <li>
-            <a href="{{ route('admin.stok.history') }}"
-               class="flex items-center px-3 py-2 rounded-lg text-white hover:bg-orange-500 transition">
-
-              <i class="fas fa-history mr-3 text-orange-200"></i>
-              Riwayat Stok
-
-            </a>
-          </li>
-
-        </ul>
-      </details>
-    </li> --}}
-
-    {{-- <!-- PROMOSI -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-bullhorn text-sm"></i>
-        </div>
-
-        Promosi
-      </a>
-    </li> --}}
-
-    {{-- <!-- PREDIKSI PENJUALAN -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-chart-line text-sm"></i>
-        </div>
-
-        Prediksi Penjualan
-      </a>
-    </li> --}}
-
-    {{-- <!-- GALERI -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-images text-sm"></i>
-        </div>
-
-        Galeri
-      </a>
-    </li> --}}
-
-    {{-- <!-- PROFIL USAHA -->
-    <li>
-      <a href=""
-         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
-
-        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
-          <i class="fas fa-store text-sm"></i>
-        </div>
-
-        Profil Usaha
-      </a>
-    </li> --}}
-
-    <!-- ORDERS -->
+    <!-- ORDERS (Admin & Manager) -->
     <li>
       <a href="{{ route('admin.orders.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -236,7 +114,7 @@
       </a>
     </li>
 
-    <!-- RESERVASI -->
+    <!-- RESERVASI (Admin & Manager) -->
     <li>
       <a href="{{ route('admin.reservasi.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -249,7 +127,8 @@
       </a>
     </li>
 
-    <!-- KELOLA USER -->
+    {{-- MANAGER ONLY: KELOLA USER --}}
+    @if(Auth::user()->role === 'manager')
     <li>
       <a href="{{ route('admin.user.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -261,6 +140,7 @@
         Kelola User
       </a>
     </li>
+    @endif
 
     <!-- KEMBALI KE WEBSITE -->
     <li class="pt-4">

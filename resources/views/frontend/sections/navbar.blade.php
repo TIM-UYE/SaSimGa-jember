@@ -54,7 +54,7 @@
 
                 @auth
 
-                    @if(auth()->user()->role === 'admin')
+                    @if(in_array(auth()->user()->role, ['admin', 'manager']))
 
                         <a
                             href="{{ route('admin.dashboard') }}"
@@ -249,8 +249,8 @@
 
 
                     {{-- DASHBOARD --}}
-                    <a
-                        href="{{ auth()->user()->role === 'admin'
+                   <a
+                        href="{{ in_array(auth()->user()->role, ['admin', 'manager'])
                             ? route('admin.dashboard')
                             : route('user.dashboard') }}"
                         class="flex items-center gap-3 px-3 py-2.5 text-sm text-white/70 hover:text-white rounded-xl hover:bg-white/5 transition-all duration-200"
