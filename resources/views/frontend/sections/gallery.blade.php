@@ -1,0 +1,244 @@
+<section class="relative bg-black py-28 px-6 overflow-hidden">
+
+    {{-- BACKGROUND --}}
+    <div class="absolute inset-0">
+
+        <div class="absolute top-0 left-0 w-96 h-96 bg-orange-500/10 blur-3xl rounded-full"></div>
+
+        <div class="absolute bottom-0 right-0 w-[32rem] h-[32rem] bg-orange-600/10 blur-3xl rounded-full"></div>
+
+    </div>
+
+
+    <div class="relative max-w-7xl mx-auto">
+
+        {{-- HEADER --}}
+        <div class="text-center mb-16">
+
+            <span class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-5 py-2 rounded-full text-sm font-semibold border border-orange-500/20">
+
+                <i class="fas fa-camera-retro"></i>
+
+                Gallery & Customer Moments
+
+            </span>
+
+
+            <h2 class="text-5xl md:text-6xl font-black text-white mt-6 leading-tight">
+
+                Momen Hangat
+                <span class="text-orange-500">
+                    Bersama Pelanggan
+                </span>
+
+            </h2>
+
+
+            <p class="text-gray-400 mt-6 max-w-3xl mx-auto leading-relaxed text-lg">
+
+                Ribuan pelanggan telah menikmati pengalaman kuliner terbaik
+                bersama keluarga, sahabat, dan orang tercinta di Sate Simpangtiga.
+
+            </p>
+
+        </div>
+
+
+
+        {{-- GALLERY --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+            @php
+
+                $galleries = [
+
+                    [
+                        'image' => 'gallery1.jpg',
+                        'title' => 'Family Dinner',
+                        'desc'  => 'Momen hangat bersama keluarga'
+                    ],
+
+                    [
+                        'image' => 'gallery2.jpg',
+                        'title' => 'Happy Customer',
+                        'desc'  => 'Pengalaman makan terbaik'
+                    ],
+
+                    [
+                        'image' => 'gallery3.jpg',
+                        'title' => 'Favorite Menu',
+                        'desc'  => 'Sate khas favorit pelanggan'
+                    ],
+
+                    [
+                        'image' => 'gallery4.jpg',
+                        'title' => 'Restaurant Interior',
+                        'desc'  => 'Suasana nyaman & modern'
+                    ],
+
+                    [
+                        'image' => 'gallery5.jpg',
+                        'title' => 'Quality Food',
+                        'desc'  => 'Hidangan premium terbaik'
+                    ],
+
+                    [
+                        'image' => 'gallery6.jpg',
+                        'title' => 'Best Experience',
+                        'desc'  => 'Pelayanan ramah & cepat'
+                    ],
+
+                    [
+                        'image' => 'gallery7.jpg',
+                        'title' => 'Special Moment',
+                        'desc'  => 'Momen spesial pelanggan'
+                    ],
+
+                    [
+                        'image' => 'gallery8.jpg',
+                        'title' => 'Traditional Taste',
+                        'desc'  => 'Cita rasa khas Indonesia'
+                    ],
+
+                ];
+
+            @endphp
+
+
+            @foreach($galleries as $gallery)
+
+                <div class="group relative overflow-hidden rounded-[2rem] h-80 border border-white/10 shadow-xl hover:shadow-orange-500/20 transition duration-500">
+
+                    {{-- IMAGE --}}
+                    <img
+                        src="{{ asset('images/gallery/' . $gallery['image']) }}"
+                        alt="{{ $gallery['title'] }}"
+                        class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                    >
+
+
+                    {{-- OVERLAY --}}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+
+                    {{-- HOVER EFFECT --}}
+                    <div class="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/10 transition duration-500"></div>
+
+
+                    {{-- CONTENT --}}
+                    <div class="absolute bottom-0 left-0 p-6">
+
+                        <h3 class="text-white font-bold text-xl">
+                            {{ $gallery['title'] }}
+                        </h3>
+
+                        <p class="text-gray-300 text-sm mt-1">
+                            {{ $gallery['desc'] }}
+                        </p>
+
+                    </div>
+
+
+                    {{-- ICON --}}
+                    <div class="absolute top-5 right-5 h-10 w-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition duration-500">
+
+                        <i class="fas fa-expand text-white text-sm"></i>
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+
+
+        {{-- VIDEO SECTION --}}
+        <div class="mt-28">
+
+            {{-- TITLE --}}
+            <div class="text-center mb-12">
+
+                <span class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-5 py-2 rounded-full text-sm font-semibold border border-orange-500/20">
+
+                    <i class="fas fa-video"></i>
+
+                    Restaurant Experience
+
+                </span>
+
+
+                <h3 class="text-5xl font-black text-white mt-6">
+
+                    Video
+                    <span class="text-orange-500">
+                        Gallery
+                    </span>
+
+                </h3>
+
+
+                <p class="text-gray-400 mt-4 text-lg">
+                    Rasakan suasana restoran kami secara langsung
+                </p>
+
+            </div>
+
+
+
+            {{-- VIDEO GRID --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                {{-- VIDEO 1 --}}
+                <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-orange-500/10">
+
+                    <video
+                        autoplay
+                        muted
+                        loop
+                        controls
+                        class="w-full h-[350px] object-cover"
+                    >
+
+                        <source
+                            src="{{ asset('videos/restaurant.mp4') }}"
+                            type="video/mp4"
+                        >
+
+                    </video>
+
+                </div>
+
+
+
+                {{-- VIDEO 2 --}}
+                <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-orange-500/10">
+
+                    <video
+                        autoplay
+                        muted
+                        loop
+                        controls
+                        class="w-full h-[350px] object-cover"
+                    >
+
+                        <source
+                            src="{{ asset('videos/restaurant2.mp4') }}"
+                            type="video/mp4"
+                        >
+
+                    </video>
+
+                </div>
+
+            </div>
+
+        </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
