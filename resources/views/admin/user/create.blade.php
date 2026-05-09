@@ -70,12 +70,12 @@
                     </label>
                     <select name="role" id="role" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200" required>
                         <option value="">Pilih Role</option>
+                        <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>Kasir</option>
-                        <option value="manajer" {{ old('role') == 'manajer' ? 'selected' : '' }}>Manajer</option>
+                        <option value="owner" {{ old('role') == 'owner' ? 'selected' : '' }}>Owner</option>
                     </select>
                     <p class="mt-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500">
-                        <strong>Admin:</strong> akses penuh, <strong>Kasir:</strong> transaksi, <strong>Manajer:</strong> laporan dan statistik.
+                        <strong>Manager:</strong> Full akses backend & CRUD, <strong>Admin:</strong> Hanya transaksi & reservasi, <strong>Owner:</strong> Read-only analytics dashboard.
                     </p>
                 </div>
             </div>

@@ -17,7 +17,7 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
             <h1 class="text-2xl font-bold tracking-tight text-slate-800 md:text-3xl">Kelola User</h1>
-            <p class="mt-1 text-sm text-slate-500">Atur akun admin, kasir, dan manajer dalam satu halaman.</p>
+            <p class="mt-1 text-sm text-slate-500">Atur akun admin, manager, dan owner dalam satu halaman.</p>
         </div>
         <a href="{{ route('admin.user.create') }}" class="btn-admin">
             <i class="fas fa-user-plus mr-1"></i>Tambah User
@@ -47,13 +47,13 @@
                 </div>
             </div>
         </div>
-        <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:ring-blue-200">
+        <div class="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 hover:ring-emerald-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Kasir + Manajer</p>
-                    <p class="mt-1 text-3xl font-bold text-slate-800">{{ $users->whereIn('role', ['kasir', 'manajer'])->count() }}</p>
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-400">Manager + Owner</p>
+                    <p class="mt-1 text-3xl font-bold text-slate-800">{{ $users->whereIn('role', ['manager', 'owner'])->count() }}</p>
                 </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg shadow-blue-200/50">
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50">
                     <i class="fas fa-user-cog"></i>
                 </div>
             </div>
@@ -94,12 +94,14 @@
                         </td>
                         <td class="px-6 py-4 text-sm text-slate-600">{{ $user->email }}</td>
                         <td class="px-6 py-4">
-                            @if($user->role == 'admin')
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 ring-1 ring-red-200/50"><span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>Admin</span>
-                            @elseif($user->role == 'kasir')
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200/50"><span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span>Kasir</span>
+                            @if($user->role == 'manager')
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200/50"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>Manager</span>
+                            @elseif($user->role == 'admin')
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200/50"><span class="h-1.5 w-1.5 rounded-full bg-blue-400"></span>Admin</span>
+                            @elseif($user->role == 'owner')
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 ring-1 ring-purple-200/50"><span class="h-1.5 w-1.5 rounded-full bg-purple-400"></span>Owner</span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700 ring-1 ring-purple-200/50"><span class="h-1.5 w-1.5 rounded-full bg-purple-400"></span>Manajer</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200/50"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{{ ucfirst($user->role) }}</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-xs text-slate-500">{{ $user->created_at->format('d M Y') }}</td>
