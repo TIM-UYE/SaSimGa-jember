@@ -1,8 +1,19 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KategoriMenuController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuSpecialController;
+use App\Http\Controllers\MenuSpecialItemController;
+use App\Http\Controllers\ReservasiController;
+use App\Http\Controllers\TestimoniController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
-<<<<<<< Updated upstream
-=======
 use App\Http\Controllers\MidtransWebhookController;
 
 
@@ -120,6 +131,7 @@ Route::get('/cart', [CartController::class, 'index'])
 
 Route::post('/cart/add/{id}', [CartController::class, 'add'])
     ->name('cart.add');
+    
 Route::post('/cart/special-item/add/{id}', [CartController::class, 'addSpecialItem'])
     ->name('cart.special-item.add');
     
@@ -184,8 +196,209 @@ Route::get('/payment/success/{kodeOrder}', [\App\Http\Controllers\PaymentControl
 Route::get('/login-redirect', function () {
 
     return redirect()->route('login');
->>>>>>> Stashed changes
 
-Route::get('/', function () {
-    return view('welcome');
 });
+
+
+// Guest only
+Route::middleware('guest')->group(function () {
+
+    Route::get('/login', [AuthController::class, 'showLoginForm'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])
+        ->name('register');
+
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+
+// Logout
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
+
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/profile', [AuthController::class, 'showProfile'])
+        ->name('profile');
+
+    Route::put('/profile', [AuthController::class, 'updateProfile'])
+        ->name('profile.update');
+
+    Route::put('/profile/password', [AuthController::class, 'updatePassword'])
+        ->name('profile.password');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| OWNER ROUTES (Read-only analytics dashboard)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:owner'])
+    ->prefix('owner')
+    ->name('owner.')
+    ->group(function () {
+
+        Route::get('/dashboard', [AnalyticsController::class, 'index'])
+            ->name('dashboard');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN / MANAGER ROUTES (Full access backend)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin,manager'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | DASHBOARD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/dashboard', function () {
+
+            return view('admin.dashboard');
+
+        })->name('dashboard');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ORDER MANAGEMENT
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/orders/stats', [OrderController::class, 'stats'])
+            ->name('orders.stats');
+
+        Route::get('/orders/{order}', [OrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+
+        Route::patch('/orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])
+            ->name('orders.updatePaymentStatus');
+
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
+            ->name('orders.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SPECIAL MENU CRUD (Manager only - sensitive)
+        |--------------------------------------------------------------------------
+        */
+
+        Route::middleware('role:manager')->group(function () {
+
+            Route::resource('menu-specials', MenuSpecialController::class)
+                ->except(['show']);
+
+            Route::post('/menu-specials/{menu_special}/items', [MenuSpecialItemController::class, 'store'])
+                ->name('menu-specials.items.store');
+
+            Route::patch('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'update'])
+                ->name('menu-specials.items.update');
+
+            Route::delete('/menu-specials/{menu_special}/items/{menu_special_item}', [MenuSpecialItemController::class, 'destroy'])
+                ->name('menu-specials.items.destroy');
+
+            /*
+            |--------------------------------------------------------------------------
+            | MENU CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('menu', MenuController::class)
+                ->except(['show']);
+
+            Route::get('/menu/{menu}', [MenuController::class, 'show'])
+                ->name('menu.show');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('kategori', KategoriMenuController::class);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TESTIMONI CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::post(
+                '/testimoni/sync',
+                [TestimoniController::class, 'syncGoogleMaps']
+            )->name('testimoni.sync');
+
+            Route::resource('testimoni', TestimoniController::class)
+                ->except(['show']);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | USER CRUD (Manager only)
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('user', UserController::class);
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESERVASI CRUD (Admin & Manager)
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/reservasi', [ReservasiController::class, 'index'])
+            ->name('reservasi.index');
+
+        Route::patch('/reservasi/{id}/status', [ReservasiController::class, 'updateStatus'])
+            ->name('reservasi.updateStatus');
+
+        Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])
+            ->name('reservasi.destroy');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| USER ROUTES (Public frontend users)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+
+        Route::get('/dashboard', [HomeController::class, 'index'])
+            ->name('dashboard');
+    });
