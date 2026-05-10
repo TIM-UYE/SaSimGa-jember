@@ -5,6 +5,7 @@
 @section('content')
 
     @include('frontend.sections.hero')
+    @include('frontend.sections.showcase')
     @include('frontend.sections.about')
     @include('frontend.sections.menu')
     @include('frontend.sections.reservasi')
