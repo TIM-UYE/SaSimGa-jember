@@ -121,3 +121,70 @@ overflow: hidden;
 will-change: transform;
 transition: transform 0.1s linear;
 }
+
+/* LOADER */
+
+#loader {
+
+transition:
+opacity 0.8s ease,
+visibility 0.8s ease;
+
+}
+
+/* FLOATING */
+
+.loader-image {
+
+animation:
+loaderFloat 2.5s ease-in-out infinite,
+loaderGlow 3s ease-in-out infinite;
+
+filter:
+drop-shadow(0 0 25px rgba(251,146,60,0.35));
+
+}
+
+/* FLOAT */
+
+@keyframes loaderFloat {
+
+0%,100% {
+transform: translateY(0px);
+}
+
+50% {
+transform: translateY(-12px);
+}
+
+}
+
+/* GLOW */
+
+@keyframes loaderGlow {
+
+0%,100% {
+opacity: 0.8;
+}
+
+50% {
+opacity: 1;
+}
+
+}
+
+#loader::before {
+
+content: "";
+
+position: absolute;
+inset: 0;
+
+background-image:
+url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+
+opacity: 0.08;
+
+pointer-events: none;
+
+}

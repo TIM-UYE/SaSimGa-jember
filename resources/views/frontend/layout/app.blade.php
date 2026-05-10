@@ -26,6 +26,14 @@
 
 <body class="bg-black text-white font-sans">
 
+    {{-- LOADER --}}
+    <div id="loader" class="fixed inset-0 z-[9999]
+    bg-black flex items-center justify-center">
+
+        <img src="{{ asset('images/logo/logo.png') }}" alt="Loader" class="loader-image w-28 md:w-36">
+
+    </div>
+
     @include('sweetalert::alert')
 
     @include('frontend.sections.navbar')
@@ -100,6 +108,22 @@
                     `scale(1.1) translateY(${scrolled * 0.04}px)`;
 
             });
+
+        });
+    </script>
+
+    <script>
+        window.addEventListener('load', () => {
+
+            const loader =
+                document.getElementById('loader');
+
+            setTimeout(() => {
+
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+
+            }, 1200);
 
         });
     </script>
