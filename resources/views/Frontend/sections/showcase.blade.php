@@ -1,9 +1,19 @@
 <section class="relative h-[220vh]">
 
+    {{-- TOP FADE --}}
+    <div
+        class="absolute top-0 left-0 w-full h-56
+        bg-gradient-to-b
+        from-black
+        via-black/70
+        to-transparent
+        z-20">
+    </div>
+
     {{-- FIXED BACKGROUND --}}
     <div class="fixed inset-0 -z-10">
 
-        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+        <video autoplay muted loop playsinline preload="auto" class="motion-video w-full h-full object-cover">
 
             <source src="{{ asset('videos/sate.mp4') }}" type="video/mp4">
 

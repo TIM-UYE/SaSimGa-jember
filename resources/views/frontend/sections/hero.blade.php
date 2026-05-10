@@ -2,7 +2,8 @@
 
     {{-- BACKGROUND --}}
     <div class="absolute inset-0">
-        <img src="{{ asset('images/hero/backgroundsate.png') }}" class="w-full h-full object-cover opacity-30 md:opacity-100">
+        <img src="{{ asset('images/hero/backgroundsate.png') }}"
+            class="w-full h-full object-cover opacity-30 md:opacity-100">
         {{-- DARK OVERLAY --}}
         <div class="absolute inset-0 bg-black/90 md:bg-black/60"></div>
         {{-- GRADIENT --}}
@@ -81,7 +82,13 @@
     </div>
 
     {{-- BOTTOM SHADOW --}}
-    <div class="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-b from-transparent to-black z-40">
+    <div
+        class="absolute bottom-0 left-0 w-full h-56
+    bg-gradient-to-b
+    from-transparent
+    via-black/60
+    to-black
+    z-20">
     </div>
 
 </section>

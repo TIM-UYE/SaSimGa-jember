@@ -164,10 +164,6 @@
 
     </div>
 
-    {{-- SHAPE BAWAH --}}
-    <div class="absolute bottom-0 left-0 w-full h-[150px] bg-black" style="clip-path: ellipse(70% 100% at 50% 100%);">
-    </div>
-
     {{-- MODAL DETAIL MENU --}}
     <div id="menuDetailModal"
         class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"

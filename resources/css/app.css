@@ -6,32 +6,32 @@
 @source '../**/*.js';
 
 @theme {
-    --color-primary: #eb8132;
-    --color-dark: #000000;
-    --color-light: #ffffff;
-    --color-muted: #9ca3af;
+--color-primary: #eb8132;
+--color-dark: #000000;
+--color-light: #ffffff;
+--color-muted: #9ca3af;
 
-    --font-body: 'Poppins', sans-serif;
-    --font-title: 'DM Serif Text', serif;
+--font-body: 'Poppins', sans-serif;
+--font-title: 'DM Serif Text', serif;
 
-    --font-sans: 'Poppins', sans-serif;
+--font-sans: 'Poppins', sans-serif;
 
-    --radius-main: 16px;
-    --shadow-main: 0 10px 25px rgba(0,0,0,0.2);
+--radius-main: 16px;
+--shadow-main: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 @layer base {
-    body {
-        @apply bg-black text-white font-sans;
-    }
+body {
+@apply bg-black text-white font-sans;
+}
 
-    h1, h2, h3 {
-        font-family: var(--font-title);
-    }
+h1, h2, h3 {
+font-family: var(--font-title);
+}
 
-    p {
-        @apply text-gray-400;
-    }
+p {
+@apply text-gray-400;
+}
 }
 
 /* ========================= */
@@ -42,37 +42,37 @@
 .reveal-left,
 .reveal-right,
 .reveal-scale {
-    opacity: 0;
-    transition: all 0.8s ease;
-    will-change: transform, opacity;
+opacity: 0;
+transition: all 0.8s ease;
+will-change: transform, opacity;
 }
 
 .reveal {
-    transform: translateY(40px);
+transform: translateY(40px);
 }
 
 .reveal-left {
-    transform: translateX(-60px);
+transform: translateX(-60px);
 }
 
 .reveal-right {
-    transform: translateX(60px);
+transform: translateX(60px);
 }
 
 .reveal-scale {
-    transform: scale(0.9);
+transform: scale(0.9);
 }
 
 .reveal.active,
 .reveal-left.active,
 .reveal-right.active,
 .reveal-scale.active {
-    opacity: 1;
-    transform: translate(0) scale(1);
+opacity: 1;
+transform: translate(0) scale(1);
 }
 
 .reveal[style*="--delay"] {
-    transition-delay: var(--delay);
+transition-delay: var(--delay);
 }
 
 /* ========================= */
@@ -86,16 +86,38 @@
 /* ========================= */
 
 @keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+from {
+opacity: 0;
+transform: translateY(20px) scale(0.95);
+}
+to {
+opacity: 1;
+transform: translateY(0) scale(1);
+}
 }
 
 .animate-fade-in-up {
-    animation: fade-in-up 0.4s ease-out forwards;
+animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* LENIS */
+
+html.lenis,
+html.lenis body {
+height: auto;
+}
+
+.lenis.lenis-smooth {
+scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+overflow: hidden;
+}
+
+/* PERFORMANCE */
+
+.motion-video {
+will-change: transform;
+transition: transform 0.1s linear;
 }
