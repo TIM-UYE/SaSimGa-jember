@@ -37,6 +37,7 @@ class Order extends Model
      */
     const STATUS_PENDING = 'pending';
     const STATUS_DIPROSES = 'diproses';
+    const STATUS_DIMASAK = 'dimasak';
     const STATUS_SIAP_DIAMBIL = 'siap_diambil';
     const STATUS_DIANTAR = 'diantar';
     const STATUS_SELESAI = 'selesai';
@@ -68,8 +69,9 @@ class Order extends Model
         return [
             self::STATUS_PENDING => 'Pending',
             self::STATUS_DIPROSES => 'Diproses',
+            self::STATUS_DIMASAK => 'Dimasak',
             self::STATUS_SIAP_DIAMBIL => 'Siap Diambil',
-            self::STATUS_DIANTAR => 'Diantar',
+            self::STATUS_DIANTAR => 'Dalam Pengantaran',
             self::STATUS_SELESAI => 'Selesai',
             self::STATUS_DIBATALKAN => 'Dibatalkan',
         ];
@@ -135,6 +137,14 @@ class Order extends Model
     }
 
     /**
+     * Relationship to order status histories
+     */
+    public function statusHistories()
+    {
+        return $this->hasMany(OrderStatusHistory::class)->orderBy('created_at', 'desc');
+    }
+
+    /**
      * Get the latest payment transaction
      */
     public function latestPayment()
@@ -180,6 +190,113 @@ class Order extends Model
     public function isActive(): bool
     {
         return !in_array($this->status, [self::STATUS_SELESAI, self::STATUS_DIBATALKAN]);
+    }
+
+    /**
+     * Get the next possible statuses based on current status and delivery method
+     */
+    public function getNextStatuses(): array
+    {
+        $flow = $this->getStatusFlow();
+
+        $currentIndex = array_search($this->status, array_keys($flow));
+        if ($currentIndex === false) {
+            return [];
+        }
+
+        $nextStatuses = [];
+        for ($i = $currentIndex + 1; $i < count($flow); $i++) {
+            $status = array_keys($flow)[$i];
+            $nextStatuses[$status] = $flow[$status];
+        }
+
+        return $nextStatuses;
+    }
+
+    /**
+     * Get the immediate next status
+     */
+    public function getNextStatus(): ?string
+    {
+        $nextStatuses = $this->getNextStatuses();
+        return !empty($nextStatuses) ? array_key_first($nextStatuses) : null;
+    }
+
+    /**
+     * Get status flow based on delivery method
+     */
+    public function getStatusFlow(): array
+    {
+        $baseFlow = [
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_DIPROSES => 'Diproses',
+            self::STATUS_DIMASAK => 'Dimasak',
+            self::STATUS_SIAP_DIAMBIL => 'Siap Diambil',
+        ];
+
+        if ($this->isDelivery()) {
+            $baseFlow[self::STATUS_DIANTAR] = 'Dalam Pengantaran';
+        }
+
+        $baseFlow[self::STATUS_SELESAI] = 'Selesai';
+
+        return $baseFlow;
+    }
+
+    /**
+     * Check if status can be changed to the given status
+     */
+    public function canChangeToStatus(string $newStatus): bool
+    {
+        // Cannot change completed or cancelled orders
+        if (!$this->isActive()) {
+            return false;
+        }
+
+        // Cannot go back to previous statuses
+        $flow = $this->getStatusFlow();
+        $currentIndex = array_search($this->status, array_keys($flow));
+        $newIndex = array_search($newStatus, array_keys($flow));
+
+        if ($newIndex === false || $newIndex <= $currentIndex) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get status color for UI
+     */
+    public function getStatusColor(): string
+    {
+        return match($this->status) {
+            self::STATUS_PENDING => 'amber',
+            self::STATUS_DIPROSES => 'blue',
+            self::STATUS_DIMASAK => 'orange',
+            self::STATUS_SIAP_DIAMBIL => 'green',
+            self::STATUS_DIANTAR => 'indigo',
+            self::STATUS_SELESAI => 'emerald',
+            self::STATUS_DIBATALKAN => 'red',
+            default => 'gray',
+        };
+    }
+
+    /**
+     * Get status icon for UI
+     */
+    public function getStatusIcon(): string
+    {
+        return match($this->status) {
+            self::STATUS_PENDING => 'fas fa-clock',
+            self::STATUS_DIPROSES => 'fas fa-cog',
+            self::STATUS_DIMASAK => 'fas fa-utensils',
+            self::STATUS_SIAP_DIAMBIL => 'fas fa-check-circle',
+            self::STATUS_DIANTAR => 'fas fa-truck',
+            self::STATUS_SELESAI => 'fas fa-check-double',
+            self::STATUS_DIBATALKAN => 'fas fa-times-circle',
+            default => 'fas fa-question-circle',
+        };
     }
 
     /**

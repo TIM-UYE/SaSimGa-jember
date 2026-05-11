@@ -105,6 +105,54 @@ class OrderController extends Controller
             $whatsappService->sendOrderStatusUpdate($order);
         }
 
+        // If AJAX request, return JSON response
+        if ($request->expectsJson() || $request->ajax()) {
+            $statusLabels = Order::getStatusLabels();
+            $paymentStatusLabels = Order::getPaymentStatusLabels();
+            $nextStatus = $order->getNextStatus();
+            $statusFlow = $order->getStatusFlow();
+            $currentIndex = array_search($order->status, array_keys($statusFlow));
+
+            $orderData = [
+                'id' => $order->id,
+                'kode_order' => $order->kode_order,
+                'nama_pelanggan' => $order->nama_pelanggan,
+                'nomor_hp' => $order->nomor_hp,
+                'metode_pengiriman' => $order->metode_pengiriman,
+                'metode_pembayaran' => $order->metode_pembayaran,
+                'total_bayar' => number_format($order->total_bayar, 0, ',', '.'),
+                'total_bayar_raw' => (float) $order->total_bayar,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'status_label' => $statusLabels[$order->status] ?? $order->status,
+                'payment_status_label' => $paymentStatusLabels[$order->payment_status] ?? $order->payment_status,
+                'status_color' => $order->getStatusColor(),
+                'status_icon' => $order->getStatusIcon(),
+                'next_status' => $nextStatus,
+                'next_status_label' => $nextStatus ? ($statusLabels[$nextStatus] ?? $nextStatus) : null,
+                'is_active' => $order->isActive(),
+                'created_at' => $order->created_at->format('d M Y, H:i'),
+                'detail_url' => route('admin.orders.show', $order),
+                'status_flow' => $statusFlow,
+                'current_index' => $currentIndex,
+                'flow_keys' => array_keys($statusFlow),
+            ];
+
+            $stats = [
+                'pending' => Order::where('status', Order::STATUS_PENDING)->count(),
+                'diproses' => Order::where('status', Order::STATUS_DIPROSES)->count(),
+                'siap_diambil' => Order::where('status', Order::STATUS_SIAP_DIAMBIL)->count(),
+                'selesai' => Order::where('status', Order::STATUS_SELESAI)->count(),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pesanan berhasil diubah!',
+                'order' => $orderData,
+                'stats' => $stats,
+            ]);
+        }
+
         return redirect()->back()
             ->with('success', 'Status pesanan berhasil diubah!');
     }
@@ -123,6 +171,84 @@ class OrderController extends Controller
 
         return redirect()->back()
             ->with('success', 'Status pembayaran berhasil diubah!');
+    }
+
+    /**
+     * AJAX Polling endpoint - returns JSON with updated orders data for auto-refresh
+     */
+    public function pollData(Request $request)
+    {
+        $status = $request->get('status', 'all');
+        $paymentStatus = $request->get('payment_status', 'all');
+        $search = $request->get('search', '');
+
+        $query = Order::with('items')->latest();
+
+        // Apply same filters as index
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+        if ($paymentStatus !== 'all') {
+            $query->where('payment_status', $paymentStatus);
+        }
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_order', 'like', "%{$search}%")
+                  ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+                  ->orWhere('nomor_hp', 'like', "%{$search}%");
+            });
+        }
+
+        $orders = $query->take(50)->get(); // Limit for polling performance
+
+        $statusLabels = Order::getStatusLabels();
+        $paymentStatusLabels = Order::getPaymentStatusLabels();
+
+        $ordersData = $orders->map(function ($order) use ($statusLabels, $paymentStatusLabels) {
+            $nextStatus = $order->getNextStatus();
+            $statusFlow = $order->getStatusFlow();
+            $currentIndex = array_search($order->status, array_keys($statusFlow));
+
+            return [
+                'id' => $order->id,
+                'kode_order' => $order->kode_order,
+                'nama_pelanggan' => $order->nama_pelanggan,
+                'nomor_hp' => $order->nomor_hp,
+                'metode_pengiriman' => $order->metode_pengiriman,
+                'metode_pembayaran' => $order->metode_pembayaran,
+                'total_bayar' => number_format($order->total_bayar, 0, ',', '.'),
+                'total_bayar_raw' => (float) $order->total_bayar,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'status_label' => $statusLabels[$order->status] ?? $order->status,
+                'payment_status_label' => $paymentStatusLabels[$order->payment_status] ?? $order->payment_status,
+                'status_color' => $order->getStatusColor(),
+                'status_icon' => $order->getStatusIcon(),
+                'next_status' => $nextStatus,
+                'next_status_label' => $nextStatus ? ($statusLabels[$nextStatus] ?? $nextStatus) : null,
+                'is_active' => $order->isActive(),
+                'created_at' => $order->created_at->format('d M Y, H:i'),
+                'detail_url' => route('admin.orders.show', $order),
+                'status_flow' => $statusFlow,
+                'current_index' => $currentIndex,
+                // Debug info for progress steps
+                'flow_keys' => array_keys($statusFlow),
+            ];
+        });
+
+        // Stats for dashboard cards
+        $stats = [
+            'pending' => Order::where('status', Order::STATUS_PENDING)->count(),
+            'diproses' => Order::where('status', Order::STATUS_DIPROSES)->count(),
+            'siap_diambil' => Order::where('status', Order::STATUS_SIAP_DIAMBIL)->count(),
+            'selesai' => Order::where('status', Order::STATUS_SELESAI)->count(),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'orders' => $ordersData,
+            'stats' => $stats,
+        ]);
     }
 
     /**
