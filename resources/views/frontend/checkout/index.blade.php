@@ -267,7 +267,7 @@
                                 </div>
                             </div>
 
-                            <button type="button" onclick="getLocationForCash()" 
+                            <button type="button" onclick="getLocationForCash()"
                                 class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <span id="location-btn-cash-text">Ambil Lokasi Terkini</span>
@@ -326,7 +326,7 @@
 
                             {{-- QRIS Location Input --}}
                             <div id="qris-location-section" class="hidden space-y-3">
-                                <button type="button" onclick="getLocationForQris()" 
+                                <button type="button" onclick="getLocationForQris()"
                                     class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
                                     <i class="fas fa-map-marker-alt"></i>
                                     <span id="location-btn-qris-text">Ambil Lokasi Terkini</span>
@@ -870,7 +870,7 @@
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
             .then(response => response.json())
             .then(data => {
-                const address = data.address_components ? 
+                const address = data.address_components ?
                     `${data.address.road || ''} ${data.address.house_number || ''}, ${data.address.city || data.address.town || ''}, ${data.address.province || ''}, ${data.address.postcode || ''}`.trim() :
                     data.display_name;
                 callback(address);

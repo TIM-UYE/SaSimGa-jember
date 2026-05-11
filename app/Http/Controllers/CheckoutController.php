@@ -68,7 +68,7 @@ class CheckoutController extends Controller
             } elseif ($validated['metode_pembayaran'] === 'qris') {
                 // For QRIS: Either location or manual address must be filled
                 $addressMethod = $validated['alamat_method'] ?? null;
-                
+
                 if ($addressMethod === 'location') {
                     if (empty($validated['alamat_qris_location'])) {
                         return redirect()->back()
