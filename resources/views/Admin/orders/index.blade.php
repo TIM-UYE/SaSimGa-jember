@@ -161,6 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // ========== MANUAL STATUS UPDATE (via button click) ==========
+    // Debounce tracker: prevent multiple rapid clicks on the same button
+    const pendingRequests = new Map();
 
     // Handle order status button clicks
     document.addEventListener('click', function(e) {
@@ -172,6 +174,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const orderId = button.dataset.orderId;
             const nextStatus = button.dataset.nextStatus;
             const nextLabel = button.dataset.nextLabel;
+
+            // CEK DOUBLE CLICK: jika request untuk order ini masih pending, tolak
+            if (pendingRequests.has(orderId)) {
+                Swal.fire({
+                    title: 'Mohon Tunggu',
+                    text: 'Permintaan sebelumnya masih diproses. Harap tunggu.',
+                    icon: 'warning',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                return;
+            }
 
             // Show confirmation dialog
             Swal.fire({
@@ -193,12 +207,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update order status via AJAX
     function updateOrderStatus(orderId, newStatus, button) {
+        // Tandai request sebagai pending (cegah double click)
+        pendingRequests.set(orderId, true);
+
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
         const spinner = button.querySelector('.status-spinner');
         const textSpan = button.querySelector('span');
         if (spinner) spinner.classList.remove('hidden');
         if (textSpan) textSpan.textContent = 'Memproses...';
+
+        // Tambahkan timeout safety — jika response tidak kunjung datang, unlock button setelah 30 detik
+        const safetyTimer = setTimeout(() => {
+            pendingRequests.delete(orderId);
+            button.disabled = false;
+            button.classList.remove('opacity-50', 'cursor-not-allowed');
+            if (spinner) spinner.classList.add('hidden');
+            if (textSpan) textSpan.textContent = button.dataset.nextLabel;
+        }, 30000);
 
         fetch(`/admin/orders/${orderId}/status`, {
             method: 'PATCH',
@@ -209,8 +235,14 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({ status: newStatus })
         })
-        .then(response => response.json())
+        .then(response => {
+            // Coba parse JSON, jika gagal jangan throw error mentah
+            return response.json().catch(() => {
+                throw new Error('Gagal membaca response server.');
+            });
+        })
         .then(data => {
+            clearTimeout(safetyTimer);
             if (data.success) {
                 if (data.order) updateOrderRow(orderId, data.order);
                 if (data.stats) updateDashboardStats(data.stats);
@@ -227,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
+            clearTimeout(safetyTimer);
             Swal.fire({
                 title: 'Error!',
                 text: error.message || 'Terjadi kesalahan.',
@@ -234,6 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .finally(() => {
+            // Hapus pending request
+            pendingRequests.delete(orderId);
+
             button.disabled = false;
             button.classList.remove('opacity-50', 'cursor-not-allowed');
             if (spinner) spinner.classList.add('hidden');

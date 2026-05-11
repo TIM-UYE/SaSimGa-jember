@@ -3,7 +3,7 @@
   <!-- LOGO -->
   <div class="px-6 py-6">
     <a href="" class="flex items-center text-white">
-      <img src="{{ asset('admin_assets/img/logo.png') }}" class="h-10 w-10 rounded-full mr-3 shadow-md">
+      <img src="{{ asset('images/logo/logo.png') }}" class="h-10 w-10 rounded-full mr-3 shadow-md">
       <div>
         <div class="font-bold text-lg">SaSimGa</div>
         <div class="text-xs opacity-80">
