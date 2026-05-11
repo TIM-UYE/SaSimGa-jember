@@ -3,31 +3,40 @@
     {{-- BACKGROUND GLOW --}}
     <div class="absolute inset-0">
 
-        <div class="absolute top-20 left-20 w-[500px] h-[500px]
-            bg-orange-300/20 rounded-full blur-3xl">
+        <div
+            class="absolute top-20 left-20
+            w-[500px] h-[500px]
+            bg-orange-300/20
+            rounded-full blur-3xl">
+        </div>
+
+        <div
+            class="absolute bottom-10 right-10
+            w-[400px] h-[400px]
+            bg-amber-300/10
+            rounded-full blur-3xl">
         </div>
 
     </div>
 
     {{-- MAIN TEXT --}}
-    <div class="relative z-10 flex items-center justify-center min-h-screen px-6">
+    <div class="relative z-20
+        flex items-center justify-center
+        min-h-screen px-6">
 
         <div class="max-w-5xl text-center">
 
             <h2
-                class="text-5xl md:text-7xl lg:text-8xl
-                font-bold leading-[0.95] tracking-tight text-black">
-
-                Hangatnya
-                <br>
-
-                Kebersamaan
-                <br>
-
-                Dalam Setiap
-                <br>
-
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
+                class="text-2xl md:text-3xl lg:text-4xl
+                font-bold leading-[0.95]
+                tracking-tight text-black">
+                Hangatnya Kebersamaan Dalam Setiap
+                <span
+                    class="text-transparent bg-clip-text
+                    bg-gradient-to-r
+                    from-orange-400
+                    via-orange-500
+                    to-amber-500">
 
                     Sajian
 
@@ -39,45 +48,34 @@
 
     </div>
 
-    {{-- FLOATING IMAGE 1 --}}
-    <img src="{{ asset('images/gallery/gallery1.jpg') }}"
-        class="absolute top-[18%] left-[8%]
-        w-40 md:w-56 rounded-3xl
-        shadow-2xl
-        object-cover
-        animate-float-slow">
+    {{-- DEPTH ORBIT --}}
+    <div class="depth-orbit">
 
-    {{-- FLOATING IMAGE 2 --}}
-    <img src="{{ asset('images/gallery/gallery2.jpg') }}"
-        class="absolute top-[22%] right-[10%]
-        w-52 md:w-72 rounded-3xl
-        shadow-2xl
-        object-cover
-        animate-float-medium">
+        {{-- ITEM 1 --}}
+        <div class="depth-item item-1">
+            <img src="{{ asset('images/gallery/gallery1.jpg') }}" alt="Gallery 1">
+        </div>
 
-    {{-- FLOATING IMAGE 3 --}}
-    <img src="{{ asset('images/gallery/gallery3.jpg') }}"
-        class="absolute bottom-[18%] left-[15%]
-        w-44 md:w-64 rounded-3xl
-        shadow-2xl
-        object-cover
-        animate-float-fast">
+        {{-- ITEM 2 --}}
+        <div class="depth-item item-2">
+            <img src="{{ asset('images/gallery/gallery2.jpg') }}" alt="Gallery 2">
+        </div>
 
-    {{-- FLOATING IMAGE 4 --}}
-    <img src="{{ asset('images/gallery/gallery4.jpg') }}"
-        class="absolute bottom-[12%] right-[14%]
-        w-48 md:w-60 rounded-3xl
-        shadow-2xl
-        object-cover
-        animate-float-medium">
+        {{-- ITEM 3 --}}
+        <div class="depth-item item-3">
+            <img src="{{ asset('images/gallery/gallery3.jpg') }}" alt="Gallery 3">
+        </div>
 
-    {{-- CENTER IMAGE --}}
-    <img src="{{ asset('images/gallery/gallery5.jpg') }}"
-        class="absolute top-1/2 left-1/2
-        -translate-x-1/2 -translate-y-1/2
-        w-60 md:w-80 rounded-3xl
-        shadow-2xl
-        object-cover
-        animate-float-slow">
+        {{-- ITEM 4 --}}
+        <div class="depth-item item-4">
+            <img src="{{ asset('images/gallery/gallery4.jpg') }}" alt="Gallery 4">
+        </div>
+
+        {{-- ITEM 5 --}}
+        <div class="depth-item item-5">
+            <img src="{{ asset('images/gallery/gallery5.jpg') }}" alt="Gallery 5">
+        </div>
+
+    </div>
 
 </section>
