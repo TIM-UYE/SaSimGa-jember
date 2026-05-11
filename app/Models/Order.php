@@ -231,10 +231,11 @@ class Order extends Model
             self::STATUS_PENDING => 'Pending',
             self::STATUS_DIPROSES => 'Diproses',
             self::STATUS_DIMASAK => 'Dimasak',
-            self::STATUS_SIAP_DIAMBIL => 'Siap Diambil',
         ];
 
-        if ($this->isDelivery()) {
+        if ($this->isPickup()) {
+            $baseFlow[self::STATUS_SIAP_DIAMBIL] = 'Siap Diambil';
+        } elseif ($this->isDelivery()) {
             $baseFlow[self::STATUS_DIANTAR] = 'Dalam Pengantaran';
         }
 

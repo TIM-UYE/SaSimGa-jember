@@ -253,23 +253,116 @@
                             Alamat Pengiriman
                         </h2>
 
-                        <div>
+                        {{-- ADDRESS METHOD FOR CASH PAYMENT --}}
+                        <div id="address-method-cash" class="hidden space-y-4">
+                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-lock-alt text-blue-400 text-lg mt-1"></i>
+                                    <div>
+                                        <p class="text-sm text-blue-300 font-semibold">Mode Pembayaran CASH</p>
+                                        <p class="text-xs text-gray-300 mt-1">
+                                            Alamat akan diambil secara otomatis dari lokasi terkini Anda untuk menghindari pesanan scam.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <label class="block text-sm font-semibold mb-2">
-                                Alamat Lengkap
-                            </label>
+                            <button type="button" onclick="getLocationForCash()" 
+                                class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="location-btn-cash-text">Ambil Lokasi Terkini</span>
+                            </button>
 
                             <textarea
                                 name="alamat"
+                                id="alamat_field_cash"
                                 rows="3"
-                                class="w-full bg-zinc-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500"
-                                placeholder="Masukkan alamat lengkap untuk pengiriman"
+                                class="w-full bg-zinc-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                placeholder="Alamat akan otomatis terisi dari lokasi terkini Anda"
+                                disabled
                             >{{ old('alamat') }}</textarea>
+
+                            <input type="hidden" name="latitude_cash" id="latitude_cash">
+                            <input type="hidden" name="longitude_cash" id="longitude_cash">
 
                             @error('alamat')
                                 <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                             @enderror
+                        </div>
 
+                        {{-- ADDRESS METHOD FOR QRIS PAYMENT --}}
+                        <div id="address-method-qris" class="hidden space-y-4">
+                            <div class="space-y-3">
+                                <label class="flex items-center cursor-pointer p-4 border-2 border-gray-700 rounded-xl hover:border-orange-500 hover:bg-orange-500/5 transition" id="qris-location-option">
+                                    <input
+                                        type="radio"
+                                        name="alamat_method"
+                                        value="location"
+                                        class="w-4 h-4 text-orange-500 peer"
+                                        onchange="toggleQrisAddressMethod('location')"
+                                    >
+                                    <span class="ml-3 flex-1">
+                                        <span class="font-semibold block">Gunakan Lokasi Terkini</span>
+                                        <span class="text-sm text-gray-400">Ambil alamat dari lokasi GPS Anda sekarang</span>
+                                    </span>
+                                    <i class="fas fa-map-marker-alt text-orange-500 text-xl"></i>
+                                </label>
+
+                                <label class="flex items-center cursor-pointer p-4 border-2 border-gray-700 rounded-xl hover:border-purple-500 hover:bg-purple-500/5 transition" id="qris-manual-option">
+                                    <input
+                                        type="radio"
+                                        name="alamat_method"
+                                        value="manual"
+                                        class="w-4 h-4 text-purple-500 peer"
+                                        onchange="toggleQrisAddressMethod('manual')"
+                                    >
+                                    <span class="ml-3 flex-1">
+                                        <span class="font-semibold block">Isi Alamat Sendiri</span>
+                                        <span class="text-sm text-gray-400">Masukkan alamat pengiriman secara manual</span>
+                                    </span>
+                                    <i class="fas fa-pen-square text-purple-500 text-xl"></i>
+                                </label>
+                            </div>
+
+                            {{-- QRIS Location Input --}}
+                            <div id="qris-location-section" class="hidden space-y-3">
+                                <button type="button" onclick="getLocationForQris()" 
+                                    class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="location-btn-qris-text">Ambil Lokasi Terkini</span>
+                                </button>
+
+                                <textarea
+                                    name="alamat_qris_location"
+                                    id="alamat_field_qris"
+                                    rows="3"
+                                    class="w-full bg-zinc-800 border border-green-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    placeholder="Alamat akan otomatis terisi dari lokasi Anda"
+                                    disabled
+                                >{{ old('alamat_qris_location') }}</textarea>
+
+                                <input type="hidden" name="latitude_qris" id="latitude_qris">
+                                <input type="hidden" name="longitude_qris" id="longitude_qris">
+                            </div>
+
+                            {{-- QRIS Manual Input --}}
+                            <div id="qris-manual-section" class="hidden">
+                                <label class="block text-sm font-semibold mb-2">
+                                    Alamat Lengkap
+                                </label>
+
+                                <textarea
+                                    name="alamat_qris_manual"
+                                    id="alamat_field_manual"
+                                    rows="3"
+                                    class="w-full bg-zinc-800 border border-purple-700/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500"
+                                    placeholder="Masukkan alamat lengkap untuk pengiriman"
+                                >{{ old('alamat_qris_manual') }}</textarea>
+                            </div>
+
+                            @error('alamat')
+                                <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
                     </div>
@@ -580,6 +673,7 @@
                 addressSection.classList.add('hidden');
             }
             updateOngkirStatus();
+            updateAddressMethods();
         });
     });
 
@@ -587,6 +681,7 @@
     if (document.querySelector('input[name="metode_pengiriman"]:checked')?.value === 'delivery') {
         document.getElementById('address-section').classList.remove('hidden');
         updateOngkirStatus();
+        updateAddressMethods();
     }
 
     // Summary Modal Functions
@@ -641,6 +736,149 @@
                 infoQris.classList.remove('hidden');
             }
         }
+
+        // Update address methods based on payment method
+        updateAddressMethods();
+    }
+
+    // Update address methods based on payment method
+    function updateAddressMethods() {
+        const pengiriman = document.querySelector('input[name="metode_pengiriman"]:checked');
+        const pembayaran = document.querySelector('input[name="metode_pembayaran"]:checked');
+        const addressMethodCash = document.getElementById('address-method-cash');
+        const addressMethodQris = document.getElementById('address-method-qris');
+
+        // Hide both methods first
+        addressMethodCash.classList.add('hidden');
+        addressMethodQris.classList.add('hidden');
+
+        // Show appropriate method if delivery is selected
+        if (pengiriman && pengiriman.value === 'delivery') {
+            if (pembayaran) {
+                if (pembayaran.value === 'cash') {
+                    addressMethodCash.classList.remove('hidden');
+                } else if (pembayaran.value === 'qris') {
+                    addressMethodQris.classList.remove('hidden');
+                    // Set default for QRIS if not set
+                    if (!document.querySelector('input[name="alamat_method"]:checked')) {
+                        document.querySelector('input[name="alamat_method"][value="location"]').checked = true;
+                        toggleQrisAddressMethod('location');
+                    }
+                }
+            }
+        }
+    }
+
+    // Toggle between location and manual for QRIS
+    function toggleQrisAddressMethod(method) {
+        const locationSection = document.getElementById('qris-location-section');
+        const manualSection = document.getElementById('qris-manual-section');
+
+        if (method === 'location') {
+            locationSection.classList.remove('hidden');
+            manualSection.classList.add('hidden');
+        } else {
+            locationSection.classList.add('hidden');
+            manualSection.classList.remove('hidden');
+        }
+    }
+
+    // Get location for CASH payment
+    function getLocationForCash() {
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span id="location-btn-cash-text">Mengambil lokasi...</span>';
+
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    document.getElementById('latitude_cash').value = lat;
+                    document.getElementById('longitude_cash').value = lon;
+
+                    // Reverse geocoding to get address
+                    reverseGeocode(lat, lon, function(address) {
+                        document.getElementById('alamat_field_cash').value = address || `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+                },
+                function(error) {
+                    alert('Error mendapatkan lokasi: ' + error.message);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert('Geolocation tidak didukung oleh browser Anda');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+    // Get location for QRIS payment
+    function getLocationForQris() {
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span id="location-btn-qris-text">Mengambil lokasi...</span>';
+
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    document.getElementById('latitude_qris').value = lat;
+                    document.getElementById('longitude_qris').value = lon;
+
+                    // Reverse geocoding to get address
+                    reverseGeocode(lat, lon, function(address) {
+                        document.getElementById('alamat_field_qris').value = address || `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    });
+                },
+                function(error) {
+                    alert('Error mendapatkan lokasi: ' + error.message);
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        } else {
+            alert('Geolocation tidak didukung oleh browser Anda');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+    // Reverse geocoding using OpenStreetMap Nominatim API
+    function reverseGeocode(lat, lon, callback) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(response => response.json())
+            .then(data => {
+                const address = data.address_components ? 
+                    `${data.address.road || ''} ${data.address.house_number || ''}, ${data.address.city || data.address.town || ''}, ${data.address.province || ''}, ${data.address.postcode || ''}`.trim() :
+                    data.display_name;
+                callback(address);
+            })
+            .catch(error => {
+                console.error('Reverse geocoding error:', error);
+                callback(null);
+            });
     }
 
     // Add event listeners for payment method

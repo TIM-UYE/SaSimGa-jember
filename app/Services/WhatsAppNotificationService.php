@@ -15,18 +15,40 @@ class WhatsAppNotificationService
     }
 
     /**
-     * Send status update notification to customer
+     * Send order created notification to customer
      */
-    public function sendStatusUpdate(Order $order, string $status): bool
+    public function sendOrderCreated(Order $order): bool
     {
-        $messages = $this->getStatusMessages();
+        $messages = $this->getOrderCreatedMessages();
 
-        if (!isset($messages[$status])) {
-            Log::warning("No WhatsApp message defined for status: {$status}");
-            return false;
+        $message = $this->formatMessage($messages[$order->metode_pembayaran], $order);
+
+        // Replace payment link placeholder for QRIS payments
+        if ($order->isQRISPayment()) {
+            $paymentLink = route('payment.snap', $order->kode_order);
+            $message = str_replace('{payment_link}', $paymentLink, $message);
         }
 
-        $message = $this->formatMessage($messages[$status], $order);
+        return $this->whatsappService->sendToCustomer($order->nomor_hp, $message);
+    }
+
+    /**
+     * Send payment success notification to customer
+     */
+    public function sendPaymentSuccess(Order $order): bool
+    {
+        \Illuminate\Support\Facades\Log::info('WhatsAppNotificationService: sendPaymentSuccess called', [
+            'order_id' => $order->id,
+            'kode_order' => $order->kode_order,
+            'nomor_hp' => $order->nomor_hp,
+        ]);
+
+        $message = $this->getPaymentSuccessMessage($order);
+
+        \Illuminate\Support\Facades\Log::info('WhatsAppNotificationService: sending message', [
+            'order_id' => $order->id,
+            'message' => $message,
+        ]);
 
         return $this->whatsappService->sendToCustomer($order->nomor_hp, $message);
     }
@@ -44,6 +66,28 @@ class WhatsAppNotificationService
             Order::STATUS_DIANTAR => "Pesanan Anda sedang diantar driver.",
             Order::STATUS_SELESAI => "Pesanan selesai. Terima kasih telah memesan ❤️",
         ];
+    }
+
+    /**
+     * Get order created messages based on payment method
+     */
+    protected function getOrderCreatedMessages(): array
+    {
+        return [
+            Order::PAYMENT_QRIS => "Halo {nama_pelanggan}, pesanan Anda dengan ID {order_id} telah diterima! 🎉\n\nSilakan lakukan pembayaran melalui QRIS agar pesanan segera diproses.\n\n💳 Link pembayaran: {payment_link}\n\nMohon segera bayar agar tidak expired.",
+            Order::PAYMENT_CASH => "Halo {nama_pelanggan}, pesanan Anda dengan ID {order_id} telah diterima! 🎉\n\nPesanan Anda sedang diproses. Mohon tunggu sebentar ya.",
+        ];
+    }
+
+    /**
+     * Get payment success message
+     */
+    protected function getPaymentSuccessMessage(Order $order): string
+    {
+        $message = "Halo {nama_pelanggan}, pembayaran untuk pesanan {order_id} telah berhasil! ✅\n\n";
+        $message .= "Pesanan Anda sedang diproses oleh restoran. Mohon ditunggu ya.";
+
+        return $this->formatMessage($message, $order);
     }
 
     /**

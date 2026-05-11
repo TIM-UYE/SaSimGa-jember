@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\PaymentTransaction;
+use App\Services\WhatsAppNotificationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
@@ -11,11 +12,15 @@ use Midtrans\Snap;
 
 class MidtransSnapService
 {
+    protected WhatsAppNotificationService $whatsappNotificationService;
+
     /**
      * Initialize Midtrans configuration
      */
-    public function __construct()
+    public function __construct(WhatsAppNotificationService $whatsappNotificationService)
     {
+        $this->whatsappNotificationService = $whatsappNotificationService;
+
         Config::$serverKey = config('midtrans.server_key');
         Config::$clientKey = config('midtrans.client_key');
         Config::$isProduction = config('midtrans.environment') === 'production';
@@ -242,6 +247,26 @@ class MidtransSnapService
                     'payment_status' => Order::PAYMENT_PAID,
                     'status' => Order::STATUS_DIPROSES,
                 ]);
+
+                // Send WhatsApp notification for successful payment
+                try {
+                    Log::info('Sending payment success WA notification', [
+                        'order_id' => $order->id,
+                        'kode_order' => $order->kode_order,
+                        'nomor_hp' => $order->nomor_hp,
+                    ]);
+                    $this->whatsappNotificationService->sendPaymentSuccess($order);
+                    Log::info('Payment success WA notification sent successfully', [
+                        'order_id' => $order->id,
+                        'kode_order' => $order->kode_order,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Failed to send payment success WA notification', [
+                        'order_id' => $order->id,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
                 break;
 
             case 'failed':
