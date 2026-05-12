@@ -4,30 +4,26 @@
     <div class="absolute inset-0 pointer-events-none z-0">
 
         <div
-            class="glow-blob glow-blob-1
-            absolute top-[8%] left-[5%]
-            w-[520px] h-[520px]
-            bg-orange-500/10
-            rounded-full blur-3xl">
+            class="absolute top-[10%] left-[5%]
+            w-[500px] h-[500px]
+            bg-orange-500/10 rounded-full blur-3xl">
         </div>
 
         <div
-            class="glow-blob glow-blob-2
-            absolute bottom-[5%] right-[8%]
-            w-[420px] h-[420px]
-            bg-amber-500/10
-            rounded-full blur-3xl">
+            class="absolute bottom-[5%] right-[5%]
+            w-[400px] h-[400px]
+            bg-amber-500/10 rounded-full blur-3xl">
         </div>
 
     </div>
 
-    {{-- BACK ORBIT --}}
-    <div class="orbit-scene orbit-back">
+    {{-- ORBIT --}}
+    <div class="orbit-scene">
 
-        <div class="orbit-world" id="orbitBack">
+        <div class="orbit-world" id="orbitWorld">
 
-            @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $index => $img)
-                <div class="orbit-card orbit-back-card {{ ['orbit-sm', 'orbit-md', 'orbit-lg'][$index % 3] }}">
+            @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $img)
+                <div class="orbit-card">
 
                     <div class="orbit-float">
 
@@ -47,13 +43,13 @@
 
     </div>
 
-    {{-- CENTER TEXT --}}
+    {{-- TEXT --}}
     <div class="relative z-30
+        min-h-screen
         flex items-center justify-center
-        min-h-screen px-6">
+        px-6">
 
-        <div class="text-center max-w-5xl
-            gallery-headline">
+        <div class="text-center max-w-5xl">
 
             <h2
                 class="text-3xl md:text-5xl lg:text-6xl
@@ -76,32 +72,6 @@
                 </span>
 
             </h2>
-
-        </div>
-
-    </div>
-
-    {{-- FRONT ORBIT --}}
-    <div class="orbit-scene orbit-front">
-
-        <div class="orbit-world" id="orbitFront">
-
-            @foreach ([3, 4, 5, 1, 2, 3, 4, 5, 1, 2] as $index => $img)
-                <div class="orbit-card orbit-front-card {{ ['orbit-sm', 'orbit-md', 'orbit-lg'][$index % 3] }}">
-
-                    <div class="orbit-float">
-
-                        <div class="orbit-face">
-
-                            <img src="{{ asset('images/gallery/gallery' . $img . '.jpg') }}" loading="lazy"
-                                alt="Gallery Image">
-
-                        </div>
-
-                    </div>
-
-                </div>
-            @endforeach
 
         </div>
 

@@ -14,23 +14,19 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
         const angle = (360 / cards.length) * index;
 
-        /* ORBIT RADIUS */
+        /* RADIUS */
         const radius = safeZone + radiusMin + Math.random() * (radiusMax - radiusMin);
 
-        /* SPREAD LIKE REFERENCE */
+        /* SPREAD */
         const offsetY = (Math.random() - 0.5) * 180;
 
         /* SMALL TILT */
         const rotateZ = (Math.random() - 0.5) * 2;
 
-        /* BASE SCALE */
-        const scale = 1;
-
         card.dataset.angle = angle;
         card.dataset.radius = radius;
         card.dataset.offsetY = offsetY;
         card.dataset.rotateZ = rotateZ;
-        card.dataset.scale = scale;
 
     });
 
@@ -50,22 +46,19 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
             const rotateZ = parseFloat(card.dataset.rotateZ);
 
-            const scale = parseFloat(card.dataset.scale);
-
             const finalAngle = angle + rotation;
 
             /* DEPTH */
             const depth = Math.cos(finalAngle * Math.PI / 180);
 
-            /* SCALE DEPTH */
+            /*
+                belakang = kecil
+                depan    = besar
+            */
+
             const perspectiveScale = ((depth + 1) / 2);
 
-            /*
-    belakang  = kecil
-    depan     = besar
-*/
-
-            const dynamicScale = 0.55 + (perspectiveScale * 0.75);
+            const dynamicScale = 0.72 + (perspectiveScale * 0.55);
 
             /* BRIGHTNESS */
             const dynamicBrightness = 0.82 + ((depth + 1) / 2) * 0.18;
@@ -88,8 +81,11 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
                 scale(${dynamicScale})
             `;
 
-            card.style.filter = `brightness(${dynamicBrightness})
-     blur(${depthBlur}px)`;
+            /* DEPTH EFFECT */
+            card.style.filter = `
+                brightness(${dynamicBrightness})
+                blur(${depthBlur}px)
+            `;
 
             card.style.zIndex = dynamicZ;
 
@@ -103,12 +99,6 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
 }
 
-/* =========================
-   INIT
-========================= */
+/* INIT */
 
-/* BACK */
-createOrbit("orbitBack", 0.09, 420, 500);
-
-/* FRONT */
-createOrbit("orbitFront", -0.09, 440, 540);
+createOrbit("orbitWorld", 0.09, 370, 490);
