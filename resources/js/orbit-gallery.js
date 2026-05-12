@@ -101,4 +101,4 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
 /* INIT */
 
-createOrbit("orbitWorld", 0.09, 370, 490);
+createOrbit("orbitWorld", 0.09, 370, 520);
