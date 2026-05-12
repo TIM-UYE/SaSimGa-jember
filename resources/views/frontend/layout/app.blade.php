@@ -128,6 +128,100 @@
         });
     </script>
 
+    <script>
+        /**
+         * Orbit Gallery — Pause on hover, touch drag direction
+         */
+        (function() {
+            const world = document.querySelector('.orbit-world');
+            if (!world) return;
+
+            /* ── Touch drag untuk mobile ── */
+            let startX = 0;
+            let startAngle = 0;
+            let currentAngle = 0;
+            let isDragging = false;
+            let dragVelocity = 0;
+            let lastX = 0;
+            let rafId = null;
+            let isPaused = false;
+
+            /* Ambil current rotateY dari computed style */
+            function getCurrentAngle() {
+                const mat = new DOMMatrix(getComputedStyle(world).transform);
+                return Math.round(Math.atan2(mat.m13, mat.m33) * (180 / Math.PI));
+            }
+
+            function pauseAnimation() {
+                if (!isPaused) {
+                    currentAngle = getCurrentAngle();
+                    world.style.animationPlayState = 'paused';
+                    world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
+                    isPaused = true;
+                }
+            }
+
+            function resumeAnimation() {
+                if (isPaused && !isDragging) {
+                    world.style.transform = '';
+                    world.style.animationPlayState = 'running';
+                    isPaused = false;
+                }
+            }
+
+            /* Touch events */
+            world.addEventListener('touchstart', (e) => {
+                pauseAnimation();
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                lastX = startX;
+                startAngle = currentAngle;
+                if (rafId) cancelAnimationFrame(rafId);
+            }, {
+                passive: true
+            });
+
+            world.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const dx = e.touches[0].clientX - startX;
+                dragVelocity = e.touches[0].clientX - lastX;
+                lastX = e.touches[0].clientX;
+                currentAngle = startAngle + dx * 0.35;
+                world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
+            }, {
+                passive: true
+            });
+
+            world.addEventListener('touchend', () => {
+                isDragging = false;
+                /* Momentum: lanjutkan rotasi perlahan lalu resume animation */
+                let momentum = dragVelocity * 0.35;
+
+                function coast() {
+                    if (Math.abs(momentum) < 0.1) {
+                        resumeAnimation();
+                        return;
+                    }
+                    currentAngle += momentum;
+                    momentum *= 0.94;
+                    world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
+                    rafId = requestAnimationFrame(coast);
+                }
+                coast();
+            });
+
+            /* Accessibility: prefers-reduced-motion */
+            const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (mq.matches) {
+                world.style.animationPlayState = 'paused';
+            }
+            mq.addEventListener('change', (e) => {
+                world.style.animationPlayState = e.matches ? 'paused' : 'running';
+            });
+
+        })();
+    </script>
+
     @stack('scripts')
 
 </body>

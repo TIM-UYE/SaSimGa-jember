@@ -6,32 +6,34 @@
 @source '../**/*.js';
 
 @theme {
---color-primary: #eb8132;
---color-dark: #000000;
---color-light: #ffffff;
---color-muted: #9ca3af;
+    --color-primary: #eb8132;
+    --color-dark: #000000;
+    --color-light: #ffffff;
+    --color-muted: #9ca3af;
 
---font-body: 'Poppins', sans-serif;
---font-title: 'DM Serif Text', serif;
+    --font-body: 'Poppins', sans-serif;
+    --font-title: 'DM Serif Text', serif;
 
---font-sans: 'Poppins', sans-serif;
+    --font-sans: 'Poppins', sans-serif;
 
---radius-main: 16px;
---shadow-main: 0 10px 25px rgba(0,0,0,0.2);
+    --radius-main: 16px;
+    --shadow-main: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 @layer base {
-body {
-@apply bg-black text-white font-sans;
-}
+    body {
+        @apply bg-black text-white font-sans;
+    }
 
-h1, h2, h3 {
-font-family: var(--font-title);
-}
+    h1,
+    h2,
+    h3 {
+        font-family: var(--font-title);
+    }
 
-p {
-@apply text-gray-400;
-}
+    p {
+        @apply text-gray-400;
+    }
 }
 
 /* ========================= */
@@ -42,37 +44,37 @@ p {
 .reveal-left,
 .reveal-right,
 .reveal-scale {
-opacity: 0;
-transition: all 0.8s ease;
-will-change: transform, opacity;
+    opacity: 0;
+    transition: all 0.8s ease;
+    will-change: transform, opacity;
 }
 
 .reveal {
-transform: translateY(40px);
+    transform: translateY(40px);
 }
 
 .reveal-left {
-transform: translateX(-60px);
+    transform: translateX(-60px);
 }
 
 .reveal-right {
-transform: translateX(60px);
+    transform: translateX(60px);
 }
 
 .reveal-scale {
-transform: scale(0.9);
+    transform: scale(0.9);
 }
 
-.reveal.active,
 .reveal-left.active,
 .reveal-right.active,
-.reveal-scale.active {
-opacity: 1;
-transform: translate(0) scale(1);
+.reveal-scale.active,
+.reveal.active {
+    opacity: 1;
+    transform: translate(0) scale(1);
 }
 
 .reveal[style*="--delay"] {
-transition-delay: var(--delay);
+    transition-delay: var(--delay);
 }
 
 /* ========================= */
@@ -86,49 +88,47 @@ transition-delay: var(--delay);
 /* ========================= */
 
 @keyframes fade-in-up {
-from {
-opacity: 0;
-transform: translateY(20px) scale(0.95);
-}
-to {
-opacity: 1;
-transform: translateY(0) scale(1);
-}
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .animate-fade-in-up {
-animation: fade-in-up 0.4s ease-out forwards;
+    animation: fade-in-up 0.4s ease-out forwards;
 }
 
 /* LENIS */
 
 html.lenis,
 html.lenis body {
-height: auto;
+    height: auto;
 }
 
 .lenis.lenis-smooth {
-scroll-behavior: auto !important;
+    scroll-behavior: auto !important;
 }
 
 .lenis.lenis-stopped {
-overflow: hidden;
+    overflow: hidden;
 }
 
 /* PERFORMANCE */
 
 .motion-video {
-will-change: transform;
-transition: transform 0.1s linear;
+    will-change: transform;
+    transition: transform 0.1s linear;
 }
 
 /* LOADER */
 
 #loader {
 
-transition:
-opacity 0.8s ease,
-visibility 0.8s ease;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
 
 }
 
@@ -136,12 +136,9 @@ visibility 0.8s ease;
 
 .loader-image {
 
-animation:
-loaderFloat 2.5s ease-in-out infinite,
-loaderGlow 3s ease-in-out infinite;
+    animation: loaderFloat 2.5s ease-in-out infinite, loaderGlow 3s ease-in-out infinite;
 
-filter:
-drop-shadow(0 0 25px rgba(251,146,60,0.35));
+    filter: drop-shadow(0 0 25px rgba(251,146,60,0.35));
 
 }
 
@@ -149,13 +146,14 @@ drop-shadow(0 0 25px rgba(251,146,60,0.35));
 
 @keyframes loaderFloat {
 
-0%,100% {
-transform: translateY(0px);
-}
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
 
-50% {
-transform: translateY(-12px);
-}
+    50% {
+        transform: translateY(-12px);
+    }
 
 }
 
@@ -163,29 +161,29 @@ transform: translateY(-12px);
 
 @keyframes loaderGlow {
 
-0%,100% {
-opacity: 0.8;
-}
+    0%,
+    100% {
+        opacity: 0.8;
+    }
 
-50% {
-opacity: 1;
-}
+    50% {
+        opacity: 1;
+    }
 
 }
 
 #loader::before {
 
-content: "";
+    content: "";
 
-position: absolute;
-inset: 0;
+    position: absolute;
+    inset: 0;
 
-background-image:
-url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+    background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
 
-opacity: 0.08;
+    opacity: 0.08;
 
-pointer-events: none;
+    pointer-events: none;
 
 }
 
@@ -193,74 +191,16 @@ pointer-events: none;
 
 .depth-orbit {
 
-position: absolute;
-inset: 0;
+    position: absolute;
+    inset: 0;
 
-display: flex;
-align-items: center;
-justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-perspective: 2000px;
+    perspective: 2000px;
 
-pointer-events: none;
-
-}
-
-/* ITEM */
-
-.depth-item {
-
-position: absolute;
-
-animation:
-depthOrbit 18s linear infinite;
-
-}
-
-/* IMAGE */
-
-.depth-item img {
-
-width: 240px;
-height: 320px;
-
-object-fit: cover;
-
-border-radius: 28px;
-
-box-shadow:
-0 25px 60px rgba(0,0,0,0.25);
-
-}
-
-/* DELAY */
-
-.item-1 { animation-delay: 0s; }
-
-.item-2 { animation-delay: -3.6s; }
-
-.item-3 { animation-delay: -7.2s; }
-
-.item-4 { animation-delay: -10.8s; }
-
-.item-5 { animation-delay: -14.4s; }
-
-/* =========================
-DEPTH ORBIT GALLERY
-========================= */
-
-.depth-orbit {
-
-position: absolute;
-inset: 0;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-overflow: hidden;
-
-pointer-events: none;
+    pointer-events: none;
 
 }
 
@@ -268,14 +208,9 @@ pointer-events: none;
 
 .depth-item {
 
-position: absolute;
+    position: absolute;
 
-animation:
-depthOrbit 18s linear infinite;
-
-will-change:
-transform,
-opacity;
+    animation: depthOrbit 18s linear infinite;
 
 }
 
@@ -283,199 +218,341 @@ opacity;
 
 .depth-item img {
 
-width: 220px;
-height: 300px;
+    width: 240px;
+    height: 320px;
 
-object-fit: cover;
+    object-fit: cover;
 
-border-radius: 28px;
+    border-radius: 28px;
 
-box-shadow:
-0 25px 60px rgba(0,0,0,0.22);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
 
 }
 
 /* DELAY */
 
 .item-1 {
-animation-delay: 0s;
+    animation-delay: 0s;
 }
 
 .item-2 {
-animation-delay: -3.6s;
+    animation-delay: -3.6s;
 }
 
 .item-3 {
-animation-delay: -7.2s;
+    animation-delay: -7.2s;
 }
 
 .item-4 {
-animation-delay: -10.8s;
+    animation-delay: -10.8s;
 }
 
 .item-5 {
-animation-delay: -14.4s;
+    animation-delay: -14.4s;
 }
 
-/* =========================
-DEPTH ANIMATION
-========================= */
+/* =========================================================
+CINEMATIC ORBIT GALLERY — V2
+========================================================= */
 
-@keyframes depthOrbit {
+.orbit-scene {
 
-0% {
+    position: absolute;
+    inset: 0;
 
-transform:
-translateX(-650px)
-scale(0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-opacity: 0.12;
+    perspective: 1800px;
+    perspective-origin: center;
 
-filter:
-blur(4px);
+    overflow: hidden;
 
-z-index: 1;
+    z-index: 10;
 
-}
-
-25% {
-
-transform:
-translateX(-320px)
-scale(0.75);
-
-opacity: 0.55;
-
-filter:
-blur(1px);
-
-z-index: 5;
+    pointer-events: none;
 
 }
 
-50% {
+/* =========================================================
+WORLD
+========================================================= */
 
-transform:
-translateX(0px)
-scale(1.3);
+.orbit-world {
 
-opacity: 1;
+    position: relative;
 
-filter:
-blur(0px);
+    width: 1000px;
+    height: 700px;
 
-z-index: 20;
+    transform-style: preserve-3d;
 
-}
-
-75% {
-
-transform:
-translateX(320px)
-scale(0.75);
-
-opacity: 0.55;
-
-filter:
-blur(1px);
-
-z-index: 5;
+    animation: orbitRotate 42s linear infinite;
 
 }
 
-100% {
+/* Pause on hover */
 
-transform:
-translateX(650px)
-scale(0.45);
+.orbit-world:hover {
 
-opacity: 0.12;
-
-filter:
-blur(4px);
-
-z-index: 1;
+    animation-play-state: paused;
 
 }
 
+/* =========================================================
+ORBIT ROTATION
+========================================================= */
+
+@keyframes orbitRotate {
+
+    from {
+
+        transform: rotateX(-8deg) rotateY(0deg);
+
+    }
+
+    to {
+
+        transform: rotateX(-8deg) rotateY(360deg);
+
+    }
+
 }
 
-/* =========================
+/* =========================================================
+CARD
+========================================================= */
+
+.orbit-card {
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 240px;
+    height: 320px;
+
+    margin-left: -120px;
+    margin-top: -160px;
+
+    transform-style: preserve-3d;
+
+    pointer-events: auto;
+
+}
+
+/* =========================================================
+POSITION — DEPTH CHAOS
+========================================================= */
+
+.orbit-card-1 {
+
+    transform: rotateY(0deg) translateZ(520px) translateY(-40px) rotateZ(-6deg);
+
+}
+
+.orbit-card-2 {
+
+    transform: rotateY(72deg) translateZ(600px) translateY(10px) rotateZ(4deg);
+
+}
+
+.orbit-card-3 {
+
+    transform: rotateY(144deg) translateZ(480px) translateY(50px) rotateZ(-4deg);
+
+}
+
+.orbit-card-4 {
+
+    transform: rotateY(216deg) translateZ(580px) translateY(-20px) rotateZ(6deg);
+
+}
+
+.orbit-card-5 {
+
+    transform: rotateY(288deg) translateZ(500px) translateY(30px) rotateZ(-5deg);
+
+}
+
+/* =========================================================
+FACE
+========================================================= */
+
+.orbit-face {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    background: rgba(255,255,255,0.9);
+
+    padding: 10px;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow: 0 25px 80px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.7);
+
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+
+}
+
+/* Hover */
+
+.orbit-card:hover .orbit-face {
+
+    transform: translateY(-12px) scale(1.04);
+
+    box-shadow: 0 45px 120px rgba(0,0,0,0.28);
+
+}
+
+/* =========================================================
+IMAGE
+========================================================= */
+
+.orbit-face img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 16px;
+
+    display: block;
+
+}
+
+/* =========================================================
+DYNAMIC DEPTH FEEL
+========================================================= */
+
+.orbit-card {
+
+    animation: orbitDepth 42s linear infinite;
+
+}
+
+@keyframes orbitDepth {
+
+    0% {
+
+        opacity: 0.18;
+
+        filter: blur(3px) brightness(0.7);
+
+    }
+
+    25% {
+
+        opacity: 0.65;
+
+        filter: blur(1px) brightness(0.9);
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+        filter: blur(0px) brightness(1);
+
+    }
+
+    75% {
+
+        opacity: 0.65;
+
+        filter: blur(1px) brightness(0.9);
+
+    }
+
+    100% {
+
+        opacity: 0.18;
+
+        filter: blur(3px) brightness(0.7);
+
+    }
+
+}
+
+/* =========================================================
+VIGNETTE
+========================================================= */
+
+.orbit-vignette {
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    background: radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.25) 70%, #000 100%);
+
+}
+
+/* =========================================================
 MOBILE
-========================= */
+========================================================= */
 
 @media (max-width: 768px) {
 
-.depth-item img {
+    .orbit-world {
 
-width: 120px;
-height: 170px;
+        width: 600px;
+        height: 500px;
 
-border-radius: 20px;
+    }
 
-}
+    .orbit-card {
 
-@keyframes depthOrbit {
+        width: 130px;
+        height: 180px;
 
-0% {
+        margin-left: -65px;
+        margin-top: -90px;
 
-transform:
-translateX(-230px)
-scale(0.45);
+    }
 
-opacity: 0.1;
+    .orbit-card-1 {
 
-filter:
-blur(3px);
+        transform: rotateY(0deg) translateZ(260px) rotateZ(-5deg);
 
-}
+    }
 
-25% {
+    .orbit-card-2 {
 
-transform:
-translateX(-120px)
-scale(0.7);
+        transform: rotateY(72deg) translateZ(300px) rotateZ(4deg);
 
-opacity: 0.5;
+    }
 
-}
+    .orbit-card-3 {
 
-50% {
+        transform: rotateY(144deg) translateZ(240px) rotateZ(-4deg);
 
-transform:
-translateX(0px)
-scale(1);
+    }
 
-opacity: 1;
+    .orbit-card-4 {
 
-filter:
-blur(0px);
+        transform: rotateY(216deg) translateZ(290px) rotateZ(5deg);
 
-}
+    }
 
-75% {
+    .orbit-card-5 {
 
-transform:
-translateX(120px)
-scale(0.7);
+        transform: rotateY(288deg) translateZ(250px) rotateZ(-5deg);
 
-opacity: 0.5;
-
-}
-
-100% {
-
-transform:
-translateX(230px)
-scale(0.45);
-
-opacity: 0.1;
-
-filter:
-blur(3px);
-
-}
-
-}
+    }
 
 }
