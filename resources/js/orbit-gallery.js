@@ -28,10 +28,13 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
         /* RANDOM SIZE */
         const sizeVariants = [
-            90, // sangat kecil
-            140, // kecil
-            220, // sedang
-            320, // besar
+            100, 
+            140, 
+            180, 
+            220, 
+            260, 
+            300, 
+            340, 
         ];
 
         const randomSize = sizeVariants[Math.floor(Math.random() * sizeVariants.length)];
@@ -73,11 +76,11 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
             /* SCALE DEPTH */
             const dynamicScale = scale + (depth * 0.22);
 
-            /* OPACITY */
-            const dynamicOpacity = 0.72 + ((depth + 1) / 2) * 0.28;
-
             /* BRIGHTNESS */
             const dynamicBrightness = 0.82 + ((depth + 1) / 2) * 0.18;
+
+            /* DEPTH BLUR */
+            const depthBlur = (1 - ((depth + 1) / 2)) * 0.8;
 
             /* Z INDEX */
             const dynamicZ = Math.floor((depth + 1) * 100);
@@ -97,9 +100,8 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
                 scale(${dynamicScale})
             `;
 
-            card.style.opacity = dynamicOpacity;
-
-            card.style.filter = `brightness(${dynamicBrightness})`;
+            card.style.filter = `brightness(${dynamicBrightness})
+     blur(${depthBlur}px)`;
 
             card.style.zIndex = dynamicZ;
 
