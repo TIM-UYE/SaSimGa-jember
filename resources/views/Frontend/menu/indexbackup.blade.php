@@ -477,25 +477,57 @@
         }
 
         // Quick add to cart (direct add without showing quantity selector)
-        function quickAddToCart(menuId) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/cart/add/' + menuId;
+        function quickAddToCart(menuId, buttonElement = null) {
+            const btn = buttonElement || event.target.closest('button');
+            if (!btn) return;
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            const qtyInput = document.createElement('input');
-            qtyInput.type = 'hidden';
-            qtyInput.name = 'qty';
-            qtyInput.value = '1';
+            try {
+                const response = await fetch(`/cart/add/${menuId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ qty: 1 })
+                });
 
-            form.appendChild(csrfInput);
-            form.appendChild(qtyInput);
-            document.body.appendChild(form);
-            form.submit();
+                const data = await response.json();
+
+                if (data.success) {
+                    flyGiftToCart(btn);
+                    updateFloatingCheckout();
+
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    btn.classList.add('bg-green-500');
+
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                        btn.classList.remove('bg-green-500');
+                    }, 1500);
+                } else {
+                    btn.innerHTML = '<i class="fas fa-exclamation"></i>';
+                    btn.classList.add('bg-red-500');
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                        btn.classList.remove('bg-red-500');
+                    }, 1500);
+                }
+            } catch (error) {
+                btn.innerHTML = '<i class="fas fa-exclamation"></i>';
+                btn.classList.add('bg-red-500');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    btn.classList.remove('bg-red-500');
+                }, 1500);
+            }
         }
 
         function openMenuDetail(menu) {
@@ -611,29 +643,41 @@
         }
 
         // Add to cart from modal
-        function addToCartFromModal() {
+        function addToCartFromModal(buttonElement = null) {
             if (!currentModalMenuId) return;
 
-            const qty = document.getElementById('modalQtyInput').value;
+            const qty = parseInt(document.getElementById('modalQtyInput').value) || 1;
+            const addBtn = buttonElement || document.getElementById('modalOrderBtn');
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/cart/add/' + currentModalMenuId;
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menambahkan...';
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
+            try {
+                const response = await fetch(`/cart/add/${currentModalMenuId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ qty: qty })
+                });
 
-            const qtyInput = document.createElement('input');
-            qtyInput.type = 'hidden';
-            qtyInput.name = 'qty';
-            qtyInput.value = qty;
+                const data = await response.json();
 
-            form.appendChild(csrfInput);
-            form.appendChild(qtyInput);
-            document.body.appendChild(form);
-            form.submit();
+                if (data.success) {
+                    flyGiftToCart(addBtn);
+                    updateFloatingCheckout();
+                    closeMenuDetail();
+                } else {
+                    alert(data.message || 'Gagal menambahkan ke keranjang');
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan');
+            } finally {
+                addBtn.disabled = false;
+                addBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang';
+            }
         }
 
         function closeMenuDetail(event) {
@@ -701,109 +745,52 @@
                         block: 'start'
                     });
                 }
-            });
+            }
         });
 
-        function showMenuSection(type) {
-
-            const regular = document.getElementById('regularMenuSection');
-            const special = document.getElementById('specialMenuSection');
-
-            const regularBtn = document.getElementById('regularBtn');
-            const specialBtn = document.getElementById('specialBtn');
-
-            if (type === 'regular') {
-
-                regular.classList.remove('hidden');
-                special.classList.add('hidden');
-
-                regularBtn.classList.add('bg-orange-500');
-                specialBtn.classList.remove('bg-orange-500');
-
-            } else {
-
-                regular.classList.add('hidden');
-                special.classList.remove('hidden');
-
-                specialBtn.classList.add('bg-orange-500');
-                regularBtn.classList.remove('bg-orange-500');
-
-            }
-
-            window.scrollTo({
-                top: document.getElementById(type === 'regular' ?
-                    'regularMenuSection' :
-                    'specialMenuSection').offsetTop - 100,
-                behavior: 'smooth'
-            });
+        // Get cart icon rectangle for fly animation
+        function getCartIconRect() {
+            const cartIcon = document.querySelector('[data-cart-icon]');
+            if (!cartIcon) return null;
+            return cartIcon.getBoundingClientRect();
         }
 
-        const specialData = [
-            @forelse($specials as $special)
-            {
-                id: {{ $special->id }},
-                title: {!! json_encode($special->title) !!},
-                description: {!! json_encode($special->short_description) !!},
-                banner_image: {!! json_encode($special->banner_image ? asset('storage/' . $special->banner_image) : asset('images/menu-special/tumpeng.jpg')) !!},
-                items: [
-                    @foreach($special->items as $item)
-                    {
-                        id: {{ $item->id }},
-                        name: {!! json_encode($item->name) !!},
-                        price: {!! json_encode(number_format($item->price, 0, ',', '.')) !!},
-                        raw_price: {{ $item->price }},
-                        description: {!! json_encode($item->description) !!},
-                        image: {!! json_encode($item->image ? asset('storage/' . $item->image) : asset('images/menu-special/tumpeng.jpg')) !!}
-                    }@if(!$loop->last),@endif
-                    @endforeach
-                ]
-            }@if(!$loop->last),@endif
-            @empty
-            @endforelse
-        ];
+        // Fly gift animation to cart
+        function flyGiftToCart(startElement) {
+            const cartRect = getCartIconRect();
+            if (!cartRect || !startElement) return;
 
-        function openSpecialModal(id) {
-            const special = specialData.find(item => item.id === id);
-            if (!special) {
-                return;
-            }
+            const startRect = startElement.getBoundingClientRect();
+            const gift = document.createElement('div');
+            gift.className = 'fly-gift-icon fixed z-[9999] flex items-center justify-center rounded-2xl bg-orange-500 text-white shadow-2xl';
+            gift.innerHTML = '<i class="fa-solid fa-gift"></i>';
+            gift.style.cssText = `
+                width: 48px;
+                height: 48px;
+                left: ${startRect.left + startRect.width / 2 - 24}px;
+                top: ${startRect.top + startRect.height / 2 - 24}px;
+                transition: transform 0.78s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.78s ease;
+                transform: translate(0, 0) scale(1);
+                pointer-events: none;
+            `;
 
-            const actions = document.getElementById('specialItemButtons');
-            actions.innerHTML = '';
+            document.body.appendChild(gift);
 
-            special.items.forEach((item, index) => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'special-item-btn w-full text-left bg-gray-800 hover:bg-orange-500 p-5 rounded-2xl transition-all text-white';
-                button.textContent = item.name;
-                button.addEventListener('click', () => selectSpecialItem(special, item));
-                actions.appendChild(button);
+            requestAnimationFrame(() => {
+                const deltaX = cartRect.left + cartRect.width / 2 - (startRect.left + startRect.width / 2);
+                const deltaY = cartRect.top + cartRect.height / 2 - (startRect.top + startRect.height / 2);
+                gift.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.24)`;
+                gift.style.opacity = '0';
             });
 
-            selectSpecialItem(special, special.items[0] || null);
-            document.getElementById('specialMenuModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSpecialModal(event) {
-            if (event && event.target.id !== 'specialMenuModal') return;
-            document.getElementById('specialMenuModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function selectSpecialItem(special, item) {
-            if (!item) {
-                document.getElementById('specialTitle').textContent = special.title;
-                document.getElementById('specialPrice').textContent = 'Harga tidak tersedia';
-                document.getElementById('specialDescription').textContent = special.description || '';
-                document.getElementById('specialImage').src = special.banner_image;
-                return;
-            }
-
-            document.getElementById('specialTitle').textContent = item.name;
-            document.getElementById('specialPrice').textContent = `Rp ${item.price}`;
-            document.getElementById('specialDescription').textContent = item.description || special.description || '';
-            document.getElementById('specialImage').src = item.image || special.banner_image;
+            setTimeout(() => {
+                gift.remove();
+                const cartIcon = document.querySelector('[data-cart-icon]');
+                if (cartIcon) {
+                    cartIcon.classList.add('cart-hit');
+                    setTimeout(() => cartIcon.classList.remove('cart-hit'), 450);
+                }
+            }, 820);
         }
     </script>
 
