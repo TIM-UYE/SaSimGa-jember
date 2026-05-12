@@ -1,0 +1,243 @@
+/* =========================================================
+   CLEAN PREMIUM ORBIT
+========================================================= */
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+.orbit-scene {
+
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    perspective: 1800px;
+    perspective-origin: center;
+
+    overflow: hidden;
+
+}
+
+/* =========================================================
+   WORLD
+========================================================= */
+
+.orbit-world {
+
+    position: relative;
+
+    width: min(1200px, 90vw);
+    height: min(1200px, 90vw);
+
+    transform-style: preserve-3d;
+
+}
+
+/* =========================================================
+   LAYER
+========================================================= */
+
+.orbit-back {
+
+    z-index: 10;
+
+}
+
+.orbit-front {
+
+    z-index: 40;
+
+    pointer-events: none;
+
+}
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+.gallery-headline {
+
+    position: relative;
+
+    z-index: 30;
+
+    transform: translateZ(180px);
+
+    pointer-events: none;
+
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.orbit-card {
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 220px;
+
+    aspect-ratio: 16 / 9;
+
+    transform-style: preserve-3d;
+
+    will-change: transform;
+
+}
+
+/* =========================================================
+   FLOAT
+========================================================= */
+
+.orbit-float {
+
+    width: 100%;
+    height: 100%;
+
+    /* animation: orbitFloat 2.5s ease-in-out infinite alternate; */
+
+}
+
+/* =========================================================
+   FACE
+========================================================= */
+
+.orbit-face {
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.18);
+
+}
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.orbit-face img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+}
+
+/* =========================================================
+   FLOAT ANIMATION
+========================================================= */
+
+@keyframes orbitFloat {
+
+    from {
+
+        transform: translateY(-8px);
+
+    }
+
+    to {
+
+        transform: translateY(8px);
+
+    }
+
+}
+
+/* =========================================================
+   GLOW
+========================================================= */
+
+.glow-blob-1 {
+
+    animation: glowFloat1 10s ease-in-out infinite alternate;
+
+}
+
+.glow-blob-2 {
+
+    animation: glowFloat2 14s ease-in-out infinite alternate;
+
+}
+
+@keyframes glowFloat1 {
+
+    from {
+
+        transform: translate(0px, 0px) scale(1);
+
+    }
+
+    to {
+
+        transform: translate(40px, -30px) scale(1.08);
+
+    }
+
+}
+
+@keyframes glowFloat2 {
+
+    from {
+
+        transform: translate(0px, 0px) scale(1);
+
+    }
+
+    to {
+
+        transform: translate(-30px, 20px) scale(1.1);
+
+    }
+
+}
+
+/* =========================================================
+   VIGNETTE
+========================================================= */
+
+.orbit-vignette {
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 50;
+
+    pointer-events: none;
+
+    background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.2) 75%, #000 100%);
+
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .orbit-world {
+
+        width: 700px;
+        height: 700px;
+
+    }
+
+    .orbit-card {
+
+        width: 180px;
+
+    }
+
+}

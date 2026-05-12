@@ -1,81 +1,117 @@
-const orbitWorld = document.getElementById("orbitWorld");
+function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
-if (orbitWorld) {
+    const world = document.getElementById(worldId);
 
-    let currentRotation = 0;
-    let targetRotation = 0;
+    if (!world) 
+        return;
+    
+    const cards = world.querySelectorAll(".orbit-card");
 
-    /* =========================
-AUTO ROTATION
-========================= */
+    /* SAFE AREA */
+    const safeZone = 180;
 
-    function animateOrbit() {
+    cards.forEach((card, index) => {
 
-        targetRotation += 0.03;
+        const angle = (360 / cards.length) * index;
 
-        currentRotation += (targetRotation - currentRotation) * 0.05;
+        /* ORBIT RADIUS */
+        const radius = safeZone + radiusMin + Math.random() * (radiusMax - radiusMin);
 
-        orbitWorld.style.transform = `
-rotateX(-8deg)
-rotateY(${currentRotation}deg)
-`;
+        /* SPREAD LIKE REFERENCE */
+        const offsetY = (Math.random() - 0.5) * 180;
 
-        requestAnimationFrame(animateOrbit);
+        /* SMALL TILT */
+        const rotateZ = (Math.random() - 0.5) * 2;
+
+        /* BASE SCALE */
+        const scale = 0.82 + Math.random() * 0.12;
+
+        card.dataset.angle = angle;
+        card.dataset.radius = radius;
+        card.dataset.offsetY = offsetY;
+        card.dataset.rotateZ = rotateZ;
+        card.dataset.scale = scale;
+
+    });
+
+    let rotation = 0;
+
+    function animate() {
+
+        rotation += speed;
+
+        cards.forEach((card) => {
+
+            const angle = parseFloat(card.dataset.angle);
+
+            const radius = parseFloat(card.dataset.radius);
+
+            const offsetY = parseFloat(card.dataset.offsetY);
+
+            const rotateZ = parseFloat(card.dataset.rotateZ);
+
+            const scale = parseFloat(card.dataset.scale);
+
+            const finalAngle = angle + rotation;
+
+            /* DEPTH */
+            const depth = Math.cos(finalAngle * Math.PI / 180);
+
+            /* SCALE DEPTH */
+            const dynamicScale = scale + (depth * 0.22);
+
+            /* OPACITY */
+            const dynamicOpacity = 0.72 + ((depth + 1) / 2) * 0.28;
+
+            /* BRIGHTNESS */
+            const dynamicBrightness = 0.82 + ((depth + 1) / 2) * 0.18;
+
+            /* Z INDEX */
+            const dynamicZ = Math.floor((depth + 1) * 100);
+
+            /* TRANSFORM */
+            card.style.transform = `
+                translate(-50%, -50%)
+                rotateY(${finalAngle}deg)
+                translateZ(${radius}px)
+                translateY(${offsetY}px)
+                rotateY(${ - finalAngle}deg)
+                rotateZ(${rotateZ}deg)
+                scale(${dynamicScale})
+            `;
+
+            card.style.opacity = dynamicOpacity;
+
+            card.style.filter = `brightness(${dynamicBrightness})`;
+
+            card.style.zIndex = dynamicZ;
+
+        });
+
+        requestAnimationFrame(animate);
 
     }
 
-    animateOrbit();
-
-    /* =========================
-MOUSE PARALLAX
-========================= */
-
-    window.addEventListener("mousemove", (e) => {
-
-        const x = (e.clientX / window.innerWidth - 0.5);
-
-        targetRotation += x * 0.4;
-
-    });
-
-    /* =========================
-TOUCH DRAG
-========================= */
-
-    let isDragging = false;
-    let startX = 0;
-
-    orbitWorld.addEventListener("touchstart", (e) => {
-
-        isDragging = true;
-
-        startX = e
-            .touches[0]
-            .clientX;
-
-    });
-
-    orbitWorld.addEventListener("touchmove", (e) => {
-
-        if (!isDragging) 
-            return;
-        
-        const deltaX = e
-            .touches[0]
-            .clientX - startX;
-
-        targetRotation += deltaX * 0.005;
-
-        startX = e
-            .touches[0]
-            .clientX;
-
-    });
-
-    orbitWorld.addEventListener("touchend", () => {
-
-        isDragging = false;
-
-    });
+    animate();
 
 }
+
+/* =========================
+   INIT
+========================= */
+
+/* BACK */
+createOrbit(
+    "orbitBack",
+    0.09,
+    320,
+    420
+);
+
+/* FRONT */
+createOrbit(
+    "orbitFront",
+    -0.09,
+    220,
+    320
+);
