@@ -24,27 +24,13 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
         const rotateZ = (Math.random() - 0.5) * 2;
 
         /* BASE SCALE */
-        const scale = 0.82 + Math.random() * 0.12;
-
-        /* RANDOM SIZE */
-        const sizeVariants = [
-            100, 
-            140, 
-            180, 
-            220, 
-            260, 
-            300, 
-            340, 
-        ];
-
-        const randomSize = sizeVariants[Math.floor(Math.random() * sizeVariants.length)];
+        const scale = 1;
 
         card.dataset.angle = angle;
         card.dataset.radius = radius;
         card.dataset.offsetY = offsetY;
         card.dataset.rotateZ = rotateZ;
         card.dataset.scale = scale;
-        card.dataset.size = randomSize;
 
     });
 
@@ -68,13 +54,18 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
             const finalAngle = angle + rotation;
 
-            const size = parseFloat(card.dataset.size);
-
             /* DEPTH */
             const depth = Math.cos(finalAngle * Math.PI / 180);
 
             /* SCALE DEPTH */
-            const dynamicScale = scale + (depth * 0.22);
+            const perspectiveScale = ((depth + 1) / 2);
+
+            /*
+    belakang  = kecil
+    depan     = besar
+*/
+
+            const dynamicScale = 0.55 + (perspectiveScale * 0.75);
 
             /* BRIGHTNESS */
             const dynamicBrightness = 0.82 + ((depth + 1) / 2) * 0.18;
@@ -85,15 +76,12 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
             /* Z INDEX */
             const dynamicZ = Math.floor((depth + 1) * 100);
 
-            card
-                .style
-                .setProperty("--orbit-size", `${size}px`);
-
             /* TRANSFORM */
             card.style.transform = `
                 translate(-50%, -50%)
                 rotateY(${finalAngle}deg)
-                translateZ(${radius}px)
+                translateZ(${radius +
+                    (depth * 120)}px)
                 translateY(${offsetY}px)
                 rotateY(${ - finalAngle}deg)
                 rotateZ(${rotateZ}deg)
@@ -120,7 +108,7 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 ========================= */
 
 /* BACK */
-createOrbit("orbitBack", 0.09, 370, 490);
+createOrbit("orbitBack", 0.09, 420, 500);
 
 /* FRONT */
-createOrbit("orbitFront", -0.09, 370, 420);
+createOrbit("orbitFront", -0.09, 440, 540);

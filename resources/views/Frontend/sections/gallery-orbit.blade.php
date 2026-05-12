@@ -26,7 +26,7 @@
 
         <div class="orbit-world" id="orbitBack">
 
-            @foreach ([1, 2, 3, 4, 5, 1, 2] as $index => $img)
+            @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $index => $img)
                 <div class="orbit-card orbit-back-card {{ ['orbit-sm', 'orbit-md', 'orbit-lg'][$index % 3] }}">
 
                     <div class="orbit-float">
@@ -86,7 +86,7 @@
 
         <div class="orbit-world" id="orbitFront">
 
-            @foreach ([3, 4, 5, 2, 1] as $index => $img)
+            @foreach ([3, 4, 5, 1, 2, 3, 4, 5, 1, 2] as $index => $img)
                 <div class="orbit-card orbit-front-card {{ ['orbit-sm', 'orbit-md', 'orbit-lg'][$index % 3] }}">
 
                     <div class="orbit-float">
