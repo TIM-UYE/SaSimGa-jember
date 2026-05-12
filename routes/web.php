@@ -291,6 +291,11 @@ Route::middleware(['auth', 'role:admin,manager'])
         Route::get('/orders/stats', [OrderController::class, 'stats'])
             ->name('orders.stats');
 
+        // API endpoint for polling - returns JSON with updated order data
+        // MUST be before the {order} wildcard route to avoid conflict
+        Route::get('/orders/poll/data', [OrderController::class, 'pollData'])
+            ->name('orders.poll');
+
         Route::get('/orders/{order}', [OrderController::class, 'show'])
             ->name('orders.show');
 

@@ -4,6 +4,50 @@
         @apply max-w-7xl mx-auto px-6;
     }
 
+/* ========================= */
+/* 🎨 CUSTOM SCROLLBAR */
+/* ========================= */
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f97316, #ea580c);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ea580c, #c2410c);
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #f1f5f9;
+}
+
+/* For dark mode areas */
+.dark ::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #f97316, #ea580c);
+}
+
+.dark * {
+    scrollbar-color: #f97316 #1e293b;
+}
+
     .btn-primary {
         @apply bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold transition hover:bg-orange-600;
     }
