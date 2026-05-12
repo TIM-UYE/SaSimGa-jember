@@ -92,7 +92,7 @@
                         </div>
 
                         <!-- ACTION BUTTON -->
-                        <button type="button" id="modalOrderBtn" onclick="addToCartFromModal()"
+                        <button type="button" id="modalOrderBtn" onclick="addToCartFromModal(this)"
                             class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 rounded-xl font-bold transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                             <i class="fas fa-shopping-cart"></i>
                             Tambah ke Keranjang

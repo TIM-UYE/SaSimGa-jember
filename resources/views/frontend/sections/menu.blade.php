@@ -121,7 +121,7 @@
 
                             <div class="flex gap-2">
                                 <!-- Quick Add Button -->
-                                <button type="button" onclick="quickAddToCart({{ $menu->id }})"
+                                <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
                                     class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                                     {{ !$menu->is_available ? 'disabled' : '' }} title="Tambah ke keranjang">
                                     <i class="fas fa-plus"></i>
@@ -257,7 +257,7 @@
                         </div>
 
                         {{-- ACTION BUTTON --}}
-                        <button type="button" id="modalOrderBtn" onclick="addToCartFromModal()"
+                        <button type="button" id="modalOrderBtn" onclick="addToCartFromModal(this)"
                             class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 rounded-xl font-bold transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                             <i class="fas fa-shopping-cart"></i>
                             Tambah ke Keranjang
@@ -269,6 +269,9 @@
     </div>
 
     <script>
+        // Store current modal menu ID
+        let currentModalMenuId = null;
+
         // Filter by category
         function filterMenuByCategory(categoryId) {
             // Update button styles
@@ -305,30 +308,175 @@
             }
         }
 
-        // Quick add to cart
-        function quickAddToCart(menuId) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/cart/add/' + menuId;
+        const csrfToken = '{{ csrf_token() }}';
 
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
+        function getCartIconRect() {
+            const cartIcon = document.querySelector('[data-cart-icon]');
+            console.log('Cart icon found:', cartIcon);
+            return cartIcon ? cartIcon.getBoundingClientRect() : null;
+        }
 
-            const qtyInput = document.createElement('input');
-            qtyInput.type = 'hidden';
-            qtyInput.name = 'qty';
-            qtyInput.value = '1';
+        function flyGiftToCart(startElement) {
+            console.log('flyGiftToCart called with startElement:', startElement);
+            if (!startElement) {
+                console.log('Fly gift animation skipped: startElement missing');
+                return;
+            }
 
-            form.appendChild(csrfInput);
-            form.appendChild(qtyInput);
-            document.body.appendChild(form);
-            form.submit();
+            let cartRect = getCartIconRect();
+            // Fallback position if cart icon not found (center of screen)
+            if (!cartRect) {
+                cartRect = { left: window.innerWidth / 2 - 20, top: window.innerHeight / 2 - 20, width: 40, height: 40 };
+                console.log('Using fallback cart position (center screen)', cartRect);
+            }
+
+            console.log('Starting fly gift animation', { startRect: startElement.getBoundingClientRect(), cartRect });
+
+            const startRect = startElement.getBoundingClientRect();
+            const gift = document.createElement('div');
+            gift.className = 'fly-gift-icon fixed z-[9999] flex items-center justify-center rounded-2xl bg-orange-500 text-white shadow-2xl';
+            gift.innerHTML = '<i class="fa-solid fa-gift"></i>';
+            gift.style.cssText = `
+                width: 48px;
+                height: 48px;
+                left: ${startRect.left + startRect.width / 2 - 24}px;
+                top: ${startRect.top + startRect.height / 2 - 24}px;
+                transition: transform 0.78s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.78s ease;
+                transform: translate(0, 0) scale(1);
+                pointer-events: none;
+            `;
+
+            document.body.appendChild(gift);
+            requestAnimationFrame(() => {
+                const deltaX = cartRect.left + cartRect.width / 2 - (startRect.left + startRect.width / 2);
+                const deltaY = cartRect.top + cartRect.height / 2 - (startRect.top + startRect.height / 2);
+                gift.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.24)`;
+                gift.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                gift.remove();
+                const cartIcon = document.querySelector('[data-cart-icon]');
+                if (cartIcon) {
+                    cartIcon.classList.add('cart-hit');
+                    setTimeout(() => cartIcon.classList.remove('cart-hit'), 450);
+                }
+            }, 820);
+        }
+
+        function updateCartUI(data) {
+            const cartBadges = [
+                document.getElementById('cartBadge'),
+                ...document.querySelectorAll('.cart-count-badge')
+            ].filter(Boolean);
+
+            cartBadges.forEach(el => {
+                el.textContent = data.count;
+                if (data.count > 0) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
+            if (data.count > 0) {
+                document.getElementById('floatingCheckout')?.classList.remove('hidden');
+                document.getElementById('floatingTotal').textContent = data.total_formatted;
+            } else {
+                document.getElementById('floatingCheckout')?.classList.add('hidden');
+            }
+        }
+
+        async function quickAddToCart(menuId, buttonElement = null) {
+            const btn = buttonElement || event?.target?.closest('button');
+            if (!btn) return;
+
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                const response = await fetch(`/cart/add/${menuId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ qty: 1 })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    console.log('Adding to cart success, calling flyGiftToCart with btn:', btn);
+                    flyGiftToCart(btn);
+                    updateCartUI(data.cart);
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    btn.classList.add('bg-green-500');
+                } else {
+                    btn.innerHTML = '<i class="fas fa-exclamation"></i>';
+                    btn.classList.add('bg-red-500');
+                }
+            } catch (error) {
+                btn.innerHTML = '<i class="fas fa-exclamation"></i>';
+                btn.classList.add('bg-red-500');
+            } finally {
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    btn.classList.remove('bg-green-500', 'bg-red-500');
+                }, 1500);
+            }
+        }
+
+        async function addToCartFromModal(buttonElement = null) {
+            if (!currentModalMenuId) return;
+
+            const qty = parseInt(document.getElementById('modalQtyInput').value) || 1;
+            const addBtn = buttonElement || document.getElementById('modalOrderBtn');
+
+            addBtn.disabled = true;
+            addBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menambahkan...';
+
+            try {
+                const response = await fetch(`/cart/add/${currentModalMenuId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ qty: qty })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    console.log('Adding to cart from modal success, calling flyGiftToCart with addBtn:', addBtn);
+                    flyGiftToCart(addBtn);
+                    updateCartUI(data.cart);
+                    closeMenuDetail();
+                } else {
+                    addBtn.innerHTML = '<i class="fas fa-exclamation mr-2"></i>Gagal';
+                    addBtn.classList.add('bg-red-500');
+                }
+            } catch (error) {
+                addBtn.innerHTML = '<i class="fas fa-exclamation mr-2"></i>Error';
+                addBtn.classList.add('bg-red-500');
+            } finally {
+                setTimeout(() => {
+                    addBtn.disabled = false;
+                    addBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang';
+                    addBtn.classList.remove('bg-red-500');
+                }, 1500);
+            }
         }
 
         // Open menu detail modal
         function openMenuDetail(menu) {
+            currentModalMenuId = menu.id;
+
             // Reset quantity
             document.getElementById('modalQtyInput').value = 1;
 
@@ -417,33 +565,6 @@
             const input = document.getElementById('modalQtyInput');
             let value = parseInt(input.value) || 1;
             if (value > 1) input.value = value - 1;
-        }
-
-        // Add to cart from modal
-        function addToCartFromModal() {
-            const menuId = currentModalMenuId;
-            if (!menuId) return;
-
-            const qty = document.getElementById('modalQtyInput').value;
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/cart/add/' + menuId;
-
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = '{{ csrf_token() }}';
-
-            const qtyInput = document.createElement('input');
-            qtyInput.type = 'hidden';
-            qtyInput.name = 'qty';
-            qtyInput.value = qty;
-
-            form.appendChild(csrfInput);
-            form.appendChild(qtyInput);
-            document.body.appendChild(form);
-            form.submit();
         }
 
         // Close modal

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
+use App\Services\WhatsAppNotificationService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -311,14 +312,21 @@ class OrderController extends Controller
     /**
      * Update payment status
      */
-    public function updatePaymentStatus(Request $request, Order $order)
+    public function updatePaymentStatus(Request $request, Order $order, WhatsAppNotificationService $whatsappNotificationService)
     {
         $validated = $request->validate([
             'payment_status' => 'required|in:unpaid,paid',
         ]);
 
+        $oldPaymentStatus = $order->payment_status;
+
         try {
             $order->payment_status = $validated['payment_status'];
+
+            if ($validated['payment_status'] === Order::PAYMENT_PAID && $order->isQRISPayment() && $order->status === Order::STATUS_PENDING) {
+                $order->status = Order::STATUS_DIPROSES;
+            }
+
             $order->save();
 
             Log::info('[ORDER PAYMENT] Status pembayaran diubah', [
@@ -327,6 +335,26 @@ class OrderController extends Controller
                 'payment_status_baru' => $validated['payment_status'],
                 'changed_by' => auth()->id(),
             ]);
+
+            if ($oldPaymentStatus === Order::PAYMENT_UNPAID
+                && $validated['payment_status'] === Order::PAYMENT_PAID
+                && $order->isQRISPayment()
+            ) {
+                try {
+                    $whatsappNotificationService->sendPaymentSuccess($order);
+                    Log::info('[ORDER PAYMENT WA] Notifikasi pembayaran QRIS terkirim', [
+                        'order_id' => $order->id,
+                        'kode_order' => $order->kode_order,
+                        'nomor_hp' => $order->nomor_hp,
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('[ORDER PAYMENT WA FAIL] Gagal mengirim notifikasi WA', [
+                        'order_id' => $order->id,
+                        'kode_order' => $order->kode_order,
+                        'exception' => $e->getMessage(),
+                    ]);
+                }
+            }
         } catch (\Exception $e) {
             Log::error('[ORDER PAYMENT FAIL] Gagal update status pembayaran', [
                 'order_id' => $order->id,

@@ -79,7 +79,7 @@
 
                                 <div class="flex gap-2">
                                     <!-- Quick Add Button -->
-                                    <button type="button" onclick="quickAddToCart({{ $menu->id }})"
+                                    <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
                                         class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                                         {{ !$menu->is_available ? 'disabled' : '' }} title="Tambah ke keranjang">
                                         <i class="fas fa-plus"></i>

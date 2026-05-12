@@ -88,6 +88,8 @@
             {{-- CART --}}
             <a
                 href="{{ route('cart.index') }}"
+                data-cart-icon
+                data-cart-count="{{ session('cart') ? count(session('cart')) : 0 }}"
                 class="relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95"
             >
 
@@ -95,16 +97,12 @@
                 <i class="fa-solid fa-cart-shopping text-white text-sm"></i>
 
                 {{-- BADGE --}}
-                @if(session('cart') && count(session('cart')) > 0)
-
-                    <span
-                        id="cartBadge"
-                        class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-lg shadow-orange-500/40"
-                    >
-                        {{ count(session('cart')) }}
-                    </span>
-
-                @endif
+                <span
+                    id="cartBadge"
+                    class="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-lg shadow-orange-500/40 {{ session('cart') && count(session('cart')) > 0 ? '' : 'hidden' }}"
+                >
+                    {{ session('cart') ? count(session('cart')) : 0 }}
+                </span>
 
             </a>
 

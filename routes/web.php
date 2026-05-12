@@ -135,6 +135,9 @@ Route::get('/cart', [CartController::class, 'index'])
 Route::post('/cart/add/{id}', [CartController::class, 'add'])
     ->name('cart.add');
 
+Route::post('/cart/add-special/{id}', [CartController::class, 'addSpecial'])
+    ->name('cart.add-special');
+
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])
     ->name('cart.remove');
 
