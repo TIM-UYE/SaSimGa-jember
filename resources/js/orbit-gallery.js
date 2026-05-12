@@ -26,11 +26,22 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
         /* BASE SCALE */
         const scale = 0.82 + Math.random() * 0.12;
 
+        /* RANDOM SIZE */
+        const sizeVariants = [
+            90, // sangat kecil
+            140, // kecil
+            220, // sedang
+            320, // besar
+        ];
+
+        const randomSize = sizeVariants[Math.floor(Math.random() * sizeVariants.length)];
+
         card.dataset.angle = angle;
         card.dataset.radius = radius;
         card.dataset.offsetY = offsetY;
         card.dataset.rotateZ = rotateZ;
         card.dataset.scale = scale;
+        card.dataset.size = randomSize;
 
     });
 
@@ -54,6 +65,8 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
             const finalAngle = angle + rotation;
 
+            const size = parseFloat(card.dataset.size);
+
             /* DEPTH */
             const depth = Math.cos(finalAngle * Math.PI / 180);
 
@@ -68,6 +81,10 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 
             /* Z INDEX */
             const dynamicZ = Math.floor((depth + 1) * 100);
+
+            card
+                .style
+                .setProperty("--orbit-size", `${size}px`);
 
             /* TRANSFORM */
             card.style.transform = `
@@ -101,17 +118,7 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
 ========================= */
 
 /* BACK */
-createOrbit(
-    "orbitBack",
-    0.09,
-    320,
-    420
-);
+createOrbit("orbitBack", 0.09, 370, 490);
 
 /* FRONT */
-createOrbit(
-    "orbitFront",
-    -0.09,
-    220,
-    320
-);
+createOrbit("orbitFront", -0.09, 370, 420);
