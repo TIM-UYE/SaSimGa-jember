@@ -119,6 +119,9 @@ Route::get('/reservasi', [ReservasiController::class, 'frontend'])
 Route::post('/reservasi', [ReservasiController::class, 'store'])
     ->name('reservasi.store');
 
+Route::get('/reservasi/tables', [ReservasiController::class, 'getAvailableTables'])
+    ->name('reservasi.tables');
+
 
 /*
 |--------------------------------------------------------------------------

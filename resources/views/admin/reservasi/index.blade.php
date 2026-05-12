@@ -110,6 +110,7 @@
                         <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Tanggal</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Waktu</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Orang</th>
+                        <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Meja</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Dibuat</th>
                         <th class="px-6 py-4 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
@@ -160,6 +161,24 @@
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 {{ $reservasi->jumlah_orang }} org
                             </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($reservasi->meja_ids && count($reservasi->meja_ids) > 0)
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($reservasi->meja_ids as $mejaId)
+                                        @php
+                                            $meja = \App\Models\Meja::find($mejaId);
+                                        @endphp
+                                        @if($meja)
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-50 text-orange-700 rounded text-[10px] font-medium ring-1 ring-orange-200/50">
+                                                {{ $meja->nama_meja }}
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @else
+                                <span class="text-slate-300 text-xs">-</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4">
                             @php
