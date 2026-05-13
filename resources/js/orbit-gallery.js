@@ -67,7 +67,22 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
             const depthBlur = (1 - ((depth + 1) / 2)) * 0.8;
 
             /* Z INDEX */
-            const dynamicZ = Math.floor((depth + 1) * 100);
+            let dynamicZ;
+
+            /*
+    depth > 0  = gambar di depan text
+    depth <= 0 = gambar di belakang text
+*/
+
+            if (depth > 0) {
+
+                dynamicZ = 120 + Math.floor(depth * 100);
+
+            } else {
+
+                dynamicZ = 20 + Math.floor((depth + 1) * 40);
+
+            }
 
             /* TRANSFORM */
             card.style.transform = `

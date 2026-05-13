@@ -16,15 +16,13 @@
 
     overflow: hidden;
 
-}
+    z-index: 20;
 
-/* =========================================================
-   WORLD
-========================================================= */
+}
 
 .orbit-world {
 
-    position: relative;
+    position: absolute;
 
     width: min(1200px, 90vw);
     height: min(1200px, 90vw);
@@ -33,9 +31,21 @@
 
 }
 
-/* =========================================================
-   CARD
-========================================================= */
+.gallery-headline {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 100;
+
+    pointer-events: none;
+
+}
 
 .orbit-card {
 
@@ -47,10 +57,21 @@
     width: 180px;
 
     aspect-ratio: 16 / 9;
+    
 
     transform-style: preserve-3d;
 
     will-change: transform;
+
+}
+
+/* =========================================================
+   TEXT SHADOW
+========================================================= */
+
+.gallery-headline h2 {
+
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55), 0 0 30px rgba(235, 129, 50, 0.12);
 
 }
 
@@ -62,6 +83,9 @@
 
     width: 100%;
     height: 100%;
+
+       filter:
+        drop-shadow(0 8px 20px rgba(0, 0, 0, 0.28));
 
 }
 
@@ -76,7 +100,7 @@
 
     overflow: hidden;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), 0 0 28px rgba(235, 129, 50, 0.08);
 
 }
 
