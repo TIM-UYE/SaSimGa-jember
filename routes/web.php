@@ -81,28 +81,28 @@ Route::post('/midtrans/test', function (\Illuminate\Http\Request $request) {
 
 Route::get('/faq', function () {
 
-    return view('frontend.sections.faq');
+    return view('frontend.information.faq');
 
 })->name('frontend.faq');
 
 
 Route::get('/privacy-policy', function () {
 
-    return view('frontend.sections.privacy');
+    return view('frontend.information.privacy');
 
 })->name('frontend.privacy');
 
 
 Route::get('/terms-conditions', function () {
 
-    return view('frontend.sections.terms');
+    return view('frontend.information.terms');
 
 })->name('frontend.terms');
 
 
 Route::get('/support', function () {
 
-    return view('frontend.sections.support');
+    return view('frontend.information.support');
 
 })->name('frontend.support');
 

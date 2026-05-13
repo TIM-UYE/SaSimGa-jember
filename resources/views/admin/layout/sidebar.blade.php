@@ -62,7 +62,7 @@
           <i class="fas fa-utensils text-sm"></i>
         </div>
 
-        Menu Restaurant
+        Menu Regular
       </a>
     </li>
     @endif
@@ -79,7 +79,7 @@
                 <i class="fas fa-fire text-sm"></i>
             </div>
 
-            Menu Specials
+            Menu Spesial
         </a>
     </li>
     @endif
