@@ -172,7 +172,7 @@
 
                         </div>
 
-                        <h3 class="text-white font-semibold mb-2">
+                        <h3 class="text-white font-medium mb-2">
                             Dibakar Arang
                         </h3>
 
@@ -192,7 +192,7 @@
 
                         </div>
 
-                        <h3 class="text-white font-semibold mb-2">
+                        <h3 class="text-white font-medium mb-2">
                             Bahan Premium
                         </h3>
 

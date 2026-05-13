@@ -187,7 +187,7 @@
                         </h2>
 
                         <p class="text-gray-400 leading-relaxed">
-                            Sate Simpangtiga buka setiap hari mulai pukul 10.00 WIB hingga 22.00 WIB.
+                            Sate Simpangtiga buka setiap hari mulai pukul 11.00 WIB hingga 23.00 WIB.
                         </p>
 
                     </div>

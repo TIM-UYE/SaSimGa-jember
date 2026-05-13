@@ -14,16 +14,14 @@
 
         {{-- TOP --}}
         <div
-            class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 lg:p-12 shadow-2xl"
-        >
+            class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 bg-black/20 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 lg:p-12 shadow-2xl">
 
             {{-- BRAND --}}
             <div>
 
                 {{-- BADGE --}}
                 <span
-                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 text-white text-xs font-medium tracking-[0.2em] uppercase ring-1 ring-white/10 mb-6"
-                >
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/20 text-white text-xs font-medium tracking-[0.2em] uppercase ring-1 ring-white/10 mb-6">
 
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
 
@@ -68,13 +66,8 @@
 
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.1226353399134!2d113.64975941055611!3d-8.190399582096555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd6915b16ade4f7%3A0x67dfee97e6b4020e!2sSate%20Simpang%20Tiga%20Mangli%20Jember!5e0!3m2!1sid!2sid!4v1778102290206!5m2!1sid!2sid"
-                        width="100%"
-                        height="220"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                    >
+                        width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
 
                 </div>
@@ -94,10 +87,8 @@
 
                     <li>
 
-                        <a
-                            href="{{ route('frontend.faq') }}"
-                            class="text-black/80 hover:text-white transition-all duration-300"
-                        >
+                        <a href="{{ route('frontend.faq') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
 
                             FAQ'S
 
@@ -107,10 +98,8 @@
 
                     <li>
 
-                        <a
-                            href="{{ route('frontend.about') }}"
-                            class="text-black/80 hover:text-white transition-all duration-300"
-                        >
+                        <a href="{{ route('frontend.about') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
 
                             About
 
@@ -120,10 +109,8 @@
 
                     <li>
 
-                        <a
-                            href="{{ route('frontend.privacy') }}"
-                            class="text-black/80 hover:text-white transition-all duration-300"
-                        >
+                        <a href="{{ route('frontend.privacy') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
 
                             Privacy Policy
 
@@ -133,10 +120,8 @@
 
                     <li>
 
-                        <a
-                            href="{{ route('frontend.terms') }}"
-                            class="text-black/80 hover:text-white transition-all duration-300"
-                        >
+                        <a href="{{ route('frontend.terms') }}"
+                            class="text-black/80 hover:text-white transition-all duration-300">
 
                             Terms & Conditions
 
@@ -160,9 +145,9 @@
                 <div class="space-y-5 text-sm">
 
                     {{-- ADDRESS --}}
-                    <div class="flex gap-3">
+                    <div class="flex items-start gap-3">
 
-                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0 mt-1">
 
                             <i class="fas fa-map-marker-alt text-white"></i>
 
@@ -185,33 +170,30 @@
 
 
                     {{-- PHONE --}}
-<div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3">
 
-    <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
+                        <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
 
-        <i class="fas fa-phone text-white"></i>
+                            <i class="fas fa-phone text-white"></i>
 
-    </div>
+                        </div>
 
-    <div class="flex items-center h-10">
+                        <div class="flex items-center h-10">
 
-        <a
-            href="https://wa.me/6281234567890"
-            target="_blank"
-            class="text-black/80 hover:text-white transition duration-300 leading-none"
-        >
+                            <a href="https://wa.me/6281234567890" target="_blank"
+                                class="text-black/80 hover:text-white transition duration-300 leading-none">
 
-            +62 812-3456-7890
+                                +62 812-3456-7890
 
-        </a>
+                            </a>
 
-    </div>
+                        </div>
 
-</div>
+                    </div>
 
 
                     {{-- EMAIL --}}
-                    <div class="flex gap-3">
+                    <div class="flex items-center gap-3">
 
                         <div class="w-10 h-10 rounded-xl bg-black/20 flex items-center justify-center shrink-0">
 
@@ -221,10 +203,8 @@
 
                         <div>
 
-                            <a
-                                href="mailto:satesimpangtiga@gmail.com"
-                                class="text-black/80 hover:text-white transition duration-300"
-                            >
+                            <a href="mailto:satesimpangtiga@gmail.com"
+                                class="text-black/80 hover:text-white transition duration-300">
 
                                 satesimpangtiga@gmail.com
 
@@ -255,11 +235,8 @@
             <div class="flex items-center gap-6 font-medium">
 
                 {{-- INSTAGRAM --}}
-                <a
-                    href="https://www.instagram.com/satesimpangtiga.jember?igsh=MTlpMnp1bWw0bDZqdA=="
-                    target="_blank"
-                    class="flex items-center gap-2 hover:text-white transition duration-300"
-                >
+                <a href="https://www.instagram.com/satesimpangtiga.jember?igsh=MTlpMnp1bWw0bDZqdA==" target="_blank"
+                    class="flex items-center gap-2 hover:text-white transition duration-300">
 
                     <i class="fab fa-instagram"></i>
 
@@ -269,11 +246,8 @@
 
 
                 {{-- TIKTOK --}}
-                <a
-                    href="https://www.tiktok.com/@satesimpangtiga.jember?_r=1&_t=ZS-96DXpAHuZk1"
-                    target="_blank"
-                    class="flex items-center gap-2 hover:text-white transition duration-300"
-                >
+                <a href="https://www.tiktok.com/@satesimpangtiga.jember?_r=1&_t=ZS-96DXpAHuZk1" target="_blank"
+                    class="flex items-center gap-2 hover:text-white transition duration-300">
 
                     <i class="fab fa-tiktok"></i>
 
@@ -283,11 +257,8 @@
 
 
                 {{-- WHATSAPP --}}
-                <a
-                    href="https://wa.me/6281234567890"
-                    target="_blank"
-                    class="flex items-center gap-2 hover:text-white transition duration-300"
-                >
+                <a href="https://wa.me/6281234567890" target="_blank"
+                    class="flex items-center gap-2 hover:text-white transition duration-300">
 
                     <i class="fab fa-whatsapp"></i>
 

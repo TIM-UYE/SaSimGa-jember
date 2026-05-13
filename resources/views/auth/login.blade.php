@@ -12,7 +12,7 @@
 
     <style>
         body {
-            background: #111827;
+            background: #000;
             min-height: 100vh;
         }
 
@@ -29,10 +29,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[700px]">
 
             {{-- LEFT SIDE --}}
-            <div
-                class="relative hidden lg:block bg-cover bg-center"
-                style="background-image: url('{{ asset('images/login/login.jpeg') }}');"
-            >
+            <div class="relative hidden lg:block bg-cover bg-center"
+                style="background-image: url('{{ asset('images/login/login.jpeg') }}');">
 
                 <div class="absolute inset-0 bg-slate-950/35"></div>
 
@@ -40,11 +38,7 @@
 
                     <div class="mb-8 rounded-full bg-white/80 p-4 shadow-lg">
 
-                        <img
-                            src="{{ asset('images/logo/logo.png') }}"
-                            alt="Simpang Tiga"
-                            class="h-16 w-auto"
-                        >
+                        <img src="{{ asset('images/logo/logo.png') }}" alt="Simpang Tiga" class="h-16 w-auto">
 
                     </div>
 
@@ -70,6 +64,19 @@
 
                 <div class="w-full max-w-md">
 
+                    {{-- BACK BUTTON --}}
+                    <a href="{{ route('frontend.home') }}"
+                        class="inline-flex items-center gap-2
+        text-sm text-slate-500
+        hover:text-orange-500
+        transition mb-8">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Kembali ke Home
+
+                    </a>
+
                     {{-- TITLE --}}
                     <div class="mb-10">
 
@@ -92,9 +99,7 @@
                             <ul class="list-disc list-inside space-y-1">
 
                                 @foreach ($errors->all() as $error)
-
                                     <li>{{ $error }}</li>
-
                                 @endforeach
 
                             </ul>
@@ -117,15 +122,9 @@
                                 Nama
                             </label>
 
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                value="{{ old('email') }}"
-                                placeholder="Nama"
-                                required
-                                class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('email') border-red-400 ring-red-200 @enderror"
-                            />
+                            <input id="email" name="email" type="email" value="{{ old('email') }}"
+                                placeholder="Nama" required
+                                class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('email') border-red-400 ring-red-200 @enderror" />
 
                         </div>
 
@@ -139,21 +138,12 @@
 
                             <div class="relative mt-2">
 
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    placeholder="Kata sandi"
-                                    required
-                                    class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('password') border-red-400 ring-red-200 @enderror"
-                                />
+                                <input id="password" name="password" type="password" placeholder="Kata sandi" required
+                                    class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-sm text-slate-900 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-200 @error('password') border-red-400 ring-red-200 @enderror" />
 
                                 {{-- TOGGLE BUTTON --}}
-                                <button
-                                    type="button"
-                                    onclick="togglePassword()"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-orange-500 transition"
-                                >
+                                <button type="button" onclick="togglePassword()"
+                                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-orange-500 transition">
 
                                     {{-- DEFAULT = PASSWORD HIDDEN --}}
                                     <i id="eyeIcon" class="fa-solid fa-eye-slash"></i>
@@ -166,10 +156,8 @@
 
 
                         {{-- BUTTON --}}
-                        <button
-                            type="submit"
-                            class="w-full rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600"
-                        >
+                        <button type="submit"
+                            class="w-full rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition hover:bg-orange-600">
                             MASUK
                         </button>
 
@@ -181,10 +169,7 @@
 
                         Belum punya akun?
 
-                        <a
-                            href="{{ route('register') }}"
-                            class="font-semibold text-orange-600 hover:text-orange-700"
-                        >
+                        <a href="{{ route('register') }}" class="font-semibold text-orange-600 hover:text-orange-700">
                             Daftar sekarang
                         </a>
 
@@ -201,7 +186,6 @@
 
     {{-- SCRIPT --}}
     <script>
-
         function togglePassword() {
 
             const passwordInput = document.getElementById('password');
@@ -227,7 +211,6 @@
                 eyeIcon.classList.add('fa-eye-slash');
             }
         }
-
     </script>
 
 </body>

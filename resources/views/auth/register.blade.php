@@ -12,7 +12,7 @@
 
     <style>
         body {
-            background: #111827;
+            background: #000;
             min-height: 100vh;
         }
 
