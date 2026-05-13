@@ -89,21 +89,30 @@
 
                 @auth
 
-                    class="relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
+                    <button type="button" onclick="openProfileMenu()"
+                        class="relative flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden">
 
-                    <div class="h-full w-full rounded-full overflow-hidden bg-black">
+                        <div class="h-full w-full rounded-full overflow-hidden bg-black">
 
-                        @if (auth()->user()->profile_photo)
-                            <img src="{{ asset('storage/profile/' . auth()->user()->profile_photo) }}" alt="Profil"
-                                class="h-full w-full object-cover">
-                        @else
-                            <div
-                                class="flex h-full w-full items-center justify-center text-sm font-bold text-white bg-gradient-to-br from-orange-500 to-orange-700">
-                                {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
-                            </div>
-                        @endif
+                            @if (auth()->user()->profile_photo)
+                                <img src="{{ asset('storage/profile/' . auth()->user()->profile_photo) }}" alt="Profil"
+                                    class="h-full w-full object-cover">
+                            @else
+                                <div
+                                    class="flex h-full w-full items-center justify-center text-sm font-bold text-white bg-gradient-to-br from-orange-500 to-orange-700">
 
-                    </div>
+                                    {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
+
+                                </div>
+                            @endif
+
+                        </div>
+
+                        <span
+                            class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-black bg-green-400">
+                        </span>
+
+                    </button>
 
                     <span
                         class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-black bg-green-400"></span>
@@ -114,8 +123,8 @@
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 border border-white/10 ring-1 ring-white/10 hover:ring-orange-500/50 hover:border-orange-500/40 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
 
                         </svg>
 
