@@ -1,4 +1,4 @@
-<section class="relative min-h-screen bg-black overflow-hidden">
+<section id="orbitSection" class="relative min-h-screen bg-black overflow-hidden">
 
     {{-- BACKGROUND GLOW --}}
     <div class="absolute inset-0 pointer-events-none z-0">
@@ -15,67 +15,93 @@
             bg-amber-500/10 rounded-full blur-3xl">
         </div>
 
-    </div>
+        {{-- ORBIT SCENE --}}
+        <div class="orbit-scene">
 
-    {{-- ORBIT SCENE --}}
-    <div class="orbit-scene">
+            {{-- ORBIT WORLD --}}
+            <div class="orbit-world" id="orbitWorld">
 
-        {{-- ORBIT WORLD --}}
-        <div class="orbit-world" id="orbitWorld">
+                @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $img)
+                    <div class="orbit-card">
 
-            @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $img)
-                <div class="orbit-card">
+                        <div class="orbit-float">
 
-                    <div class="orbit-float">
+                            <div class="orbit-face">
 
-                        <div class="orbit-face">
-
-                            <img src="{{ asset('images/gallery/gallery' . $img . '.jpg') }}" loading="lazy"
-                                alt="Gallery Image">
+                                <img src="{{ asset('images/gallery/gallery' . $img . '.jpg') }}" loading="lazy"
+                                    decoding="async" alt="Gallery Image">
+                            </div>
 
                         </div>
 
                     </div>
+                @endforeach
+
+            </div>
+
+            {{-- TEXT DI DALAM ORBIT --}}
+            <div class="gallery-headline">
+
+                <div class="text-center max-w-5xl mb-16">
+
+                    <h2 class="text-3xl md:text-5xl lg:text-6xl
+    font-bold leading-[1.12]
+    tracking-tight">
+
+                        <span class="headline-white inline-block text-white pb-1">
+                            Authentic
+                        </span>
+
+                        <span
+                            class="headline-gradient inline-block pb-2
+        text-transparent bg-clip-text
+        bg-gradient-to-r
+        from-orange-400
+        via-orange-500
+        to-amber-500">
+
+                            Culinary Experience
+
+                        </span>
+
+                    </h2>
 
                 </div>
-            @endforeach
-
-        </div>
-
-        {{-- TEXT DI DALAM ORBIT --}}
-        <div class="gallery-headline">
-
-            <div class="text-center max-w-5xl">
-
-                <h2
-                    class="text-4xl md:text-5xl lg:text-7xl
-                    font-bold leading-[0.95]
-                    tracking-tight">
-
-                    <span class="text-white">
-                        Authentic
-                    </span>
-
-                    <span
-                        class="text-transparent bg-clip-text
-                        bg-gradient-to-r
-                        from-orange-400
-                        via-orange-500
-                        to-amber-500">
-
-                        Culinary Experience
-
-                    </span>
-
-                </h2>
 
             </div>
 
         </div>
 
-    </div>
+        {{-- BOTTOM CAPTION --}}
+        <div
+            class="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2
+    z-[70]
+    w-full max-w-3xl px-6
+    text-center pointer-events-none">
 
-    {{-- VIGNETTE --}}
-    <div class="orbit-vignette"></div>
+
+
+            <p
+                class="text-white text-lg md:text-xl font-semibold leading-tight
+        drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+
+                Suasana hangat dalam setiap sajian
+
+            </p>
+
+            <p
+                class="mt-3 text-zinc-400 text-sm md:text-base leading-relaxed
+        max-w-2xl mx-auto
+        drop-shadow-[0_4px_18px_rgba(0,0,0,0.8)]">
+
+                Nikmati momen kebersamaan dengan cita rasa autentik, aroma bakaran arang, dan
+                pengalaman kuliner khas Sate Simpang Tiga.
+
+            </p>
+
+        </div>
+
+        {{-- VIGNETTE --}}
+        <div class="orbit-vignette"></div>
 
 </section>
