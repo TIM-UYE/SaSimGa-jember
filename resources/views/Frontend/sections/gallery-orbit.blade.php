@@ -1,5 +1,4 @@
-<section id="orbitSection" class="relative min-h-screen bg-black overflow-hidden">
-
+<section id="orbitSection" class="relative min-h-screen bg-black overflow-hidden -mt-8 md:-mt-12">
     {{-- BACKGROUND GLOW --}}
     <div class="absolute inset-0 pointer-events-none z-0">
 
