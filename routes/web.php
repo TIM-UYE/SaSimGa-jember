@@ -11,7 +11,9 @@ use App\Http\Controllers\MenuSpecialItemController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
@@ -317,6 +319,22 @@ Route::middleware(['auth', 'role:admin,manager'])
         | SPECIAL MENU CRUD (Manager only - sensitive)
         |--------------------------------------------------------------------------
         */
+
+        /*
+        |--------------------------------------------------------------------------
+        | GALERI CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('galeri', GaleriController::class);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIDEO CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('video', VideoController::class);
 
         Route::middleware('role:manager')->group(function () {
 

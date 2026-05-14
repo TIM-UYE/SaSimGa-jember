@@ -48,71 +48,14 @@
         {{-- GALLERY --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-            @php
-
-                $galleries = [
-
-                    [
-                        'image' => 'gallery1.jpg',
-                        'title' => 'Family Dinner',
-                        'desc'  => 'Momen hangat bersama keluarga'
-                    ],
-
-                    [
-                        'image' => 'gallery2.jpg',
-                        'title' => 'Happy Customer',
-                        'desc'  => 'Pengalaman makan terbaik'
-                    ],
-
-                    [
-                        'image' => 'gallery3.jpg',
-                        'title' => 'Favorite Menu',
-                        'desc'  => 'Sate khas favorit pelanggan'
-                    ],
-
-                    [
-                        'image' => 'gallery4.jpg',
-                        'title' => 'Restaurant Interior',
-                        'desc'  => 'Suasana nyaman & modern'
-                    ],
-
-                    [
-                        'image' => 'gallery5.jpg',
-                        'title' => 'Quality Food',
-                        'desc'  => 'Hidangan premium terbaik'
-                    ],
-
-                    [
-                        'image' => 'gallery6.jpg',
-                        'title' => 'Best Experience',
-                        'desc'  => 'Pelayanan ramah & cepat'
-                    ],
-
-                    [
-                        'image' => 'gallery7.jpg',
-                        'title' => 'Special Moment',
-                        'desc'  => 'Momen spesial pelanggan'
-                    ],
-
-                    [
-                        'image' => 'gallery8.jpg',
-                        'title' => 'Traditional Taste',
-                        'desc'  => 'Cita rasa khas Indonesia'
-                    ],
-
-                ];
-
-            @endphp
-
-
-            @foreach($galleries as $gallery)
+            @forelse($galeris as $gallery)
 
                 <div class="group relative overflow-hidden rounded-[2rem] h-80 border border-white/10 shadow-xl hover:shadow-orange-500/20 transition duration-500">
 
                     {{-- IMAGE --}}
                     <img
-                        src="{{ asset('images/gallery/' . $gallery['image']) }}"
-                        alt="{{ $gallery['title'] }}"
+                        src="{{ asset('storage/' . $gallery->image) }}"
+                        alt="{{ $gallery->title }}"
                         class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                     >
 
@@ -129,11 +72,11 @@
                     <div class="absolute bottom-0 left-0 p-6">
 
                         <h3 class="text-white font-bold text-xl">
-                            {{ $gallery['title'] }}
+                            {{ $gallery->title }}
                         </h3>
 
                         <p class="text-gray-300 text-sm mt-1">
-                            {{ $gallery['desc'] }}
+                            {{ $gallery->description ?? 'Momen hangat bersama pelanggan' }}
                         </p>
 
                     </div>
@@ -148,7 +91,17 @@
 
                 </div>
 
-            @endforeach
+            @empty
+
+                <div class="col-span-full text-center py-20">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 mb-6">
+                        <i class="fas fa-image text-3xl text-gray-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-400 mb-1">Belum Ada Galeri</h3>
+                    <p class="text-gray-500">Galeri akan segera tersedia</p>
+                </div>
+
+            @endforelse
 
         </div>
 
@@ -190,47 +143,98 @@
             {{-- VIDEO GRID --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                {{-- VIDEO 1 --}}
+                @forelse($videos as $video)
+
                 <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-orange-500/10">
 
-                    <video
-                        autoplay
-                        muted
-                        loop
-                        controls
-                        class="w-full h-[350px] object-cover"
-                    >
-
-                        <source
-                            src="{{ asset('videos/restaurant.mp4') }}"
-                            type="video/mp4"
+                    @if($video->video_file)
+                        <video
+                            autoplay
+                            muted
+                            loop
+                            controls
+                            class="w-full h-[350px] object-cover"
                         >
+                            <source
+                                src="{{ asset('storage/' . $video->video_file) }}"
+                                type="video/mp4"
+                            >
+                            Your browser does not support the video tag.
+                        </video>
+                    @elseif($video->video_url && $video->video_url !== '-')
+                        @php
+                            $isYoutube = str_contains($video->video_url, 'youtube.com') || str_contains($video->video_url, 'youtu.be');
+                            $isVimeo = str_contains($video->video_url, 'vimeo.com');
+                        @endphp
 
-                    </video>
+                        @if($isYoutube)
+                            @php
+                                parse_str(parse_url($video->video_url, PHP_URL_QUERY), $ytParams);
+                                $ytId = $ytParams['v'] ?? '';
+                                if (str_contains($video->video_url, 'youtu.be')) {
+                                    $ytId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
+                                }
+                            @endphp
+                            <div class="relative w-full h-[350px]">
+                                <iframe
+                                    src="https://www.youtube.com/embed/{{ $ytId }}?autoplay=1&mute=1&loop=1&playlist={{ $ytId }}"
+                                    class="w-full h-full object-cover"
+                                    allow="autoplay; encrypted-media"
+                                    allowfullscreen
+                                    loading="lazy"
+                                ></iframe>
+                            </div>
+                        @elseif($isVimeo)
+                            @php
+                                $vimeoId = substr(parse_url($video->video_url, PHP_URL_PATH), 1);
+                            @endphp
+                            <div class="relative w-full h-[350px]">
+                                <iframe
+                                    src="https://player.vimeo.com/video/{{ $vimeoId }}?autoplay=1&muted=1&loop=1"
+                                    class="w-full h-full object-cover"
+                                    allow="autoplay"
+                                    allowfullscreen
+                                    loading="lazy"
+                                ></iframe>
+                            </div>
+                        @else
+                            <video
+                                autoplay
+                                muted
+                                loop
+                                controls
+                                class="w-full h-[350px] object-cover"
+                            >
+                                <source
+                                    src="{{ $video->video_url }}"
+                                    type="video/mp4"
+                                >
+                            </video>
+                        @endif
+                    @endif
+
+                    @if($video->title || $video->description)
+                        <div class="p-5 bg-gradient-to-t from-black/80 to-transparent -mt-20 relative z-10">
+                            <h4 class="text-white font-bold text-lg">{{ $video->title }}</h4>
+                            @if($video->description)
+                                <p class="text-gray-300 text-sm mt-1">{{ $video->description }}</p>
+                            @endif
+                        </div>
+                    @endif
 
                 </div>
 
+                @empty
 
-
-                {{-- VIDEO 2 --}}
-                <div class="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-orange-500/10">
-
-                    <video
-                        autoplay
-                        muted
-                        loop
-                        controls
-                        class="w-full h-[350px] object-cover"
-                    >
-
-                        <source
-                            src="{{ asset('videos/restaurant2.mp4') }}"
-                            type="video/mp4"
-                        >
-
-                    </video>
-
+                <div class="col-span-full text-center py-16">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 mb-6">
+                        <i class="fas fa-video text-3xl text-gray-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-400 mb-1">Belum Ada Video</h3>
+                    <p class="text-gray-500">Video akan segera tersedia</p>
                 </div>
+
+                @endforelse
 
             </div>
 

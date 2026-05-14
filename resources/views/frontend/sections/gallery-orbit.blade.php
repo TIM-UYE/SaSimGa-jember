@@ -22,14 +22,30 @@
 
         <div class="orbit-world" id="orbitWorld">
 
-            @foreach ([1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5] as $img)
+            @forelse($galeris->take(15) as $g)
                 <div class="orbit-card">
 
                     <div class="orbit-float">
 
                         <div class="orbit-face">
 
-                            <img src="{{ asset('images/gallery/gallery' . $img . '.jpg') }}" loading="lazy"
+                            <img src="{{ asset('storage/' . $g->image) }}" loading="lazy"
+                                alt="{{ $g->title }}">
+
+                        </div>
+
+                    </div>
+
+                </div>
+            @empty
+                @for ($i = 0; $i < 5; $i++)
+                <div class="orbit-card">
+
+                    <div class="orbit-float">
+
+                        <div class="orbit-face">
+
+                            <img src="{{ asset('images/gallery/gallery' . ($i % 5 + 1) . '.jpg') }}" loading="lazy"
                                 alt="Gallery Image">
 
                         </div>
@@ -37,7 +53,8 @@
                     </div>
 
                 </div>
-            @endforeach
+                @endfor
+            @endforelse
 
         </div>
 

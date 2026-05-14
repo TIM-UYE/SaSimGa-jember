@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
+use App\Models\Galeri;
 use App\Models\KategoriMenu;
+use App\Models\Menu;
 use App\Models\Testimoni;
+use App\Models\Video;
 
 class HomeController extends Controller
 {
@@ -26,6 +28,14 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('frontend.pages.home', compact('menus', 'kategoris', 'testimonis'));
+        $galeris = Galeri::where('is_active', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $videos = Video::where('is_active', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('frontend.pages.home', compact('menus', 'kategoris', 'testimonis', 'galeris', 'videos'));
     }
 }
