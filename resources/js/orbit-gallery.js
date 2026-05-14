@@ -1,102 +1,137 @@
 function createOrbit(worldId, speed, radiusMin, radiusMax) {
-
     const world = document.getElementById(worldId);
+    const section = document.getElementById("orbitSection");
 
-    if (!world) 
+    if (!world || !section) 
         return;
     
-    const cards = world.querySelectorAll(".orbit-card");
+    const cards = Array.from(world.querySelectorAll(".orbit-card"));
 
-    /* SAFE AREA */
     const safeZone = 180;
 
-    cards.forEach((card, index) => {
-
+    const items = cards.map((card, index) => {
         const angle = (360 / cards.length) * index;
 
-        /* RADIUS */
         const radius = safeZone + radiusMin + Math.random() * (radiusMax - radiusMin);
 
-        /* SPREAD */
         const offsetY = (Math.random() - 0.5) * 180;
 
-        /* SMALL TILT */
         const rotateZ = (Math.random() - 0.5) * 2;
 
-        card.dataset.angle = angle;
-        card.dataset.radius = radius;
-        card.dataset.offsetY = offsetY;
-        card.dataset.rotateZ = rotateZ;
-
+        return {card, angle, radius, offsetY, rotateZ};
     });
 
     let rotation = 0;
+    let rafId = null;
+    let isVisible = false;
+    let isTabActive = !document.hidden;
+    let lastTime = null;
 
-    function animate() {
+    /*
+        Set true kalau mau blur depth.
+        Untuk performa lebih stabil, false lebih ringan.
+    */
+    const ENABLE_DEPTH_BLUR = false;
 
-        rotation += speed;
+    function render(time) {
+        if (!isVisible || !isTabActive) {
+            rafId = null;
+            lastTime = null;
+            return;
+        }
 
-        cards.forEach((card) => {
+        if (!lastTime) {
+            lastTime = time;
+        }
 
-            const angle = parseFloat(card.dataset.angle);
+        const delta = Math.min(time - lastTime, 32);
+        lastTime = time;
 
-            const radius = parseFloat(card.dataset.radius);
+        /*
+            Speed lama kamu berbasis frame.
+            Ini dibuat time-based supaya tidak berat / loncat saat balik tab.
+        */
+        rotation += speed * (delta / 16.67);
 
-            const offsetY = parseFloat(card.dataset.offsetY);
+        items.forEach((item) => {
+            const finalAngle = item.angle + rotation;
 
-            const rotateZ = parseFloat(card.dataset.rotateZ);
-
-            const finalAngle = angle + rotation;
-
-            /* DEPTH */
             const depth = Math.cos(finalAngle * Math.PI / 180);
 
-            /*
-                belakang = kecil
-                depan    = besar
-            */
-
-            const perspectiveScale = ((depth + 1) / 2);
+            const perspectiveScale = (depth + 1) / 2;
 
             const dynamicScale = 0.72 + (perspectiveScale * 0.55);
 
-            /* BRIGHTNESS */
-            const dynamicBrightness = 0.82 + ((depth + 1) / 2) * 0.18;
+            const dynamicBrightness = 0.82 + (perspectiveScale * 0.18);
 
-            /* DEPTH BLUR */
-            const depthBlur = (1 - ((depth + 1) / 2)) * 0.8;
+            const depthBlur = ENABLE_DEPTH_BLUR
+                ? (1 - perspectiveScale) * 0.8
+                : 0;
 
-            /* Z INDEX */
             const dynamicZ = Math.floor((depth + 1) * 100);
 
-            /* TRANSFORM */
-            card.style.transform = `
+            item.card.style.transform = `
                 translate(-50%, -50%)
                 rotateY(${finalAngle}deg)
-                translateZ(${radius +
+                translateZ(${item.radius +
                     (depth * 120)}px)
-                translateY(${offsetY}px)
+                translateY(${item.offsetY}px)
                 rotateY(${ - finalAngle}deg)
-                rotateZ(${rotateZ}deg)
+                rotateZ(${item.rotateZ}deg)
                 scale(${dynamicScale})
             `;
 
-            /* DEPTH EFFECT */
-            card.style.filter = `
-                brightness(${dynamicBrightness})
-                blur(${depthBlur}px)
-            `;
+            item.card.style.filter = `brightness(${dynamicBrightness}) blur(${depthBlur}px)`;
 
-            card.style.zIndex = dynamicZ;
-
+            item.card.style.zIndex = dynamicZ;
         });
 
-        requestAnimationFrame(animate);
-
+        rafId = requestAnimationFrame(render);
     }
 
-    animate();
+    function startOrbit() {
+        if (rafId || !isVisible || !isTabActive) 
+            return;
+        
+        lastTime = null;
+        rafId = requestAnimationFrame(render);
+    }
 
+    function stopOrbit() {
+        if (!rafId) 
+            return;
+        
+        cancelAnimationFrame(rafId);
+        rafId = null;
+        lastTime = null;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+
+            if (isVisible) {
+                startOrbit();
+            } else {
+                stopOrbit();
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: "200px 0px"
+    });
+
+    observer.observe(section);
+
+    document.addEventListener("visibilitychange", () => {
+        isTabActive = !document.hidden;
+
+        if (isTabActive) {
+            startOrbit();
+        } else {
+            stopOrbit();
+        }
+    });
 }
 
 /* INIT */

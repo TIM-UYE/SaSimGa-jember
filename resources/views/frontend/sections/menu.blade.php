@@ -1,4 +1,4 @@
-<section class="relative bg-black py-24 overflow-hidden">
+<section class="relative bg-black pt-24 pb-10 md:pb-14 overflow-hidden">
 
     {{-- Background Pattern --}}
     <div class="absolute inset-0 opacity-10">

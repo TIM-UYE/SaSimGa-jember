@@ -40,7 +40,7 @@
 
         <div class="text-center max-w-5xl">
 
-            <h2 class="text-2xl md:text-4xl lg:text-5xl
+            <h2 class="text-4xl md:text-5xl lg:text-7xl
                 font-bold leading-[0.95] tracking-tight">
 
                 <span class="text-white">
