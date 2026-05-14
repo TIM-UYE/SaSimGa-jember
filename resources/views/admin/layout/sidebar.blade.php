@@ -158,7 +158,7 @@
     @endif
 
     <!-- INFORMATION (Admin & Manager) -->
-    @if(in_array(Auth::user()->role, ['admin', 'manager']))
+    @if(Auth::user()->role === 'manager')
     <li>
       <a href="{{ route('admin.information.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
