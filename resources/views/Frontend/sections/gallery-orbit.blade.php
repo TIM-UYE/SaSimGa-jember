@@ -7,7 +7,7 @@
     @endpush
 
     @push('scripts')
-        @vite(['resources/js/orbit-gallery.js'])
+        @vite(['resources/js/frontend/orbit-gallery.js'])
     @endpush
 
 @endonce
