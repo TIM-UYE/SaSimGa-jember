@@ -6,51 +6,54 @@
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
 
                 @forelse($specials as $special)
-                    <div
-                        class="group relative overflow-hidden rounded-3xl h-[420px] cursor-pointer border border-gray-800 hover:border-orange-500/40 transition-all duration-500 menu-card-tilt special-card-premium special-card"
-                        onclick="openSpecialMenuModal({{ json_encode($special) }})">
-                        <div class="menu-card-tilt-inner relative w-full h-full overflow-hidden rounded-3xl">
-                            <!-- SPARKLE OVERLAY -->
-                            <div class="special-pulse-ring"></div>
+                    <div class="special-frame">
+                        <div class="special-frame-inner">
+                            <div
+                                class="group w-full h-full overflow-hidden rounded-lg cursor-pointer bg-gradient-to-b from-gray-800 to-gray-950 border border-white/5 hover:border-orange-500/40 transition-all duration-500 menu-card-tilt special-card-premium special-card flex flex-col"
+                                onclick="openSpecialMenuModal({{ json_encode($special) }})">
+                                <div class="menu-card-tilt-inner flex flex-col flex-1 min-h-0 relative overflow-hidden">
+                                    <!-- IMAGE -->
+                                    <div class="relative overflow-hidden" style="flex: 1.4;">
+                                        @if($special->banner_image)
+                                            <img src="{{ asset('storage/' . $special->banner_image) }}"
+                                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                        @else
+                                            <img src="{{ asset('images/menu-special/tumpeng.jpg') }}"
+                                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                        @endif
 
-                            <!-- IMAGE -->
-                            @if($special->banner_image)
-                                <img src="{{ asset('storage/' . $special->banner_image) }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            @else
-                                <img src="{{ asset('images/menu-special/tumpeng.jpg') }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            @endif
+                                        <!-- OVERLAY -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
 
-                            <!-- OVERLAY -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                                        <!-- SPARKLE OVERLAY -->
+                                        <div class="special-pulse-ring"></div>
 
-                            <!-- BADGE -->
-                            <div class="absolute top-5 left-5">
-                                <span class="px-4 py-2 rounded-full bg-orange-500 text-white text-xs font-bold shadow-lg shadow-orange-500/30">
-                                    PRE ORDER
-                                </span>
-                            </div>
+                                        <!-- BADGE -->
+                                        <div class="absolute top-3 left-3 z-10">
+                                            <span class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-[10px] font-bold shadow-lg shadow-orange-500/30">
+                                                PRE ORDER
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            <!-- CONTENT -->
-                            <div class="absolute bottom-0 left-0 p-8 w-full">
+                                    <!-- CONTENT -->
+                                    <div class="p-3 flex flex-col justify-center" style="flex: 1;">
+                                        <h3 class="font-bold text-sm text-white mb-1 line-clamp-1">
+                                            {{ $special->title }}
+                                        </h3>
 
-                                <h3 class="text-3xl font-bold text-white mb-3">
-                                    {{ $special->title }}
-                                </h3>
+                                        <p class="text-[10px] text-gray-300 mb-2 line-clamp-2 leading-relaxed">
+                                            {{ $special->short_description ?? 'Menu spesial untuk acara istimewa Anda.' }}
+                                        </p>
 
-                                <p class="text-gray-300 mb-5">
-                                    {{ $special->short_description ?? 'Menu spesial untuk acara istimewa Anda.' }}
-                                </p>
-
-                                <div class="inline-flex items-center gap-3 text-orange-400 font-semibold group-hover:gap-5 transition-all">
-                                    <span>Lihat Detail</span>
-                                    <i class="fas fa-arrow-right"></i>
+                                        <div class="inline-flex items-center gap-2 text-orange-400 font-semibold group-hover:gap-3 transition-all text-[11px]">
+                                            <span>Lihat Detail</span>
+                                            <i class="fas fa-arrow-right" style="font-size: 8px;"></i>
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 @empty
                     <div class="col-span-3 text-center py-20">

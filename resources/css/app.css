@@ -488,6 +488,84 @@
     padding: 2px;
 }
 
+/* ========================= */
+/* 🌟 DECORATIVE BORDER FRAMES 🌟 */
+/* ========================= */
+
+/* --- REGULAR MENU FRAME --- */
+.menu-frame {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    aspect-ratio: 23.66 / 35.72;
+    border-radius: 1.5rem;
+    background: url('/images/border/menu.png') no-repeat center / cover;
+    transition: filter 0.5s ease, box-shadow 0.5s ease;
+    overflow: hidden;
+}
+
+/* Safe area — content is constrained here */
+.menu-frame-inner {
+    position: absolute;
+    inset: 17%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Glow on hover for the frame */
+.menu-frame:hover {
+    filter: drop-shadow(0 0 24px rgba(251, 146, 60, 0.3));
+}
+
+/* --- SPECIAL MENU FRAME --- */
+.special-frame {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    aspect-ratio: 23.66 / 35.72;
+    border-radius: 1.5rem;
+    background: url('/images/border/menu-specials.png') no-repeat center / cover;
+    transition: filter 0.5s ease, box-shadow 0.5s ease;
+    overflow: hidden;
+}
+
+/* Inner safe area for specials */
+.special-frame-inner {
+    position: absolute;
+    inset: 17%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Glow on hover for the special frame */
+.special-frame:hover {
+    filter: drop-shadow(0 0 28px rgba(251, 146, 60, 0.35));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .menu-frame-inner {
+        inset: 14%;
+        border-radius: 0.5rem;
+    }
+    .special-frame-inner {
+        inset: 14%;
+        border-radius: 0.5rem;
+    }
+    .menu-frame {
+        max-width: 320px;
+    }
+    .special-frame {
+        max-width: 360px;
+    }
+}
+
 html.lenis,
 html.lenis body {
     height: auto;

@@ -134,18 +134,18 @@
         // Search functionality
         document.getElementById('searchInput')?.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const menuCards = document.querySelectorAll('.menu-card');
+            const menuFrames = document.querySelectorAll('.menu-frame');
             let hasResults = false;
 
-            menuCards.forEach(card => {
-                const menuName = card.querySelector('h3').textContent.toLowerCase();
-                const menuDesc = card.querySelector('p').textContent.toLowerCase();
+            menuFrames.forEach(frame => {
+                const menuName = frame.querySelector('h3').textContent.toLowerCase();
+                const menuDesc = frame.querySelector('p').textContent.toLowerCase();
 
                 if (menuName.includes(searchTerm) || menuDesc.includes(searchTerm)) {
-                    card.style.display = 'block';
+                    frame.style.display = 'block';
                     hasResults = true;
                 } else {
-                    card.style.display = 'none';
+                    frame.style.display = 'none';
                 }
             });
 
@@ -194,41 +194,41 @@
                 }
             });
 
-            const menuCards = document.querySelectorAll('.menu-card');
+            const menuFrames = document.querySelectorAll('.menu-frame');
             let visibleCount = 0;
 
             // 3. Animate cards out
-            menuCards.forEach(card => {
-                const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+            menuFrames.forEach(frame => {
+                const menuCategoryId = parseInt(frame.getAttribute('data-kategori-id'));
                 const filterCategoryId = parseInt(categoryId);
 
                 if (!(filterCategoryId === 0 || menuCategoryId === filterCategoryId)) {
-                    card.classList.remove('filter-card-entering');
-                    card.classList.add('filter-card-leaving');
+                    frame.classList.remove('filter-card-entering');
+                    frame.classList.add('filter-card-leaving');
                 }
             });
 
             // 4. After leave animation, swap and animate in
             setTimeout(() => {
-                menuCards.forEach(card => {
-                    const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+                menuFrames.forEach(frame => {
+                    const menuCategoryId = parseInt(frame.getAttribute('data-kategori-id'));
                     const filterCategoryId = parseInt(categoryId);
 
                     if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-                        card.style.display = 'block';
-                        card.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
-                        void card.offsetWidth;
-                        card.classList.add('filter-card-entering');
+                        frame.style.display = 'block';
+                        frame.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
+                        void frame.offsetWidth;
+                        frame.classList.add('filter-card-entering');
                         visibleCount++;
                     } else {
-                        card.style.display = 'none';
-                        card.classList.remove('filter-card-leaving', 'filter-card-entering');
+                        frame.style.display = 'none';
+                        frame.classList.remove('filter-card-leaving', 'filter-card-entering');
                     }
                 });
 
                 setTimeout(() => {
-                    menuCards.forEach(card => {
-                        card.classList.remove('filter-card-entering');
+                    menuFrames.forEach(frame => {
+                        frame.classList.remove('filter-card-entering');
                     });
                 }, 700);
 

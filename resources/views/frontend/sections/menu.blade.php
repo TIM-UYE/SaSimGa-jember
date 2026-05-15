@@ -304,13 +304,14 @@
                 }
             });
 
-            const menuCards = document.querySelectorAll('.menu-card');
+            const menuCards = document.querySelectorAll('.menu-frame');
             const grid = menuCards[0]?.parentElement;
             let visibleCount = 0;
 
             // 3. Animate cards out with leave animation
             menuCards.forEach(card => {
                 const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+                const innerCard = card.querySelector('.menu-card');
                 const filterCategoryId = parseInt(categoryId);
 
                 if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
