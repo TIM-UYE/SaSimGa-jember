@@ -651,9 +651,20 @@
     margin: 0 auto;
     aspect-ratio: 23.66 / 35.72;
     border-radius: 1.5rem;
+    overflow: hidden;
+    background: #030712; /* dark fallback */
+}
+
+/* Border image ON TOP of content — like a real picture frame */
+.menu-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
     background: url('/images/border/menu.png') no-repeat center / cover;
     transition: filter 0.5s ease, box-shadow 0.5s ease;
-    overflow: hidden;
 }
 
 /* Safe area — content is constrained here */
@@ -664,10 +675,11 @@
     border-radius: 0.75rem;
     display: flex;
     flex-direction: column;
+    z-index: 1;
 }
 
 /* Glow on hover for the frame */
-.menu-frame:hover {
+.menu-frame:hover::before {
     filter: drop-shadow(0 0 24px rgba(251, 146, 60, 0.3));
 }
 
@@ -679,9 +691,20 @@
     margin: 0 auto;
     aspect-ratio: 23.66 / 35.72;
     border-radius: 1.5rem;
+    overflow: hidden;
+    background: #030712;
+}
+
+/* Border image ON TOP of content */
+.special-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
     background: url('/images/border/menu-specials.png') no-repeat center / cover;
     transition: filter 0.5s ease, box-shadow 0.5s ease;
-    overflow: hidden;
 }
 
 /* Inner safe area for specials */
@@ -692,10 +715,11 @@
     border-radius: 0.75rem;
     display: flex;
     flex-direction: column;
+    z-index: 1;
 }
 
 /* Glow on hover for the special frame */
-.special-frame:hover {
+.special-frame:hover::before {
     filter: drop-shadow(0 0 28px rgba(251, 146, 60, 0.35));
 }
 
