@@ -1,6 +1,11 @@
 <!-- REGULAR MENU SECTION -->
-    <section id="regularMenuSection" class="bg-black px-6 pb-32 section-reveal">
-        <div class="max-w-7xl mx-auto mt-16">
+    <section id="regularMenuSection" class="relative bg-gradient-to-br from-black via-gray-900 to-black px-6 pb-32 section-reveal overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <div class="absolute top-20 left-10 w-64 h-64 bg-orange-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-orange-600 rounded-full blur-3xl"></div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 relative z-10">
 
             @if ($menus->isEmpty())
                 <div class="text-center py-20">

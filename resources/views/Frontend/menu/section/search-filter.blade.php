@@ -1,5 +1,6 @@
-<section
-class="bg-black/50 backdrop-blur-sm border-y border-gray-800 px-6 py-6 sticky top-16 z-30">
+<section id="filterSection"
+class="bg-black/50 backdrop-blur-sm border-y border-gray-800 px-6 py-6 z-30"
+style="position: relative; transition: box-shadow 0.3s ease;">
 
     <div class="max-w-7xl mx-auto">
 
