@@ -19,6 +19,16 @@ use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
+use App\Http\Controllers\LanguageController;
+
+/*
+|--------------------------------------------------------------------------
+| DUAL LANGUAGES ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])
+    ->name('language.switch');
 
 
 /*
