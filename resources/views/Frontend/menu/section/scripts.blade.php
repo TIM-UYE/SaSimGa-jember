@@ -155,30 +155,94 @@
             }
         });
 
+        // 🔥 Smooth filter by category with premium animations
         function filterMenuByCategory(categoryId) {
+            // 1. Button particles effect
+            const activeBtn = document.querySelector(`.kategori-btn[data-kategori-id="${categoryId}"]`);
+            if (activeBtn) {
+                // Particle burst from button
+                for (let i = 0; i < 6; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'filter-particle';
+                    const rect = activeBtn.getBoundingClientRect();
+                    particle.style.left = `${rect.left + rect.width * 0.2 + Math.random() * rect.width * 0.6}px`;
+                    particle.style.top = `${rect.top + rect.height * 0.2 + Math.random() * rect.height * 0.6}px`;
+                    particle.style.width = `${4 + Math.random() * 6}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = `${Math.random() * 0.15}s`;
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+
+                // Button morph pulse
+                activeBtn.classList.add('filter-btn-pulse');
+                setTimeout(() => activeBtn.classList.remove('filter-btn-pulse'), 400);
+
+                // Button ripple
+                activeBtn.classList.add('btn-ripple');
+                setTimeout(() => activeBtn.classList.remove('btn-ripple'), 700);
+            }
+
+            // 2. Update button styles
             document.querySelectorAll('.kategori-btn').forEach(btn => {
                 if (parseInt(btn.dataset.kategoriId) === parseInt(categoryId)) {
                     btn.classList.remove('bg-gray-800', 'text-gray-300');
-                    btn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+                    btn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25', 'cat-btn-active');
                 } else {
                     btn.classList.add('bg-gray-800', 'text-gray-300');
-                    btn.classList.remove('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+                    btn.classList.remove('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25', 'cat-btn-active');
                 }
             });
 
             const menuCards = document.querySelectorAll('.menu-card');
+            let visibleCount = 0;
 
+            // 3. Animate cards out
             menuCards.forEach(card => {
                 const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
                 const filterCategoryId = parseInt(categoryId);
 
-                if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-                    card.style.display = 'block';
-                    card.style.animation = 'fadeIn 0.3s ease-in-out';
-                } else {
-                    card.style.display = 'none';
+                if (!(filterCategoryId === 0 || menuCategoryId === filterCategoryId)) {
+                    card.classList.remove('filter-card-entering');
+                    card.classList.add('filter-card-leaving');
                 }
             });
+
+            // 4. After leave animation, swap and animate in
+            setTimeout(() => {
+                menuCards.forEach(card => {
+                    const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+                    const filterCategoryId = parseInt(categoryId);
+
+                    if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
+                        card.style.display = 'block';
+                        card.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
+                        void card.offsetWidth;
+                        card.classList.add('filter-card-entering');
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('filter-card-leaving', 'filter-card-entering');
+                    }
+                });
+
+                setTimeout(() => {
+                    menuCards.forEach(card => {
+                        card.classList.remove('filter-card-entering');
+                    });
+                }, 700);
+
+                // No Results handling
+                const noResults = document.getElementById('noResults');
+                if (noResults) {
+                    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+                    if (visibleCount === 0) {
+                        noResults.classList.remove('hidden');
+                        noResults.classList.add('filter-card-entering');
+                        setTimeout(() => noResults.classList.remove('filter-card-entering'), 600);
+                    }
+                }
+            }, 420);
         }
 
 

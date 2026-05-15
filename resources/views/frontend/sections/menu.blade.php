@@ -6,7 +6,7 @@
         <div class="absolute bottom-20 right-10 w-96 h-96 bg-orange-600 rounded-full blur-3xl"></div>
     </div>
 
-    <div class="relative z-10 container-main">
+        <div class="relative z-10 container-main section-reveal">
 
         {{-- HEADER --}}
         <div class="max-w-2xl mx-auto text-center mb-16 reveal">
@@ -53,86 +53,79 @@
         {{-- GRID MENU --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @forelse($menus as $menu)
-                <div class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30 reveal
+                <div class="group bg-gradient-to-b from-gray-900 to-gray-950 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-gray-800 hover:border-orange-500/30 reveal menu-card-tilt
                 {{ $loop->index >= 4 ? 'hidden md:block' : '' }}
 {{ $loop->index >= 8 ? 'md:hidden extra-menu' : '' }}"
                     style="--delay: {{ $loop->index * 0.1 }}s" data-kategori-id="{{ $menu->kategori_id }}">
-
-                    <!-- IMAGE -->
-                    <div class="relative overflow-hidden h-56">
-                        @if ($menu->gambar)
-                            <img src="{{ asset('storage/menu/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}"
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        @else
-                            <div
-                                class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                <i class="fas fa-utensils text-gray-600 text-5xl"></i>
-                            </div>
-                        @endif
-
-                        <!-- Overlay on hover -->
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        </div>
-
-                        <!-- Category Badge -->
-                        <div class="absolute top-4 left-4">
-                            <span
-                                class="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
-                                {{ $menu->kategori->nama_kategori ?? 'Menu' }}
-                            </span>
-                        </div>
-
-                        <!-- Availability Badge -->
-                        <div class="absolute top-4 right-4">
-                            @if ($menu->is_available)
-                                <span
-                                    class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1">
-                                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                                    Tersedia
-                                </span>
+                    <div class="menu-card-tilt-inner">
+                        <!-- IMAGE -->
+                        <div class="relative overflow-hidden h-56 menu-card-shine">
+                            @if ($menu->gambar)
+                                <img src="{{ asset('storage/menu/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}"
+                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @else
-                                <span
-                                    class="px-3 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
-                                    Habis
-                                </span>
+                                <div
+                                    class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                    <i class="fas fa-utensils text-gray-600 text-5xl"></i>
+                                </div>
                             @endif
-                        </div>
-                    </div>
-
-                    <!-- CONTENT -->
-                    <div class="p-5">
-                        <h3
-                            class="font-bold text-xl text-white mb-2 line-clamp-1 group-hover:text-orange-400 transition-colors">
-                            {{ $menu->nama_menu }}
-                        </h3>
-
-                        <p class="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[40px]">
-                            {{ $menu->deskripsi ?? 'Tidak ada deskripsi' }}
-                        </p>
-
-                        <!-- Price & Actions -->
-                        <div class="flex items-center justify-between gap-3">
-                            <div>
-                                <span class="text-2xl font-bold text-orange-400">
-                                    Rp {{ number_format($menu->harga, 0, ',', '.') }}
+                            <!-- Overlay on hover -->
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            </div>
+                            <!-- Category Badge -->
+                            <div class="absolute top-4 left-4">
+                                <span
+                                    class="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
+                                    {{ $menu->kategori->nama_kategori ?? 'Menu' }}
                                 </span>
                             </div>
-
-                            <div class="flex gap-2">
-                                <!-- Quick Add Button -->
-                                <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
-                                    class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    {{ !$menu->is_available ? 'disabled' : '' }} title="Tambah ke keranjang">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-
-                                <!-- Detail Button -->
-                                <button onclick='openMenuDetail(@json($menu))'
-                                    class="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center transition-all hover:scale-110"
-                                    title="Lihat detail">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                            <!-- Availability Badge -->
+                            <div class="absolute top-4 right-4">
+                                @if ($menu->is_available)
+                                    <span
+                                        class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1">
+                                        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                        Tersedia
+                                    </span>
+                                @else
+                                    <span
+                                        class="px-3 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
+                                        Habis
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- CONTENT -->
+                        <div class="p-5">
+                            <h3
+                                class="font-bold text-xl text-white mb-2 line-clamp-1 group-hover:text-orange-400 transition-colors">
+                                {{ $menu->nama_menu }}
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-4 line-clamp-2 min-h-[40px]">
+                                {{ $menu->deskripsi ?? 'Tidak ada deskripsi' }}
+                            </p>
+                            <!-- Price & Actions -->
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <span class="text-2xl font-bold text-orange-400 menu-price">
+                                        Rp {{ number_format($menu->harga, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <!-- Quick Add Button -->
+                                    <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
+                                        class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        {{ !$menu->is_available ? 'disabled' : '' }} title="Tambah ke keranjang">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <!-- Detail Button -->
+                                    <button onclick='openMenuDetail(@json($menu))'
+                                        class="w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-700 text-white flex items-center justify-center transition-all hover:scale-110"
+                                        title="Lihat detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -272,40 +265,101 @@
         // Store current modal menu ID
         let currentModalMenuId = null;
 
-        // Filter by category
+        // 🔥 Smooth filter by category with premium animations
         function filterMenuByCategory(categoryId) {
-            // Update button styles
+            // 1. Button particles effect
+            const activeBtn = document.querySelector(`.kategori-btn[data-kategori-id="${categoryId}"]`);
+            if (activeBtn) {
+                // Particle burst from button
+                for (let i = 0; i < 6; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'filter-particle';
+                    const rect = activeBtn.getBoundingClientRect();
+                    particle.style.left = `${rect.left + rect.width * 0.2 + Math.random() * rect.width * 0.6}px`;
+                    particle.style.top = `${rect.top + rect.height * 0.2 + Math.random() * rect.height * 0.6}px`;
+                    particle.style.width = `${4 + Math.random() * 6}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = `${Math.random() * 0.15}s`;
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+
+                // Button morph pulse
+                activeBtn.classList.add('filter-btn-pulse');
+                setTimeout(() => activeBtn.classList.remove('filter-btn-pulse'), 400);
+
+                // Button ripple
+                activeBtn.classList.add('btn-ripple');
+                setTimeout(() => activeBtn.classList.remove('btn-ripple'), 700);
+            }
+
+            // 2. Update button styles with smooth class
             document.querySelectorAll('.kategori-btn').forEach(btn => {
                 if (parseInt(btn.dataset.kategoriId) === parseInt(categoryId)) {
                     btn.classList.remove('bg-gray-800', 'text-gray-300');
-                    btn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+                    btn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25', 'cat-btn-active');
                 } else {
                     btn.classList.add('bg-gray-800', 'text-gray-300');
-                    btn.classList.remove('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
+                    btn.classList.remove('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25', 'cat-btn-active');
                 }
             });
 
             const menuCards = document.querySelectorAll('.menu-card');
+            const grid = menuCards[0]?.parentElement;
             let visibleCount = 0;
 
+            // 3. Animate cards out with leave animation
             menuCards.forEach(card => {
                 const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
                 const filterCategoryId = parseInt(categoryId);
 
                 if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-                    card.style.display = 'block';
-                    card.style.animation = 'fadeIn 0.3s ease-in-out';
-                    visibleCount++;
+                    // Will be shown — keep visible, no leave anim
                 } else {
-                    card.style.display = 'none';
+                    // Will be hidden — animate out
+                    card.classList.remove('filter-card-entering');
+                    card.classList.add('filter-card-leaving');
                 }
             });
 
-            // Show/hide empty state
-            const emptyState = document.querySelector('.menu-empty-state');
-            if (emptyState) {
-                emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
+            // 4. After leave animation completes, swap display and animate in
+            setTimeout(() => {
+                menuCards.forEach(card => {
+                    const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
+                    const filterCategoryId = parseInt(categoryId);
+
+                    if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
+                        card.style.display = 'block';
+                        // Remove any previous classes
+                        card.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
+                        // Force reflow
+                        void card.offsetWidth;
+                        // Add enter animation
+                        card.classList.add('filter-card-entering');
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.remove('filter-card-leaving', 'filter-card-entering');
+                    }
+                });
+
+                // 5. Clean up entering class after animation
+                setTimeout(() => {
+                    menuCards.forEach(card => {
+                        card.classList.remove('filter-card-entering');
+                    });
+                }, 700);
+
+                // Show/hide empty state
+                const emptyState = document.querySelector('.menu-empty-state');
+                if (emptyState) {
+                    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+                    if (visibleCount === 0) {
+                        emptyState.classList.add('filter-card-entering');
+                        setTimeout(() => emptyState.classList.remove('filter-card-entering'), 600);
+                    }
+                }
+            }, 420); // wait for leave animation to finish
         }
 
         const csrfToken = '{{ csrf_token() }}';
