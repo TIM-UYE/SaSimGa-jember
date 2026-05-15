@@ -22,43 +22,60 @@
             {{-- DESKTOP MENU --}}
             <div class="items-center gap-1 hidden md:flex">
 
-                <a href="{{ route('frontend.home') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Home
-                </a>
+    <x-frontend::navbar.link
+        href="{{ route('frontend.home') }}"
+        :active="request()->routeIs('frontend.home')"
+    >
+        Home
+    </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.about') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    About
-                </a>
+    <x-frontend::navbar.link
+        href="{{ route('frontend.about') }}"
+        :active="request()->routeIs('frontend.about')"
+    >
+        About
+    </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.menu') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Menu
-                </a>
+    <x-frontend::navbar.link
+        href="{{ route('frontend.menu') }}"
+        :active="request()->routeIs('frontend.menu')"
+    >
+        Menu
+    </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.reservasi') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Reservasi
-                </a>
+    <x-frontend::navbar.link
+        href="{{ route('frontend.reservasi') }}"
+        :active="request()->routeIs('frontend.reservasi')"
+    >
+        Reservasi
+    </x-frontend::navbar.link>
 
-                @auth
+    @auth
 
-                    @if (in_array(auth()->user()->role, ['admin', 'manager']))
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="px-4 py-2 text-sm text-orange-400 hover:text-orange-300 rounded-lg hover:bg-orange-500/10 transition-all duration-300">
-                            Dashboard
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('login') }}"
-                        class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                        Login
-                    </a>
+        @if (in_array(auth()->user()->role, ['admin', 'manager']))
 
-                @endauth
+            <x-frontend::navbar.link
+                href="{{ route('admin.dashboard') }}"
+                variant="orange"
+                :active="request()->routeIs('admin.dashboard')"
+            >
+                Dashboard
+            </x-frontend::navbar.link>
 
-            </div>
+        @endif
+
+    @else
+
+        <x-frontend::navbar.link
+            href="{{ route('login') }}"
+            :active="request()->routeIs('login')"
+        >
+            Login
+        </x-frontend::navbar.link>
+
+    @endauth
+
+</div>
 
         </div>
 
