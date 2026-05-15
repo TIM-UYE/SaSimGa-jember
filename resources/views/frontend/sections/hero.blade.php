@@ -31,7 +31,7 @@
 
             {{-- LITTLE TITLE --}}
             <p class="text-gray-400 text-lg reveal delay-100">
-                Rumah Makan
+                {{ __('frontend.hero.label') }}
             </p>
 
             {{-- TITLE --}}
@@ -61,9 +61,7 @@
                 class="text-zinc-400 mt-5 text-sm sm:text-base md:text-lg
                 leading-relaxed max-w-xl mx-auto lg:mx-0 reveal delay-300">
 
-                Sate Simpang Tiga menghadirkan cita rasa sate khas Indonesia
-                dengan bahan segar, bumbu autentik, dan aroma bakaran arang
-                yang menggugah selera.
+                {{ __('frontend.hero.description') }}
 
             </p>
 
@@ -74,7 +72,7 @@
                 <a href="{{ route('frontend.menu') }}"
                     class="btn-primary inline-flex items-center justify-center w-full sm:w-auto">
 
-                    Pesan Sekarang
+                    {{ __('frontend.hero.order_button') }}
 
                 </a>
 
@@ -82,7 +80,7 @@
                 <a href="{{ route('frontend.reservasi') }}"
                     class="btn-outline inline-flex items-center justify-center w-full sm:w-auto">
 
-                    Reservasi Sekarang
+                    {{ __('frontend.hero.reservation_button') }}
 
                 </a>
 

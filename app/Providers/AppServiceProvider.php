@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Reservasi;
 use App\Models\User;
 use App\Observers\ReservasiObserver;
-
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,13 +22,14 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
         Reservasi::observe(ReservasiObserver::class);
+
+        Blade::anonymousComponentPath(resource_path('views/frontend/components'), 'frontend');
 
         // Authorization Gates for Role-based Access Control
 
@@ -97,4 +98,4 @@ class AppServiceProvider extends ServiceProvider
             return in_array($user->role, ['admin', 'manager']);
         });
     }
-    }
+}

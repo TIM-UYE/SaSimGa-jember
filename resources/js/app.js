@@ -1,5 +1,12 @@
 import './bootstrap';
 
+import './frontend/loader';
+import './frontend/lenis-scroll';
+import './frontend/reveal';
+import './frontend/video-parallax';
+import './frontend/navbar-scroll';
+
+
 // =========================
 // 🎬 MENU CARD ANIMATIONS
 // =========================

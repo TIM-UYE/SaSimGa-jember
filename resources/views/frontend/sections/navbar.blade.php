@@ -1,4 +1,6 @@
-<nav class="fixed bg-black/90 backdrop-blur-md top-0 left-0 w-full z-50 border-b border-white/5">
+<nav id="siteNavbar"
+    class="fixed bg-black/90 backdrop-blur-md top-0 left-0 w-full z-50 transition-transform duration-500 ease-out
+    will-change-transform border-b border-white/5">
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
@@ -22,39 +24,33 @@
             {{-- DESKTOP MENU --}}
             <div class="items-center gap-1 hidden md:flex">
 
-                <a href="{{ route('frontend.home') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Home
-                </a>
+                <x-frontend::navbar.link href="{{ route('frontend.home') }}">
+                    {{ __('frontend.nav.home') }}
+                </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.about') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    About
-                </a>
+                <x-frontend::navbar.link href="{{ route('frontend.about') }}">
+                    {{ __('frontend.nav.about') }}
+                </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.menu') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Menu
-                </a>
+                <x-frontend::navbar.link href="{{ route('frontend.menu') }}">
+                    {{ __('frontend.nav.menu') }}
+                </x-frontend::navbar.link>
 
-                <a href="{{ route('frontend.reservasi') }}"
-                    class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
-                    Reservasi
-                </a>
+                <x-frontend::navbar.link href="{{ route('frontend.reservasi') }}">
+                    {{ __('frontend.nav.reservation') }}
+                </x-frontend::navbar.link>
 
                 @auth
 
                     @if (in_array(auth()->user()->role, ['admin', 'manager']))
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="px-4 py-2 text-sm text-orange-400 hover:text-orange-300 rounded-lg hover:bg-orange-500/10 transition-all duration-300">
+                        <x-frontend::navbar.link href="{{ route('admin.dashboard') }}" variant="orange" :active="request()->routeIs('admin.dashboard')">
                             Dashboard
-                        </a>
+                        </x-frontend::navbar.link>
                     @endif
                 @else
-                    <a href="{{ route('login') }}"
-                        class="px-4 py-2 text-sm text-white/70 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300">
+                    <x-frontend::navbar.link href="{{ route('login') }}" :active="request()->routeIs('login')">
                         Login
-                    </a>
+                    </x-frontend::navbar.link>
 
                 @endauth
 
@@ -66,6 +62,7 @@
         {{-- RIGHT MENU --}}
         <div class="flex items-center gap-4">
 
+            <x-frontend::language-switch />
 
             {{-- CART --}}
             <a href="{{ route('cart.index') }}" data-cart-icon
