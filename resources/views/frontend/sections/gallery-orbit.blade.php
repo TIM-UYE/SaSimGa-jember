@@ -1,3 +1,17 @@
+@if($galeris->isNotEmpty())
+
+@once
+
+    @push('styles')
+        @vite(['resources/css/gallery-orbit.css'])
+    @endpush
+
+    @push('scripts')
+        @vite(['resources/js/orbit-gallery.js'])
+    @endpush
+
+@endonce
+
 <section id="orbitSection" class="relative min-h-screen bg-black overflow-hidden -mt-8 md:-mt-12">
 
     {{-- BACKGROUND GLOW --}}
@@ -40,14 +54,17 @@
 
                 </div>
             @empty
+                {{-- Fallback: gunakan gambar placeholder jika tidak ada galeri --}}
                 @for ($i = 0; $i < 5; $i++)
                 <div class="orbit-card">
 
                     <div class="orbit-float">
 
                         <div class="orbit-face">
-
-                            <img src="{{ asset('images/gallery/gallery' . $img . '.jpg') }}" loading="lazy"
+                            @php
+                                $placeholderIndex = ($i % 5) + 1;
+                            @endphp
+                            <img src="{{ asset('images/gallery/gallery' . $placeholderIndex . '.jpg') }}" loading="lazy"
                                 decoding="async" alt="Gallery Image">
 
                         </div>
@@ -129,16 +146,4 @@
     <br><br>
 
 </section>
-
-
-@once
-
-    @push('styles')
-        @vite(['resources/css/gallery-orbit.css'])
-    @endpush
-
-    @push('scripts')
-        @vite(['resources/js/orbit-gallery.js'])
-    @endpush
-
-@endonce
+@endif
