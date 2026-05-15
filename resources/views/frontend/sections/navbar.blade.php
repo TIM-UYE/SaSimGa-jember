@@ -1,4 +1,5 @@
-<nav class="fixed bg-black/90 backdrop-blur-md top-0 left-0 w-full z-50 border-b border-white/5">
+<nav  id="siteNavbar" class="fixed bg-black/90 backdrop-blur-md top-0 left-0 w-full z-50 transition-transform duration-500 ease-out
+    will-change-transform border-b border-white/5">
 
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
@@ -22,60 +23,37 @@
             {{-- DESKTOP MENU --}}
             <div class="items-center gap-1 hidden md:flex">
 
-    <x-frontend::navbar.link
-        href="{{ route('frontend.home') }}"
-        :active="request()->routeIs('frontend.home')"
-    >
-        Home
-    </x-frontend::navbar.link>
+                <x-frontend::navbar.link href="{{ route('frontend.home') }}" :active="request()->routeIs('frontend.home')">
+                    Home
+                </x-frontend::navbar.link>
 
-    <x-frontend::navbar.link
-        href="{{ route('frontend.about') }}"
-        :active="request()->routeIs('frontend.about')"
-    >
-        About
-    </x-frontend::navbar.link>
+                <x-frontend::navbar.link href="{{ route('frontend.about') }}" :active="request()->routeIs('frontend.about')">
+                    About
+                </x-frontend::navbar.link>
 
-    <x-frontend::navbar.link
-        href="{{ route('frontend.menu') }}"
-        :active="request()->routeIs('frontend.menu')"
-    >
-        Menu
-    </x-frontend::navbar.link>
+                <x-frontend::navbar.link href="{{ route('frontend.menu') }}" :active="request()->routeIs('frontend.menu')">
+                    Menu
+                </x-frontend::navbar.link>
 
-    <x-frontend::navbar.link
-        href="{{ route('frontend.reservasi') }}"
-        :active="request()->routeIs('frontend.reservasi')"
-    >
-        Reservasi
-    </x-frontend::navbar.link>
+                <x-frontend::navbar.link href="{{ route('frontend.reservasi') }}" :active="request()->routeIs('frontend.reservasi')">
+                    Reservasi
+                </x-frontend::navbar.link>
 
-    @auth
+                @auth
 
-        @if (in_array(auth()->user()->role, ['admin', 'manager']))
+                    @if (in_array(auth()->user()->role, ['admin', 'manager']))
+                        <x-frontend::navbar.link href="{{ route('admin.dashboard') }}" variant="orange" :active="request()->routeIs('admin.dashboard')">
+                            Dashboard
+                        </x-frontend::navbar.link>
+                    @endif
+                @else
+                    <x-frontend::navbar.link href="{{ route('login') }}" :active="request()->routeIs('login')">
+                        Login
+                    </x-frontend::navbar.link>
 
-            <x-frontend::navbar.link
-                href="{{ route('admin.dashboard') }}"
-                variant="orange"
-                :active="request()->routeIs('admin.dashboard')"
-            >
-                Dashboard
-            </x-frontend::navbar.link>
+                @endauth
 
-        @endif
-
-    @else
-
-        <x-frontend::navbar.link
-            href="{{ route('login') }}"
-            :active="request()->routeIs('login')"
-        >
-            Login
-        </x-frontend::navbar.link>
-
-    @endauth
-
-</div>
+            </div>
 
         </div>
 
