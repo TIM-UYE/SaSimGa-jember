@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import './gallery-orbit.css';
+@import './components.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -77,12 +77,6 @@
 .reveal[style*="--delay"] {
     transition-delay: var(--delay);
 }
-
-/* ========================= */
-/* COMPONENT */
-/* ========================= */
-
-@import './components.css';
 
 /* ========================= */
 /* KEYFRAMES */
@@ -170,20 +164,5 @@ html.lenis body {
     50% {
         opacity: 1;
     }
-
-}
-
-#loader::before {
-
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
-
-    opacity: 0.08;
-
-    pointer-events: none;
 
 }

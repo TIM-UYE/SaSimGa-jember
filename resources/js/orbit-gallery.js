@@ -28,8 +28,8 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
     let lastTime = null;
 
     /*
-        Set true kalau mau blur depth.
-        Untuk performa lebih stabil, false lebih ringan.
+        Ubah ke true kalau ingin blur depth aktif.
+        Untuk performa terbaik, biarkan false.
     */
     const ENABLE_DEPTH_BLUR = false;
 
@@ -45,12 +45,9 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
         }
 
         const delta = Math.min(time - lastTime, 32);
+
         lastTime = time;
 
-        /*
-            Speed lama kamu berbasis frame.
-            Ini dibuat time-based supaya tidak berat / loncat saat balik tab.
-        */
         rotation += speed * (delta / 16.67);
 
         items.forEach((item) => {
@@ -68,7 +65,19 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
                 ? (1 - perspectiveScale) * 0.8
                 : 0;
 
-            const dynamicZ = Math.floor((depth + 1) * 100);
+            /*
+                Layering:
+                - depth <= 0  : gambar di belakang text
+                - text        : z-index 100
+                - depth > 0   : gambar di depan text
+            */
+            let dynamicZ;
+
+            if (depth > 0) {
+                dynamicZ = 120 + Math.floor(depth * 100);
+            } else {
+                dynamicZ = 20 + Math.floor((depth + 1) * 40);
+            }
 
             item.card.style.transform = `
                 translate(-50%, -50%)
@@ -81,8 +90,13 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
                 scale(${dynamicScale})
             `;
 
-            item.card.style.filter = `brightness(${dynamicBrightness}) blur(${depthBlur}px)`;
+            if (ENABLE_DEPTH_BLUR) {
+                item.card.style.filter = `brightness(${dynamicBrightness}) blur(${depthBlur}px)`;
+            } else {
+                item.card.style.filter = `brightness(${dynamicBrightness})`;
+            }
 
+            item.card.style.opacity = 1;
             item.card.style.zIndex = dynamicZ;
         });
 
@@ -94,6 +108,7 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
             return;
         
         lastTime = null;
+
         rafId = requestAnimationFrame(render);
     }
 
@@ -102,6 +117,7 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
             return;
         
         cancelAnimationFrame(rafId);
+
         rafId = null;
         lastTime = null;
     }
@@ -133,7 +149,5 @@ function createOrbit(worldId, speed, radiusMin, radiusMax) {
         }
     });
 }
-
-/* INIT */
 
 createOrbit("orbitWorld", 0.09, 370, 520);

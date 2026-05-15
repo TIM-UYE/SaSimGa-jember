@@ -3,34 +3,49 @@
 
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>@yield('title', 'Sate Simpang Tiga')</title>
 
+    {{-- load logo loading --}}
+    <link rel="preload" as="image" href="{{ asset('images/logo/logo.png') }}" fetchpriority="high">
+
+    {{-- PAGE SPECIFIC PRELOAD --}}
+    @stack('preloads')
+
+    {{-- GLOBAL ASSET --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Font Awesome Icons -->
+    {{-- PAGE / SECTION SPECIFIC STYLE --}}
+    @stack('styles')
+
+    {{-- Font Awesome Icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/png" href="{{ asset('images/logo/logo.png') }}" />
-    <!-- Fonts -->
+
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/logo.png') }}">
+
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="preload" as="image" href="{{ asset('images/hero/backgroundsate.png') }}">
 
-    <link rel="preload" as="video" href="{{ asset('videos/sate.mp4') }}" type="video/mp4">
 </head>
 
 <body class="bg-black text-white font-sans">
 
     {{-- LOADER --}}
     <div id="loader" class="fixed inset-0 z-[9999]
-    bg-black flex items-center justify-center">
+        bg-black flex items-center justify-center">
 
-        <img src="{{ asset('images/logo/logo.png') }}" alt="Loader" class="loader-image w-28 md:w-36">
+        <img src="{{ asset('images/logo/logo.png') }}" alt="Loader" loading="eager" fetchpriority="high"
+            decoding="async" data-critical-asset class="loader-image w-28 md:w-36">
 
     </div>
 
@@ -44,47 +59,129 @@
 
     @include('frontend.sections.footer')
 
+
+    {{-- LOADER SCRIPT --}}
     <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+        (function() {
+            const loader = document.getElementById('loader');
+
+            if (!loader) return;
+
+            const MIN_LOADING_TIME = 900;
+            const MAX_LOADING_TIME = 7000;
+
+            const startTime = performance.now();
+
+            let isFinished = false;
+
+            function waitForImage(img) {
+                return new Promise((resolve) => {
+                    function done() {
+                        if (img.decode) {
+                            img.decode()
+                                .then(resolve)
+                                .catch(resolve);
+                        } else {
+                            resolve();
+                        }
+                    }
+
+                    if (img.complete && img.naturalWidth > 0) {
+                        done();
+                        return;
+                    }
+
+                    img.addEventListener('load', done, {
+                        once: true
+                    });
+                    img.addEventListener('error', resolve, {
+                        once: true
+                    });
+                });
+            }
+
+            function hideLoader() {
+                if (isFinished) return;
+
+                isFinished = true;
+
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }
+
+            function finishLoading() {
+                const elapsed = performance.now() - startTime;
+
+                const remainingTime = Math.max(
+                    0,
+                    MIN_LOADING_TIME - elapsed
+                );
+
+                setTimeout(hideLoader, remainingTime);
+            }
+
+            const hardFallback = setTimeout(() => {
+                finishLoading();
+            }, MAX_LOADING_TIME);
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const criticalImages = Array.from(
+                    document.querySelectorAll('[data-critical-asset]')
+                );
+
+                const criticalAssetsReady = Promise.allSettled(
+                    criticalImages.map(waitForImage)
+                );
+
+                criticalAssetsReady.then(() => {
+                    clearTimeout(hardFallback);
+                    finishLoading();
+                });
             });
-        }, {
-            threshold: 0.2
-        });
-        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
-            .forEach(el => observer.observe(el));
+        })();
     </script>
+
 
     {{-- LENIS --}}
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
 
     <script>
-        // LENIS SMOOTH SCROLL
-        const lenis = new Lenis({
-            duration: 1.8,
-            lerp: 0.06,
-            smoothWheel: true,
-            wheelMultiplier: 0.9,
-        });
+        /**
+         * LENIS SMOOTH SCROLL
+         * dibuat aman supaya kalau CDN gagal, halaman tetap jalan
+         */
+        if (typeof Lenis !== 'undefined') {
 
-        function raf(time) {
-            lenis.raf(time);
+            const lenis = new Lenis({
+                duration: 1.8,
+                lerp: 0.06,
+                smoothWheel: true,
+                wheelMultiplier: 0.9,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+
             requestAnimationFrame(raf);
+
         }
 
-        requestAnimationFrame(raf);
 
-        // REVEAL ANIMATION
-        const observer = new IntersectionObserver((entries) => {
+        /**
+         * REVEAL ANIMATION
+         */
+        const revealObserver = new IntersectionObserver((entries) => {
 
             entries.forEach(entry => {
 
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
-
                 }
 
             });
@@ -95,133 +192,40 @@
 
         document.querySelectorAll(
             '.reveal, .reveal-left, .reveal-right, .reveal-scale'
-        ).forEach(el => observer.observe(el));
+        ).forEach(el => revealObserver.observe(el));
 
-        // VIDEO PARALLAX
+
+        /**
+         * VIDEO PARALLAX
+         */
+        let ticking = false;
+
         window.addEventListener('scroll', () => {
 
-            const scrolled = window.scrollY;
+            if (ticking) return;
 
-            document.querySelectorAll('.motion-video').forEach(video => {
+            ticking = true;
 
-                video.style.transform =
-                    `scale(1.1) translateY(${scrolled * 0.04}px)`;
+            requestAnimationFrame(() => {
+
+                const scrolled = window.scrollY;
+
+                document.querySelectorAll('.motion-video').forEach(video => {
+
+                    video.style.transform =
+                        `scale(1.1) translateY(${scrolled * 0.04}px)`;
+
+                });
+
+                ticking = false;
 
             });
 
         });
     </script>
 
-    <script>
-        window.addEventListener('load', () => {
 
-            const loader =
-                document.getElementById('loader');
-
-            setTimeout(() => {
-
-                loader.style.opacity = '0';
-                loader.style.visibility = 'hidden';
-
-            }, 1200);
-
-        });
-    </script>
-
-    <script>
-        /**
-         * Orbit Gallery — Pause on hover, touch drag direction
-         */
-        (function() {
-            const world = document.querySelector('.orbit-world');
-            if (!world) return;
-
-            /* ── Touch drag untuk mobile ── */
-            let startX = 0;
-            let startAngle = 0;
-            let currentAngle = 0;
-            let isDragging = false;
-            let dragVelocity = 0;
-            let lastX = 0;
-            let rafId = null;
-            let isPaused = false;
-
-            /* Ambil current rotateY dari computed style */
-            function getCurrentAngle() {
-                const mat = new DOMMatrix(getComputedStyle(world).transform);
-                return Math.round(Math.atan2(mat.m13, mat.m33) * (180 / Math.PI));
-            }
-
-            function pauseAnimation() {
-                if (!isPaused) {
-                    currentAngle = getCurrentAngle();
-                    world.style.animationPlayState = 'paused';
-                    world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
-                    isPaused = true;
-                }
-            }
-
-            function resumeAnimation() {
-                if (isPaused && !isDragging) {
-                    world.style.transform = '';
-                    world.style.animationPlayState = 'running';
-                    isPaused = false;
-                }
-            }
-
-            /* Touch events */
-            world.addEventListener('touchstart', (e) => {
-                pauseAnimation();
-                isDragging = true;
-                startX = e.touches[0].clientX;
-                lastX = startX;
-                startAngle = currentAngle;
-                if (rafId) cancelAnimationFrame(rafId);
-            }, {
-                passive: true
-            });
-
-            world.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                const dx = e.touches[0].clientX - startX;
-                dragVelocity = e.touches[0].clientX - lastX;
-                lastX = e.touches[0].clientX;
-                currentAngle = startAngle + dx * 0.35;
-                world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
-            }, {
-                passive: true
-            });
-
-            world.addEventListener('touchend', () => {
-                isDragging = false;
-                /* Momentum: lanjutkan rotasi perlahan lalu resume animation */
-                let momentum = dragVelocity * 0.35;
-
-                function coast() {
-                    if (Math.abs(momentum) < 0.1) {
-                        resumeAnimation();
-                        return;
-                    }
-                    currentAngle += momentum;
-                    momentum *= 0.94;
-                    world.style.transform = `rotateX(-14deg) rotateY(${currentAngle}deg)`;
-                    rafId = requestAnimationFrame(coast);
-                }
-                coast();
-            });
-
-            /* Accessibility: prefers-reduced-motion */
-            const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-            if (mq.matches) {
-                world.style.animationPlayState = 'paused';
-            }
-            mq.addEventListener('change', (e) => {
-                world.style.animationPlayState = e.matches ? 'paused' : 'running';
-            });
-
-        })();
-    </script>
-
+    {{-- PAGE / SECTION SPECIFIC SCRIPT --}}
     @stack('scripts')
 
 </body>

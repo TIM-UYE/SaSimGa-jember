@@ -13,11 +13,15 @@
     {{-- FIXED BACKGROUND --}}
     <div class="fixed inset-0 -z-10">
 
-        <video autoplay muted loop playsinline preload="auto" class="motion-video w-full h-full object-cover">
+        <video autoplay muted loop playsinline preload="metadata" poster="{{ asset('images/video-poster.jpg') }}"
+            class="motion-video hidden md:block w-full h-full object-cover">
 
             <source src="{{ asset('videos/sate.mp4') }}" type="video/mp4">
 
         </video>
+
+        <img src="{{ asset('images/video-poster.jpg') }}" alt="Sate Simpang Tiga"
+            class="block md:hidden w-full h-full object-cover">
 
         {{-- DARK OVERLAY --}}
         <div class="absolute inset-0 bg-black/70"></div>
