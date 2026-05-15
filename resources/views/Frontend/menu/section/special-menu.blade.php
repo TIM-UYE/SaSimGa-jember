@@ -12,7 +12,7 @@
 
                         <!-- IMAGE -->
                         @if($special->banner_image)
-                            <img src="{{ asset('storage/menu-special/' . $special->banner_image) }}"
+                            <img src="{{ asset('storage/' . $special->banner_image) }}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         @else
                             <img src="{{ asset('images/menu-special/tumpeng.jpg') }}"

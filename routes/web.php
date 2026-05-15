@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InformationController;
+use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
@@ -11,7 +13,9 @@ use App\Http\Controllers\MenuSpecialItemController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
@@ -30,9 +34,7 @@ Route::get('/menu', [MenuController::class, 'frontend'])
     ->name('frontend.menu');
 
 Route::get('/about', function () {
-
-    return view('frontend.about.index');
-
+    return redirect()->route('frontend.information.show', 'about');
 })->name('frontend.about');
 
 /*
@@ -75,30 +77,25 @@ Route::post('/midtrans/test', function (\Illuminate\Http\Request $request) {
 
 /*
 |--------------------------------------------------------------------------
-| STATIC PAGES
+| INFORMATION / STATIC PAGES (Now dynamic from database)
 |--------------------------------------------------------------------------
 */
 
+Route::get('/information/{information}', [InformationController::class, 'show'])
+    ->name('frontend.information.show');
+
+// Redirect legacy static routes to new dynamic ones
 Route::get('/faq', function () {
-
-    return view('frontend.information.faq');
-
+    return redirect()->route('frontend.information.show', 'faq');
 })->name('frontend.faq');
 
-
 Route::get('/privacy-policy', function () {
-
-    return view('frontend.information.privacy');
-
+    return redirect()->route('frontend.information.show', 'privacy-policy');
 })->name('frontend.privacy');
 
-
 Route::get('/terms-conditions', function () {
-
-    return view('frontend.information.terms');
-
+    return redirect()->route('frontend.information.show', 'terms-conditions');
 })->name('frontend.terms');
-
 
 Route::get('/support', function () {
 
@@ -317,6 +314,30 @@ Route::middleware(['auth', 'role:admin,manager'])
         | SPECIAL MENU CRUD (Manager only - sensitive)
         |--------------------------------------------------------------------------
         */
+
+        /*
+        |--------------------------------------------------------------------------
+        | GALERI CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('galeri', GaleriController::class);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIDEO CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('video', VideoController::class);
+
+        /*
+        |--------------------------------------------------------------------------
+        | INFORMATION CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('information', AdminInformationController::class);
 
         Route::middleware('role:manager')->group(function () {
 

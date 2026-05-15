@@ -127,6 +127,51 @@
       </a>
     </li>
 
+    <!-- GALERI (Admin & Manager) -->
+    @if(Auth::user()->role === 'manager')
+    <li>
+      <a href="{{ route('admin.galeri.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-images text-sm"></i>
+        </div>
+
+        Galeri
+      </a>
+    </li>
+    @endif
+
+    <!-- VIDEO (Admin & Manager) -->
+    @if(Auth::user()->role === 'manager')
+    <li>
+      <a href="{{ route('admin.video.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-video text-sm"></i>
+        </div>
+
+        Video
+      </a>
+    </li>
+    @endif
+
+    <!-- INFORMATION (Admin & Manager) -->
+    @if(Auth::user()->role === 'manager')
+    <li>
+      <a href="{{ route('admin.information.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-info-circle text-sm"></i>
+        </div>
+
+        Informasi
+      </a>
+    </li>
+    @endif
+
     {{-- MANAGER ONLY: KELOLA USER --}}
     @if(Auth::user()->role === 'manager')
     <li>

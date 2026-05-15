@@ -52,7 +52,7 @@
             document.getElementById('specialItemDescription').textContent = item.description || 'Menu special dengan cita rasa terbaik.';
             document.getElementById('specialQtyInput').value = 1;
 
-            const imgSrc = item.image ? `/storage/menu-special/${item.image}` : '/images/menu-special/tumpeng.jpg';
+            const imgSrc = item.image ? `/storage/${item.image}` : '/images/menu-special/tumpeng.jpg';
             document.getElementById('specialMenuImage').src = imgSrc;
         }
 
