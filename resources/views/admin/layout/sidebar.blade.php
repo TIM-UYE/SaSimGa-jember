@@ -84,6 +84,40 @@
     </li>
     @endif
 
+    {{-- MANAGER ONLY: STOK BAHAN --}}
+    @if(Auth::user()->role === 'manager')
+    <li>
+        <a
+            href="{{ route('admin.stok.index') }}"
+            class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition"
+        >
+
+            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+                <i class="fas fa-boxes-stacked text-sm"></i>
+            </div>
+
+            Stok Bahan
+        </a>
+    </li>
+    @endif
+
+    {{-- MANAGER ONLY: RIWAYAT STOK --}}
+    @if(Auth::user()->role === 'manager')
+    <li>
+        <a
+            href="{{ route('admin.stok-log.index') }}"
+            class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition"
+        >
+
+            <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+                <i class="fas fa-clock-rotate-left text-sm"></i>
+            </div>
+
+            Riwayat Stok
+        </a>
+    </li>
+    @endif
+
     {{-- MANAGER ONLY: TESTIMONI --}}
     @if(Auth::user()->role === 'manager')
     <li>

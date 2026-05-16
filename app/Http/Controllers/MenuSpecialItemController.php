@@ -25,6 +25,11 @@ class MenuSpecialItemController extends Controller
             'description' => 'nullable|string|max:600',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
             'is_available' => 'sometimes|boolean',
+
+            'stok_id' => 'nullable|array',
+            'stok_id.*' => 'nullable|exists:stok,id',
+            'jumlah_dibutuhkan' => 'nullable|array',
+            'jumlah_dibutuhkan.*' => 'nullable|numeric|min:0.01',
         ]);
 
         $this->service->store($menu_special, $validated);
@@ -41,6 +46,11 @@ class MenuSpecialItemController extends Controller
             'description' => 'nullable|string|max:600',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
             'is_available' => 'sometimes|boolean',
+
+            'stok_id' => 'nullable|array',
+            'stok_id.*' => 'nullable|exists:stok,id',
+            'jumlah_dibutuhkan' => 'nullable|array',
+            'jumlah_dibutuhkan.*' => 'nullable|numeric|min:0.01',
         ]);
 
         $this->service->update($menu_special_item, $validated);

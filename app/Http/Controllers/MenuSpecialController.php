@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\MenuSpecial;
+use App\Models\Stok;
 use App\Services\MenuSpecialService;
 use Illuminate\Http\Request;
 
@@ -56,7 +57,9 @@ class MenuSpecialController extends Controller
     {
         $special = $this->service->get($menu_special);
 
-        return view('Admin.special_menu.edit', compact('special'));
+        $stoks = Stok::orderBy('nama_bahan')->get();
+
+        return view('Admin.special_menu.edit', compact('special', 'stoks'));
     }
 
     public function update(Request $request, MenuSpecial $menu_special)

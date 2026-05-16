@@ -14,6 +14,8 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'menu_id',
+        'item_type',
+        'item_id',
         'nama_menu',
         'qty',
         'harga',
@@ -28,41 +30,31 @@ class OrderItem extends Model
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * Relationship to order
-     */
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
 
-    /**
-     * Relationship to menu
-     */
     public function menu()
     {
         return $this->belongsTo(Menu::class, 'menu_id', 'id');
     }
 
-    /**
-     * Calculate subtotal
-     */
+    public function itemable()
+    {
+        return $this->morphTo(__FUNCTION__, 'item_type', 'item_id');
+    }
+
     public function calculateSubtotal(): void
     {
         $this->subtotal = $this->harga * $this->qty;
     }
 
-    /**
-     * Format price for display
-     */
     public function getFormattedHarga(): string
     {
         return 'Rp ' . number_format($this->harga, 0, ',', '.');
     }
 
-    /**
-     * Format subtotal for display
-     */
     public function getFormattedSubtotal(): string
     {
         return 'Rp ' . number_format($this->subtotal, 0, ',', '.');

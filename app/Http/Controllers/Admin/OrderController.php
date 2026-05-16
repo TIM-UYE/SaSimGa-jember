@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
+use App\Services\StokService;
 use App\Services\WhatsAppNotificationService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
@@ -36,8 +37,8 @@ class OrderController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('kode_order', 'like', "%{$search}%")
-                  ->orWhere('nama_pelanggan', 'like', "%{$search}%")
-                  ->orWhere('nomor_hp', 'like', "%{$search}%");
+                    ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+                    ->orWhere('nomor_hp', 'like', "%{$search}%");
             });
         }
 
@@ -72,22 +73,20 @@ class OrderController extends Controller
         $deliveryMethodLabels = Order::getDeliveryMethodLabels();
         $paymentMethodLabels = Order::getPaymentMethodLabels();
 
-        return view('admin.orders.show', compact('order', 'statusLabels', 'paymentStatusLabels', 'deliveryMethodLabels', 'paymentMethodLabels'));
+        return view('admin.orders.show', compact(
+            'order',
+            'statusLabels',
+            'paymentStatusLabels',
+            'deliveryMethodLabels',
+            'paymentMethodLabels'
+        ));
     }
 
     /**
-     * Update order status with database transaction, logging, and WhatsApp notification.
-     *
-     * Flow:
-     * 1. Validate request
-     * 2. Check if status actually changed (prevent duplicate)
-     * 3. DB transaction: save order + payment status + history
-     * 4. Send WhatsApp notification (outside transaction to avoid slow API blocking DB)
-     * 5. Log everything
+     * Update order status
      */
-    public function updateStatus(Request $request, Order $order, WhatsAppService $whatsappService)
+    public function updateStatus(Request $request, Order $order, WhatsAppService $whatsappService, StokService $stokService)
     {
-        // 1. Validate request
         $validated = $request->validate([
             'status' => 'required|in:pending,diproses,dimasak,siap_diambil,diantar,selesai,dibatalkan',
         ]);
@@ -95,7 +94,15 @@ class OrderController extends Controller
         $newStatus = $validated['status'];
         $oldStatus = $order->status;
 
-        // 2. Prevent duplicate — if status hasn't changed, reject
+        Log::info('[DEBUG STOK] updateStatus terpanggil', [
+            'order_id' => $order->id,
+            'kode_order' => $order->kode_order,
+            'status_lama' => $oldStatus,
+            'status_baru' => $newStatus,
+            'payment_status' => $order->payment_status,
+            'request' => $request->all(),
+        ]);
+
         if ($newStatus === $oldStatus) {
             Log::warning('[ORDER DUPLICATE] Status sama, tolak request', [
                 'order_id' => $order->id,
@@ -116,7 +123,6 @@ class OrderController extends Controller
                 ->with('error', 'Status pesanan sudah "' . ($order->getStatusLabels()[$newStatus] ?? $newStatus) . '". Tidak ada perubahan.');
         }
 
-        // Prevent rollback to previous status (should be handled by canChangeToStatus, but double-check)
         if (!$order->canChangeToStatus($newStatus)) {
             Log::warning('[ORDER INVALID] Perubahan status tidak diizinkan', [
                 'order_id' => $order->id,
@@ -136,35 +142,32 @@ class OrderController extends Controller
                 ->with('error', 'Perubahan status tidak diizinkan.');
         }
 
-        // 3. DB Transaction — save changes atomically
         try {
             DB::beginTransaction();
 
-            // Update order status
             $order->status = $newStatus;
             $order->save();
 
-            // Auto set payment status to paid when order is completed
             if ($newStatus === Order::STATUS_SELESAI && $order->payment_status === Order::PAYMENT_UNPAID) {
                 $order->payment_status = Order::PAYMENT_PAID;
                 $order->save();
+
                 Log::info('[ORDER PAYMENT] Pembayaran otomatis di-set ke paid karena status selesai', [
                     'order_id' => $order->id,
                     'kode_order' => $order->kode_order,
                 ]);
             }
 
-            // Cancel order — revert payment status
             if ($newStatus === Order::STATUS_DIBATALKAN) {
                 $order->payment_status = Order::PAYMENT_UNPAID;
                 $order->save();
+
                 Log::info('[ORDER CANCEL] Pembayaran dikembalikan ke unpaid karena dibatalkan', [
                     'order_id' => $order->id,
                     'kode_order' => $order->kode_order,
                 ]);
             }
 
-            // Log status change ke tabel history
             OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $newStatus,
@@ -179,18 +182,26 @@ class OrderController extends Controller
 
             DB::commit();
 
+            $freshOrder = $order->fresh();
+
+            if ($newStatus === Order::STATUS_SELESAI && $freshOrder->payment_status === Order::PAYMENT_PAID) {
+                $stokService->kurangiStokUntukOrder($freshOrder);
+            }
+
             Log::info('[ORDER SUCCESS] Status berhasil diubah', [
                 'order_id' => $order->id,
                 'kode_order' => $order->kode_order,
                 'old_status' => $oldStatus,
                 'new_status' => $newStatus,
+                'payment_status' => $freshOrder->payment_status,
+                'stok_dikurangi_at' => $freshOrder->stok_dikurangi_at,
                 'changed_by' => auth()->id(),
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('[ORDER DB FAIL] Gagal menyimpan perubahan status', [
+            Log::error('[ORDER DB/STOK FAIL] Gagal menyimpan perubahan status atau mengurangi stok', [
                 'order_id' => $order->id,
                 'kode_order' => $order->kode_order,
                 'old_status' => $oldStatus,
@@ -202,16 +213,14 @@ class OrderController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gagal menyimpan perubahan status. Silakan coba lagi.',
+                    'message' => 'Gagal menyimpan perubahan status: ' . $e->getMessage(),
                 ], 500);
             }
 
             return redirect()->back()
-                ->with('error', 'Gagal menyimpan perubahan status. Silakan coba lagi.');
+                ->with('error', 'Gagal menyimpan perubahan status: ' . $e->getMessage());
         }
 
-        // 4. Send WhatsApp notification (outside transaction — API call should not block DB)
-        // Only send for certain status changes: dimasak, siap_diambil, diantar, selesai, dibatalkan
         $waStatuses = [
             Order::STATUS_DIMASAK,
             Order::STATUS_SIAP_DIAMBIL,
@@ -222,7 +231,7 @@ class OrderController extends Controller
 
         if (in_array($newStatus, $waStatuses)) {
             try {
-                $waResult = $whatsappService->sendOrderStatusUpdate($order);
+                $waResult = $whatsappService->sendOrderStatusUpdate($order->fresh());
 
                 if ($waResult) {
                     Log::info('[ORDER WA SUCCESS] Notifikasi WA berhasil dikirim', [
@@ -231,7 +240,7 @@ class OrderController extends Controller
                         'status' => $newStatus,
                     ]);
                 } else {
-                    Log::warning('[ORDER WA FAIL] Notifikasi WA gagal dikirim (service return false)', [
+                    Log::warning('[ORDER WA FAIL] Notifikasi WA gagal dikirim', [
                         'order_id' => $order->id,
                         'kode_order' => $order->kode_order,
                         'status' => $newStatus,
@@ -244,7 +253,6 @@ class OrderController extends Controller
                     'status' => $newStatus,
                     'exception' => $e->getMessage(),
                 ]);
-                // DO NOT rollback — status sudah tersimpan, notifikasi gagal adalah non-critical
             }
         } else {
             Log::info('[ORDER WA SKIP] Status tidak termasuk dalam daftar kirim WA', [
@@ -255,34 +263,35 @@ class OrderController extends Controller
             ]);
         }
 
-        // 5. Return response
         if ($request->expectsJson() || $request->ajax()) {
+            $freshOrder = $order->fresh();
+
             $statusLabels = Order::getStatusLabels();
             $paymentStatusLabels = Order::getPaymentStatusLabels();
-            $nextStatus = $order->fresh()->getNextStatus();
-            $statusFlow = $order->getStatusFlow();
-            $currentIndex = array_search($order->status, array_keys($statusFlow));
+            $nextStatus = $freshOrder->getNextStatus();
+            $statusFlow = $freshOrder->getStatusFlow();
+            $currentIndex = array_search($freshOrder->status, array_keys($statusFlow));
 
             $orderData = [
-                'id' => $order->id,
-                'kode_order' => $order->kode_order,
-                'nama_pelanggan' => $order->nama_pelanggan,
-                'nomor_hp' => $order->nomor_hp,
-                'metode_pengiriman' => $order->metode_pengiriman,
-                'metode_pembayaran' => $order->metode_pembayaran,
-                'total_bayar' => number_format($order->total_bayar, 0, ',', '.'),
-                'total_bayar_raw' => (float) $order->total_bayar,
-                'status' => $order->status,
-                'payment_status' => $order->payment_status,
-                'status_label' => $statusLabels[$order->status] ?? $order->status,
-                'payment_status_label' => $paymentStatusLabels[$order->payment_status] ?? $order->payment_status,
-                'status_color' => $order->getStatusColor(),
-                'status_icon' => $order->getStatusIcon(),
+                'id' => $freshOrder->id,
+                'kode_order' => $freshOrder->kode_order,
+                'nama_pelanggan' => $freshOrder->nama_pelanggan,
+                'nomor_hp' => $freshOrder->nomor_hp,
+                'metode_pengiriman' => $freshOrder->metode_pengiriman,
+                'metode_pembayaran' => $freshOrder->metode_pembayaran,
+                'total_bayar' => number_format($freshOrder->total_bayar, 0, ',', '.'),
+                'total_bayar_raw' => (float) $freshOrder->total_bayar,
+                'status' => $freshOrder->status,
+                'payment_status' => $freshOrder->payment_status,
+                'status_label' => $statusLabels[$freshOrder->status] ?? $freshOrder->status,
+                'payment_status_label' => $paymentStatusLabels[$freshOrder->payment_status] ?? $freshOrder->payment_status,
+                'status_color' => $freshOrder->getStatusColor(),
+                'status_icon' => $freshOrder->getStatusIcon(),
                 'next_status' => $nextStatus,
                 'next_status_label' => $nextStatus ? ($statusLabels[$nextStatus] ?? $nextStatus) : null,
-                'is_active' => $order->isActive(),
-                'created_at' => $order->created_at->format('d M Y, H:i'),
-                'detail_url' => route('admin.orders.show', $order),
+                'is_active' => $freshOrder->isActive(),
+                'created_at' => $freshOrder->created_at->format('d M Y, H:i'),
+                'detail_url' => route('admin.orders.show', $freshOrder),
                 'status_flow' => $statusFlow,
                 'current_index' => $currentIndex,
                 'flow_keys' => array_keys($statusFlow),
@@ -312,10 +321,17 @@ class OrderController extends Controller
     /**
      * Update payment status
      */
-    public function updatePaymentStatus(Request $request, Order $order, WhatsAppNotificationService $whatsappNotificationService)
+    public function updatePaymentStatus(Request $request, Order $order, WhatsAppNotificationService $whatsappNotificationService, StokService $stokService)
     {
         $validated = $request->validate([
             'payment_status' => 'required|in:unpaid,paid',
+        ]);
+
+        Log::info('[DEBUG STOK] updatePaymentStatus terpanggil', [
+            'order_id' => $order->id,
+            'kode_order' => $order->kode_order,
+            'payment_status_lama' => $order->payment_status,
+            'request' => $request->all(),
         ]);
 
         $oldPaymentStatus = $order->payment_status;
@@ -329,10 +345,18 @@ class OrderController extends Controller
 
             $order->save();
 
+            if ($oldPaymentStatus === Order::PAYMENT_UNPAID
+                && $validated['payment_status'] === Order::PAYMENT_PAID
+            ) {
+                $stokService->kurangiStokUntukOrder($order->fresh());
+            }
+
             Log::info('[ORDER PAYMENT] Status pembayaran diubah', [
                 'order_id' => $order->id,
                 'kode_order' => $order->kode_order,
+                'payment_status_lama' => $oldPaymentStatus,
                 'payment_status_baru' => $validated['payment_status'],
+                'stok_dikurangi_at' => $order->fresh()->stok_dikurangi_at,
                 'changed_by' => auth()->id(),
             ]);
 
@@ -341,7 +365,8 @@ class OrderController extends Controller
                 && $order->isQRISPayment()
             ) {
                 try {
-                    $whatsappNotificationService->sendPaymentSuccess($order);
+                    $whatsappNotificationService->sendPaymentSuccess($order->fresh());
+
                     Log::info('[ORDER PAYMENT WA] Notifikasi pembayaran QRIS terkirim', [
                         'order_id' => $order->id,
                         'kode_order' => $order->kode_order,
@@ -356,14 +381,15 @@ class OrderController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            Log::error('[ORDER PAYMENT FAIL] Gagal update status pembayaran', [
+            Log::error('[ORDER PAYMENT/STOK FAIL] Gagal update status pembayaran atau mengurangi stok', [
                 'order_id' => $order->id,
                 'kode_order' => $order->kode_order,
                 'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()
-                ->with('error', 'Gagal mengubah status pembayaran.');
+                ->with('error', 'Gagal mengubah status pembayaran: ' . $e->getMessage());
         }
 
         return redirect()->back()
@@ -371,8 +397,7 @@ class OrderController extends Controller
     }
 
     /**
-     * AJAX Polling endpoint — returns JSON with updated orders data for auto-refresh
-     * This is READ-ONLY. It does NOT trigger any status changes or WhatsApp notifications.
+     * AJAX Polling endpoint
      */
     public function pollData(Request $request)
     {
@@ -385,14 +410,16 @@ class OrderController extends Controller
         if ($status !== 'all') {
             $query->where('status', $status);
         }
+
         if ($paymentStatus !== 'all') {
             $query->where('payment_status', $paymentStatus);
         }
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('kode_order', 'like', "%{$search}%")
-                  ->orWhere('nama_pelanggan', 'like', "%{$search}%")
-                  ->orWhere('nomor_hp', 'like', "%{$search}%");
+                    ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+                    ->orWhere('nomor_hp', 'like', "%{$search}%");
             });
         }
 
@@ -456,7 +483,11 @@ class OrderController extends Controller
         $stats = [
             'total_orders' => Order::count(),
             'pending_orders' => Order::where('status', Order::STATUS_PENDING)->count(),
-            'processing_orders' => Order::whereIn('status', [Order::STATUS_DIPROSES, Order::STATUS_DIMASAK, Order::STATUS_SIAP_DIAMBIL])->count(),
+            'processing_orders' => Order::whereIn('status', [
+                Order::STATUS_DIPROSES,
+                Order::STATUS_DIMASAK,
+                Order::STATUS_SIAP_DIAMBIL,
+            ])->count(),
             'completed_orders' => Order::where('status', Order::STATUS_SELESAI)->count(),
             'cancelled_orders' => Order::where('status', Order::STATUS_DIBATALKAN)->count(),
             'today_orders' => Order::whereDate('created_at', today())->count(),
@@ -469,22 +500,23 @@ class OrderController extends Controller
     }
 
     /**
-     * Destroy an order (soft delete — mark as cancelled)
+     * Destroy an order
      */
     public function destroy(Order $order)
     {
         try {
             DB::beginTransaction();
 
+            $previousStatus = $order->status;
+
             $order->status = Order::STATUS_DIBATALKAN;
             $order->payment_status = Order::PAYMENT_UNPAID;
             $order->save();
 
-            // Log ke history
             OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => Order::STATUS_DIBATALKAN,
-                'previous_status' => $order->getOriginal('status'),
+                'previous_status' => $previousStatus,
                 'changed_by' => auth()->id(),
                 'metadata' => [
                     'ip_address' => request()->ip(),

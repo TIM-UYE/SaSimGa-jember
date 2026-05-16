@@ -20,6 +20,8 @@ use App\Http\Controllers\Admin\MejaController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
+use App\Http\Controllers\Admin\StokController;
+use App\Http\Controllers\Admin\StokLogController;
 use App\Http\Controllers\LanguageController;
 
 /*
@@ -375,6 +377,18 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::get('/menu/{menu}', [MenuController::class, 'show'])
                 ->name('menu.show');
+            
+            /*
+            |--------------------------------------------------------------------------
+            | STOK BAHAN CRUD
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource('stok', StokController::class)
+                ->except(['show']);
+            
+            Route::get('stok-log', [StokLogController::class, 'index'])
+                ->name('stok-log.index');
 
 
             /*

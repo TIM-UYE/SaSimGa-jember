@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('stok', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_bahan');
+            $table->string('satuan'); // gram, kg, pcs, liter, ml
+            $table->decimal('jumlah_stok', 12, 2)->default(0);
+            $table->decimal('stok_minimum', 12, 2)->default(0);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('stok');

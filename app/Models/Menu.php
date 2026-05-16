@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MenuBahan;
 
 class Menu extends Model
 {
@@ -34,6 +35,11 @@ class Menu extends Model
 public function kategori()
 {
     return $this->belongsTo(KategoriMenu::class, 'kategori_id', 'id');
+}
+
+public function komposisiBahan()
+{
+    return $this->morphMany(MenuBahan::class, 'menuable');
 }
 
 public function detailTransaksi()

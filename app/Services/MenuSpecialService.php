@@ -23,7 +23,7 @@ class MenuSpecialService
 
     public function get(MenuSpecial $special): MenuSpecial
     {
-        return $special->load('items');
+        return $special->load('items.komposisiBahan.stok');
     }
 
     public function create(array $data, array $items = []): MenuSpecial

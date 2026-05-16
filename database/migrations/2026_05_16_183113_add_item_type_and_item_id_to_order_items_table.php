@@ -9,8 +9,6 @@ class MenuSpecialItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'menu_special_items';
-
     protected $fillable = [
         'menu_special_id',
         'name',
@@ -25,12 +23,12 @@ class MenuSpecialItem extends Model
         'is_available' => 'boolean',
     ];
 
-    public function menuSpecial()
+    public function special()
     {
         return $this->belongsTo(MenuSpecial::class, 'menu_special_id');
     }
 
-    public function special()
+    public function menuSpecial()
     {
         return $this->belongsTo(MenuSpecial::class, 'menu_special_id');
     }
