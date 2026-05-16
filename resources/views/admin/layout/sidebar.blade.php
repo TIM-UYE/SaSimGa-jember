@@ -127,6 +127,19 @@
       </a>
     </li>
 
+    <!-- MEJA (Admin & Manager) -->
+    <li>
+      <a href="{{ route('admin.meja.index') }}"
+         class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
+
+        <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+          <i class="fas fa-chair text-sm"></i>
+        </div>
+
+        Meja
+      </a>
+    </li>
+
     <!-- GALERI (Admin & Manager) -->
     @if(Auth::user()->role === 'manager')
     <li>

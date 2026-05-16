@@ -243,6 +243,7 @@
                                     value="{{ old('waktu_reservasi') }}"
                                     class="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 [color-scheme:dark] @error('waktu_reservasi') border-red-500 @enderror"
                                     required>
+                                <p id="waktuError" class="text-red-400 text-xs mt-1 hidden"></p>
                                 @error('waktu_reservasi')
                                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -278,7 +279,10 @@
                                     </svg>
                                     Pilih Meja <span class="text-red-400">*</span>
                                 </label>
-                                <span id="selectedCount" class="text-xs text-orange-400">0 meja dipilih</span>
+                                <div class="text-right">
+                                    <span id="selectedCount" class="text-xs text-orange-400">0 meja dipilih</span>
+                                    <p id="capacityMessage" class="text-xs text-zinc-400 mt-1 hidden"></p>
+                                </div>
                             </div>
 
                             {{-- Screen/Stage indicator --}}
@@ -290,6 +294,7 @@
 
                             {{-- Tables Grid --}}
                             <div id="tablesContainer" class="relative min-h-[300px] p-4 bg-zinc-800/30 rounded-2xl border border-zinc-800">
+                                <p id="fullMessage" class="hidden text-sm text-red-300 mb-4">Reservasi penuh pada tanggal dan jam ini.</p>
                                 <div id="tablesGrid" class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 justify-items-center">
                                     <!-- Tables will be loaded here -->
                                 </div>
@@ -351,6 +356,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     const tanggalInput = document.getElementById('tanggal_reservasi');
     const waktuInput = document.getElementById('waktu_reservasi');
+    const jumlahOrangInput = document.querySelector('input[name="jumlah_orang"]');
+    const waktuError = document.getElementById('waktuError');
+    const fullMessage = document.getElementById('fullMessage');
+    const capacityMessage = document.getElementById('capacityMessage');
     const tablesGrid = document.getElementById('tablesGrid');
     const loadingTables = document.getElementById('loadingTables');
     const selectedCount = document.getElementById('selectedCount');
@@ -358,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedTablesList = document.getElementById('selectedTablesList');
     const mejaIdsInput = document.getElementById('meja_ids_input');
     const submitBtn = document.getElementById('submitBtn');
+    const reservationForm = document.querySelector('form[action="{{ route('reservasi.store') }}"]');
 
     let selectedTables = new Set();
 
@@ -378,6 +388,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`{{ route('reservasi.tables') }}?tanggal=${tanggal}&waktu=${waktu}`)
             .then(response => response.json())
             .then(data => {
+                const allFull = data.all_full || (data.tables.length > 0 && data.tables.every(table => !table.is_available));
+                displayFullMessage(allFull);
                 renderTables(data.tables);
                 loadingTables.classList.add('hidden');
                 tablesGrid.classList.remove('opacity-50');
@@ -392,6 +404,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render tables grid
     function renderTables(tables) {
         tablesGrid.innerHTML = '';
+
+        const availableTableIds = tables.filter(table => table.is_available).map(table => table.id.toString());
+        selectedTables = new Set([...selectedTables].filter(id => availableTableIds.includes(id)));
+        updateSelectedInfo();
 
         if (tables.length === 0) {
             tablesGrid.innerHTML = '<p class="text-zinc-500 text-sm col-span-full text-center py-8">Belum ada meja tersedia.</p>';
@@ -434,11 +450,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             tablesGrid.appendChild(tableEl);
         });
+
+        autoSelectTables();
     }
 
     // Toggle table selection
     function toggleTable(tableId, tableName, element) {
         const tableIdStr = tableId.toString();
+        const requiredTables = getRequiredTableCount();
 
         if (selectedTables.has(tableIdStr)) {
             selectedTables.delete(tableIdStr);
@@ -447,6 +466,9 @@ document.addEventListener('DOMContentLoaded', function() {
             element.querySelector('span:first-child').classList.remove('text-white');
             element.querySelector('span:first-child').classList.add('text-zinc-300');
         } else {
+            if (selectedTables.size >= requiredTables) {
+                return;
+            }
             selectedTables.add(tableIdStr);
             element.classList.remove('bg-zinc-700', 'border-zinc-600');
             element.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
@@ -457,14 +479,89 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSelectedInfo();
     }
 
+    function getRequiredTableCount() {
+        const jumlah = parseInt(jumlahOrangInput.value, 10);
+        if (!jumlah || jumlah <= 0) {
+            return 1;
+        }
+
+        const seatsPerTable = 4;
+        return Math.ceil(jumlah / seatsPerTable);
+    }
+
+    function updateCapacityMessage() {
+        const jumlah = parseInt(jumlahOrangInput.value, 10);
+        if (!jumlah || jumlah <= 0) {
+            capacityMessage.classList.add('hidden');
+            return;
+        }
+
+        const requiredTables = getRequiredTableCount();
+        capacityMessage.textContent = `Untuk ${jumlah} orang, diperlukan ${requiredTables} meja.`;
+        capacityMessage.classList.remove('hidden');
+        capacityMessage.classList.remove('text-red-400');
+        capacityMessage.classList.add('text-zinc-400');
+    }
+
+    function validateTableSelection() {
+        const jumlah = parseInt(jumlahOrangInput.value, 10);
+        const requiredTables = getRequiredTableCount();
+        const selectedCountValue = selectedTables.size;
+
+        if (!jumlah || selectedCountValue === 0) {
+            submitBtn.disabled = true;
+            return;
+        }
+
+        if (selectedCountValue < requiredTables) {
+            capacityMessage.textContent = `Pilih ${requiredTables} meja untuk ${jumlah} orang.`;
+            capacityMessage.classList.remove('hidden');
+            capacityMessage.classList.remove('text-zinc-400');
+            capacityMessage.classList.add('text-red-400');
+            submitBtn.disabled = true;
+        } else {
+            capacityMessage.textContent = `Untuk ${jumlah} orang, ${requiredTables} meja sudah dipilih.`;
+            capacityMessage.classList.remove('hidden');
+            capacityMessage.classList.remove('text-red-400');
+            capacityMessage.classList.add('text-zinc-400');
+            submitBtn.disabled = false;
+        }
+    }
+
     // Update selected tables info
+    function normalizeSelectionToRequired() {
+        const requiredTables = getRequiredTableCount();
+
+        if (selectedTables.size > requiredTables) {
+            const selectedArray = Array.from(selectedTables);
+            const resized = new Set(selectedArray.slice(0, requiredTables));
+            const removed = selectedArray.slice(requiredTables);
+
+            removed.forEach(id => {
+                const row = document.querySelector(`[data-table-id="${id}"]`);
+                if (row) {
+                    row.classList.remove('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
+                    row.classList.add('bg-zinc-700', 'border-zinc-600');
+                    const label = row.querySelector('span:first-child');
+                    if (label) {
+                        label.classList.remove('text-white');
+                        label.classList.add('text-zinc-300');
+                    }
+                }
+            });
+
+            selectedTables = resized;
+        }
+    }
+
     function updateSelectedInfo() {
+        normalizeSelectionToRequired();
+
         const count = selectedTables.size;
         selectedCount.textContent = count + ' meja dipilih';
 
         if (count > 0) {
             selectedTablesInfo.classList.remove('hidden');
-            submitBtn.disabled = false;
 
             // Build list of selected table names
             selectedTablesList.innerHTML = '';
@@ -479,7 +576,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             selectedTablesInfo.classList.add('hidden');
-            submitBtn.disabled = true;
         }
 
         // Update hidden inputs as a real Laravel array: meja_ids[]
@@ -491,15 +587,110 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = id;
             mejaIdsInput.appendChild(input);
         });
+
+        validateTableSelection();
+    }
+
+    function autoSelectTables() {
+        const requiredTables = getRequiredTableCount();
+        if (selectedTables.size >= requiredTables) {
+            return;
+        }
+
+        const availableTableEls = Array.from(tablesGrid.querySelectorAll('[data-table-id]')).filter(el => {
+            return !el.classList.contains('cursor-not-allowed') && !selectedTables.has(el.dataset.tableId);
+        });
+
+        for (const el of availableTableEls) {
+            if (selectedTables.size >= requiredTables) {
+                break;
+            }
+
+            const tableId = el.dataset.tableId;
+            const label = el.querySelector('span:first-child');
+
+            selectedTables.add(tableId);
+            el.classList.remove('bg-zinc-700', 'border-zinc-600');
+            el.classList.add('bg-orange-500', 'border-orange-400', 'shadow-lg', 'shadow-orange-500/30', 'scale-105');
+            if (label) {
+                label.classList.remove('text-zinc-300');
+                label.classList.add('text-white');
+            }
+        }
+
+        updateSelectedInfo();
+    }
+
+    function displayFullMessage(show) {
+        if (show) {
+            fullMessage.classList.remove('hidden');
+        } else {
+            fullMessage.classList.add('hidden');
+        }
+    }
+
+    function isLeadTimeValid() {
+        if (!tanggalInput.value || !waktuInput.value) {
+            waktuError.textContent = '';
+            waktuError.classList.add('hidden');
+            return true;
+        }
+
+        const selectedDateTime = new Date(`${tanggalInput.value}T${waktuInput.value}`);
+        const minimumDate = new Date(Date.now() + 12 * 60 * 60 * 1000);
+
+        if (selectedDateTime < minimumDate) {
+            waktuError.textContent = 'Reservasi harus dibuat minimal 12 jam sebelum waktu acara.';
+            waktuError.classList.remove('hidden');
+            submitBtn.disabled = true;
+            return false;
+        }
+
+        waktuError.textContent = '';
+        waktuError.classList.add('hidden');
+        return true;
     }
 
     // Event listeners
-    tanggalInput.addEventListener('change', loadTables);
-    waktuInput.addEventListener('change', loadTables);
+    tanggalInput.addEventListener('change', () => {
+        isLeadTimeValid();
+        updateCapacityMessage();
+        loadTables();
+    });
+    waktuInput.addEventListener('change', () => {
+        isLeadTimeValid();
+        loadTables();
+    });
+    jumlahOrangInput.addEventListener('input', () => {
+        updateCapacityMessage();
+        updateSelectedInfo();
+        autoSelectTables();
+    });
+
+    reservationForm.addEventListener('submit', function (event) {
+        if (!isLeadTimeValid()) {
+            event.preventDefault();
+            return;
+        }
+
+        const requiredTables = getRequiredTableCount();
+        if (selectedTables.size < requiredTables) {
+            event.preventDefault();
+            capacityMessage.textContent = `Pilih ${requiredTables} meja untuk ${jumlahOrangInput.value || 1} orang.`;
+            capacityMessage.classList.remove('hidden');
+            capacityMessage.classList.remove('text-zinc-400');
+            capacityMessage.classList.add('text-red-400');
+            return;
+        }
+    });
 
     // Load tables on page load if date and time are pre-filled
     if (tanggalInput.value && waktuInput.value) {
+        isLeadTimeValid();
+        updateCapacityMessage();
         loadTables();
+    } else {
+        updateCapacityMessage();
     }
 });
 </script>

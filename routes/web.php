@@ -16,6 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\MejaController;
 use App\Http\Controllers\Owner\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MidtransWebhookController;
@@ -424,6 +425,8 @@ Route::middleware(['auth', 'role:admin,manager'])
 
         Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])
             ->name('reservasi.destroy');
+
+        Route::resource('meja', MejaController::class)->only(['index', 'store', 'destroy']);
     });
 
 

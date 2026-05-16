@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Meja;
+use App\Models\KursiReservasi;
 
 class Reservasi extends Model
 {
@@ -78,22 +80,38 @@ class Reservasi extends Model
      */
     public static function getAvailableTables(string $tanggal, string $waktu): \Illuminate\Support\Collection
     {
+        // Clear stale table holds for past sessions
+        KursiReservasi::releaseExpiredTables();
+
+        // Normalize waktu input so callers may pass different formats (e.g. '09:37 PM' or '21:37:00')
+        try {
+            $waktu = \Carbon\Carbon::parse($waktu)->format('H:i');
+        } catch (\Exception $e) {
+            // leave as-is if parse fails
+        }
+
         // Get all active tables
         $tables = Meja::where('is_active', true)
             ->orderBy('posisi_row')
             ->orderBy('posisi_col')
             ->get();
 
-        // Get booked tables for this date/time
+        // Consider tables booked if there's a reservation in the SAME HOUR (jam yang sama)
+        try {
+            $hour = \Carbon\Carbon::parse($waktu)->format('H');
+        } catch (\Exception $e) {
+            $hour = substr($waktu, 0, 2);
+        }
+
         $bookedTableIds = KursiReservasi::where('tanggal', $tanggal)
-            ->where('waktu_sesi', $waktu)
+            ->whereRaw('HOUR(waktu_sesi) = ?', [$hour])
             ->where('tersedia', false)
             ->pluck('meja_id')
             ->toArray();
 
         // Mark availability on each table
         $tables->each(function ($table) use ($bookedTableIds) {
-            $table->is_available = !in_array($table->id, $bookedTableIds);
+            $table->setAttribute('is_available', !in_array($table->id, $bookedTableIds));
         });
 
         return $tables;

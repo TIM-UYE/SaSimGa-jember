@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservasi;
 use App\Models\KursiReservasi;
+use App\Models\Meja;
 use App\Notifications\ReservasiStatusNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,12 +35,21 @@ class ReservasiController extends Controller
         ]);
 
         $tanggal = $request->tanggal;
-        $waktu = $request->waktu;
+
+        // Normalize waktu input to 24-hour H:i to match stored sesi format
+        try {
+            $waktu = Carbon::parse($request->waktu)->format('H:i');
+        } catch (\Exception $e) {
+            $waktu = $request->waktu;
+        }
 
         $tables = Reservasi::getAvailableTables($tanggal, $waktu);
+        $availableCount = $tables->where('is_available', true)->count();
 
         return response()->json([
             'tables' => $tables,
+            'available_count' => $availableCount,
+            'all_full' => $tables->count() > 0 && $availableCount === 0,
         ]);
     }
 
@@ -89,8 +99,36 @@ class ReservasiController extends Controller
             'meja_ids.min' => 'Silakan pilih minimal 1 meja.',
         ]);
 
-        // Validate 12-hour advance reservation
-        $reservationDateTime = Carbon::createFromFormat('Y-m-d H:i', $request->tanggal_reservasi . ' ' . $request->waktu_reservasi);
+        // Validate table count and capacity for jumlah_orang.
+        $selectedTables = Meja::whereIn('id', $mejaIds)->get();
+        $totalCapacity = $selectedTables->sum('kapasitas');
+        $requiredTables = (int) ceil($request->jumlah_orang / 4);
+
+        if ($totalCapacity < $request->jumlah_orang) {
+            return redirect()->back()
+                ->withErrors([
+                    'meja_ids' => 'Jumlah meja yang dipilih tidak mencukupi untuk ' . $request->jumlah_orang . ' orang. Tambahkan meja lagi.',
+                ])
+                ->withInput();
+        }
+
+        if (count($mejaIds) !== $requiredTables) {
+            return redirect()->back()
+                ->withErrors([
+                    'meja_ids' => 'Untuk ' . $request->jumlah_orang . ' orang, pilih tepat ' . $requiredTables . ' meja.',
+                ])
+                ->withInput();
+        }
+
+        // Normalize waktu_reservasi and validate lead time (12 hours)
+        try {
+            $reservationDateTime = Carbon::parse($request->tanggal_reservasi . ' ' . $request->waktu_reservasi);
+            $normalizedWaktu = Carbon::parse($request->waktu_reservasi)->format('H:i');
+        } catch (\Exception $e) {
+            // fallback to original format if parse fails
+            $reservationDateTime = Carbon::createFromFormat('Y-m-d H:i', $request->tanggal_reservasi . ' ' . $request->waktu_reservasi);
+            $normalizedWaktu = $request->waktu_reservasi;
+        }
         $now = Carbon::now();
         $minReservationTime = $now->copy()->addHours(12);
 
@@ -102,10 +140,19 @@ class ReservasiController extends Controller
                 ->withInput();
         }
 
-        // Check table availability
+        // Release stale reserved tables for past sessions so they don't block new bookings.
+        KursiReservasi::releaseExpiredTables();
+
+        // Check table availability (consider same-hour conflicts)
+        try {
+            $hour = Carbon::parse($normalizedWaktu)->format('H');
+        } catch (\Exception $e) {
+            $hour = substr($normalizedWaktu, 0, 2);
+        }
+
         $bookedTables = KursiReservasi::whereIn('meja_id', $mejaIds)
             ->where('tanggal', $request->tanggal_reservasi)
-            ->where('waktu_sesi', $request->waktu_reservasi)
+            ->whereRaw('HOUR(waktu_sesi) = ?', [$hour])
             ->where('tersedia', false)
             ->count();
 
@@ -121,7 +168,7 @@ class ReservasiController extends Controller
             'nama' => $request->nama,
             'nomor_wa' => $request->nomor_wa,
             'tanggal_reservasi' => $request->tanggal_reservasi,
-            'waktu_reservasi' => $request->waktu_reservasi,
+            'waktu_reservasi' => $normalizedWaktu,
             'jumlah_orang' => $request->jumlah_orang,
             'status' => 'pending',
             'meja_ids' => $mejaIds,
@@ -133,7 +180,7 @@ class ReservasiController extends Controller
                 [
                     'meja_id' => $mejaId,
                     'tanggal' => $request->tanggal_reservasi,
-                    'waktu_sesi' => $request->waktu_reservasi,
+                    'waktu_sesi' => $normalizedWaktu,
                 ],
                 [
                     'tersedia' => false,

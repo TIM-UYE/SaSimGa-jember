@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             MenuSpecialSeeder::class,
             InformationSeeder::class,
+            MejaSeeder::class,
         ]);
     }
 }
