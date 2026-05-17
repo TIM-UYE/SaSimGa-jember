@@ -17,15 +17,15 @@
                 </div>
             @endif
 
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach ($menus as $menu)
                     <div class="menu-frame" data-kategori-id="{{ $menu->kategori_id ?? 0 }}">
                         <div class="menu-frame-inner">
                             <div class="group w-full h-full overflow-hidden rounded-lg bg-gradient-to-b from-gray-800 to-gray-950 shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 menu-card border border-white/5 hover:border-orange-500/30 menu-card-tilt flex flex-col"
                                 >
                                 <div class="menu-card-tilt-inner flex flex-col flex-1 min-h-0">
-                                    <!-- IMAGE (55% of height) -->
-                                    <div class="relative menu-card-shine overflow-hidden" style="flex: 1.4;">
+                                    <!-- IMAGE -->
+                                    <div class="relative menu-card-shine overflow-hidden" style="flex: 1.6;">
                                         @if ($menu->gambar)
                                             <img src="{{ asset('storage/menu/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}"
                                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
@@ -42,24 +42,24 @@
                                         </div>
 
                                         <!-- Category Badge -->
-                                        <div class="absolute top-2 left-2 z-10">
+                                        <div class="absolute top-3 left-3 z-10">
                                             <span
-                                                class="px-2 py-0.5 bg-black/60 backdrop-blur-sm rounded-full text-[10px] text-white font-semibold">
+                                                class="px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
                                                 {{ $menu->kategori->nama_kategori ?? 'Menu' }}
                                             </span>
                                         </div>
 
                                         <!-- Availability Badge -->
-                                        <div class="absolute top-2 right-2 z-10">
+                                        <div class="absolute top-3 right-3 z-10">
                                             @if ($menu->is_available)
                                                 <span
-                                                    class="px-2 py-0.5 bg-green-500/90 backdrop-blur-sm rounded-full text-[10px] text-white font-semibold flex items-center gap-1">
-                                                    <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                                                    class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1.5">
+                                                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
                                                     Tersedia
                                                 </span>
                                             @else
                                                 <span
-                                                    class="px-2 py-0.5 bg-red-500/90 backdrop-blur-sm rounded-full text-[10px] text-white font-semibold">
+                                                    class="px-3 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
                                                     Habis
                                                 </span>
                                             @endif
@@ -67,31 +67,31 @@
                                     </div>
 
                                     <!-- CONTENT (45% of height) -->
-                                    <div class="p-3 flex flex-col justify-center" style="flex: 1;">
+                                    <div class="p-5 flex flex-col justify-center" style="flex: 1;">
                                         <h3
-                                            class="font-bold text-sm text-white mb-1 line-clamp-1 group-hover:text-orange-400 transition-colors">
+                                            class="font-bold text-base text-white mb-1.5 line-clamp-1 group-hover:text-orange-400 transition-colors">
                                             {{ $menu->nama_menu }}
                                         </h3>
 
-                                        <p class="text-[10px] text-gray-400 mb-2 line-clamp-2 leading-relaxed">
+                                        <p class="text-xs text-gray-400 mb-3 line-clamp-2 leading-relaxed">
                                             {{ $menu->deskripsi ?? 'Tidak ada deskripsi' }}
                                         </p>
 
                                         <!-- Price & Actions -->
                                         <div class="flex items-center justify-between gap-1">
-                                            <span class="text-sm font-bold text-orange-400 menu-price">
+                                            <span class="text-base font-bold text-orange-400 menu-price">
                                                 Rp {{ number_format($menu->harga, 0, ',', '.') }}
                                             </span>
 
-                                            <div class="flex gap-1">
+                                            <div class="flex gap-2">
                                                 <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
-                                                    class="w-7 h-7 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed text-[10px]"
+                                                    class="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed text-xs"
                                                     {{ !$menu->is_available ? 'disabled' : '' }}>
                                                     <i class="fas fa-plus"></i>
                                                 </button>
 
                                                 <button onclick='openMenuDetail(@json($menu))'
-                                                    class="w-7 h-7 rounded-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center transition-all hover:scale-110 text-[10px]">
+                                                    class="w-9 h-9 rounded-full bg-gray-700 hover:bg-gray-600 text-white flex items-center justify-center transition-all hover:scale-110 text-xs">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>

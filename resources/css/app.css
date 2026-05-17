@@ -670,12 +670,30 @@
 /* Safe area — content is constrained here */
 .menu-frame-inner {
     position: absolute;
-    inset: 17%;
+    inset: 12%;
     overflow: hidden;
     border-radius: 0.75rem;
     display: flex;
     flex-direction: column;
     z-index: 1;
+}
+
+/* Frame entrance animation — sync with menu card */
+.menu-frame-enter {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.menu-frame-visible {
+    opacity: 1;
+}
+
+/* Special frame entrance animation */
+.special-frame-enter {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.special-frame-visible {
+    opacity: 1;
 }
 
 /* Glow on hover for the frame */
@@ -710,7 +728,7 @@
 /* Inner safe area for specials */
 .special-frame-inner {
     position: absolute;
-    inset: 17%;
+    inset: 12%;
     overflow: hidden;
     border-radius: 0.75rem;
     display: flex;
@@ -726,11 +744,11 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .menu-frame-inner {
-        inset: 14%;
+        inset: 10%;
         border-radius: 0.5rem;
     }
     .special-frame-inner {
-        inset: 14%;
+        inset: 10%;
         border-radius: 0.5rem;
     }
     .menu-frame {

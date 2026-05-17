@@ -1,40 +1,34 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class MenuSpecialItem extends Model
+return new class extends Migration
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'menu_special_id',
-        'name',
-        'price',
-        'description',
-        'image',
-        'is_available',
-    ];
-
-    protected $casts = [
-        'price' => 'decimal:2',
-        'is_available' => 'boolean',
-    ];
-
-    public function special()
+    public function up(): void
     {
-        return $this->belongsTo(MenuSpecial::class, 'menu_special_id');
+        Schema::table('order_items', function (Blueprint $table) {
+            if (!Schema::hasColumn('order_items', 'item_type')) {
+                $table->string('item_type')->nullable()->after('menu_id');
+            }
+
+            if (!Schema::hasColumn('order_items', 'item_id')) {
+                $table->unsignedBigInteger('item_id')->nullable()->after('item_type');
+            }
+        });
     }
 
-    public function menuSpecial()
+    public function down(): void
     {
-        return $this->belongsTo(MenuSpecial::class, 'menu_special_id');
-    }
+        Schema::table('order_items', function (Blueprint $table) {
+            if (Schema::hasColumn('order_items', 'item_id')) {
+                $table->dropColumn('item_id');
+            }
 
-    public function komposisiBahan()
-    {
-        return $this->morphMany(MenuBahan::class, 'menuable');
+            if (Schema::hasColumn('order_items', 'item_type')) {
+                $table->dropColumn('item_type');
+            }
+        });
     }
-}
+};

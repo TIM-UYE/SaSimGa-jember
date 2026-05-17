@@ -49,7 +49,7 @@
             });
             document.getElementById('specialItemPrice').textContent = priceFormatter.format(item.price);
 
-            document.getElementById('specialItemDescription').textContent = item.description || 'Menu special dengan cita rasa terbaik.';
+            document.getElementById('specialItemDescription').textContent = item.description || 'Menu spesial dengan cita rasa terbaik.';
             document.getElementById('specialQtyInput').value = 1;
 
             const imgSrc = item.image ? `/storage/${item.image}` : '/images/menu-special/tumpeng.jpg';
@@ -160,7 +160,6 @@
             // 1. Button particles effect
             const activeBtn = document.querySelector(`.kategori-btn[data-kategori-id="${categoryId}"]`);
             if (activeBtn) {
-                // Particle burst from button
                 for (let i = 0; i < 6; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'filter-particle';
@@ -173,12 +172,8 @@
                     document.body.appendChild(particle);
                     setTimeout(() => particle.remove(), 1000);
                 }
-
-                // Button morph pulse
                 activeBtn.classList.add('filter-btn-pulse');
                 setTimeout(() => activeBtn.classList.remove('filter-btn-pulse'), 400);
-
-                // Button ripple
                 activeBtn.classList.add('btn-ripple');
                 setTimeout(() => activeBtn.classList.remove('btn-ripple'), 700);
             }
@@ -197,54 +192,61 @@
             const menuFrames = document.querySelectorAll('.menu-frame');
             let visibleCount = 0;
 
-            // 3. Animate cards out
-            menuFrames.forEach(frame => {
-                const menuCategoryId = parseInt(frame.getAttribute('data-kategori-id'));
+            // 3. Filter frames
+            menuFrames.forEach((frame, index) => {
+                const menuCategoryId = parseInt(frame.getAttribute('data-kategori-id')) || 0;
                 const filterCategoryId = parseInt(categoryId);
+                const card = frame.querySelector('.menu-card');
 
-                if (!(filterCategoryId === 0 || menuCategoryId === filterCategoryId)) {
+                if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
+                    frame.style.display = 'block';
+                    frame.classList.remove('filter-card-leaving');
+                    if (card) {
+                        card.classList.remove('menu-card-enter', 'menu-card-visible');
+                    }
+                    frame.style.opacity = '0';
+                    setTimeout(() => {
+                        frame.classList.remove('filter-card-entering');
+                        void frame.offsetWidth;
+                        frame.classList.add('filter-card-entering');
+                        frame.style.opacity = '1';
+                        setTimeout(() => {
+                            if (card) {
+                                card.style.transitionDelay = '0s';
+                                card.classList.add('menu-card-enter');
+                                void card.offsetWidth;
+                                card.classList.add('menu-card-visible');
+                            }
+                        }, 200);
+                    }, index * 80);
+                    visibleCount++;
+                } else {
                     frame.classList.remove('filter-card-entering');
                     frame.classList.add('filter-card-leaving');
+                    setTimeout(() => {
+                        frame.style.display = 'none';
+                    }, 400);
                 }
             });
 
-            // 4. After leave animation, swap and animate in
             setTimeout(() => {
                 menuFrames.forEach(frame => {
-                    const menuCategoryId = parseInt(frame.getAttribute('data-kategori-id'));
-                    const filterCategoryId = parseInt(categoryId);
-
-                    if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-                        frame.style.display = 'block';
-                        frame.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
-                        void frame.offsetWidth;
-                        frame.classList.add('filter-card-entering');
-                        visibleCount++;
-                    } else {
-                        frame.style.display = 'none';
-                        frame.classList.remove('filter-card-leaving', 'filter-card-entering');
-                    }
+                    frame.classList.remove('filter-card-entering');
                 });
+            }, 700);
 
-                setTimeout(() => {
-                    menuFrames.forEach(frame => {
-                        frame.classList.remove('filter-card-entering');
-                    });
-                }, 700);
-
-                // No Results handling
-                const noResults = document.getElementById('noResults');
-                if (noResults) {
-                    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-                    if (visibleCount === 0) {
-                        noResults.classList.remove('hidden');
-                        noResults.classList.add('filter-card-entering');
-                        setTimeout(() => noResults.classList.remove('filter-card-entering'), 600);
-                    }
+            // No Results handling
+            const noResults = document.getElementById('noResults');
+            if (noResults) {
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.classList.add('hidden');
+                    noResults.style.display = 'none';
                 }
-            }, 420);
+            }
         }
-
 
         function getCartIconRect() {
             const cartIcon = document.querySelector('[data-cart-icon]');
@@ -600,6 +602,7 @@
             if (firstBtn) {
                 firstBtn.classList.add('text-white', 'bg-orange-500', 'shadow-lg', 'shadow-orange-500/25');
                 firstBtn.classList.remove('bg-gray-800', 'text-gray-300');
+                setTimeout(() => filterMenuByCategory(0), 100);
             }
             updateFloatingCheckout();
 
@@ -682,15 +685,56 @@
                 special.classList.add('hidden');
                 regularBtn.classList.add('bg-orange-500');
                 specialBtn.classList.remove('bg-orange-500');
-                // Show category filter for regular menu
-                if (filterSection) filterSection.classList.remove('hidden');
+                // Show filter for regular menu
+                if (filterSection) {
+                    filterSection.classList.remove('hidden');
+                    filterSection.style.display = '';
+                }
+                // Re-trigger staggered entrance animation for regular menu
+                const regularCards = regular.querySelectorAll('.menu-card');
+                regularCards.forEach((card, i) => {
+                    card.classList.remove('menu-card-enter', 'menu-card-visible');
+                    setTimeout(() => {
+                        card.classList.add('menu-card-enter');
+                        void card.offsetWidth;
+                        card.classList.add('menu-card-visible');
+                    }, i * 60);
+                });
             } else {
                 regular.classList.add('hidden');
                 special.classList.remove('hidden');
                 specialBtn.classList.add('bg-orange-500');
                 regularBtn.classList.remove('bg-orange-500');
-                // Hide category filter for special menu (no categories)
-                if (filterSection) filterSection.classList.add('hidden');
+                // Hide filter when viewing specials
+                if (filterSection) {
+                    filterSection.classList.add('hidden');
+                    filterSection.style.display = 'none';
+                }
+                // Trigger staggered entrance animation for special cards + borders
+                const specialFrames = special.querySelectorAll('.special-frame');
+                specialFrames.forEach((frame, i) => {
+                    const card = frame.querySelector('.special-card');
+                    // Reset frame border
+                    frame.classList.remove('special-frame-enter', 'special-frame-visible');
+                    // Reset card
+                    if (card) {
+                        card.classList.remove('menu-card-enter', 'menu-card-visible');
+                    }
+                    setTimeout(() => {
+                        // Animate border in
+                        frame.classList.add('special-frame-enter');
+                        void frame.offsetWidth;
+                        frame.classList.add('special-frame-visible');
+                        // Animate card after border
+                        setTimeout(() => {
+                            if (card) {
+                                card.classList.add('menu-card-enter');
+                                void card.offsetWidth;
+                                card.classList.add('menu-card-visible');
+                            }
+                        }, 200);
+                    }, i * 100);
+                });
             }
 
             window.scrollTo({

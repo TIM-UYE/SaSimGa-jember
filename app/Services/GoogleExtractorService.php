@@ -31,7 +31,7 @@ class GoogleExtractorService
 
         $cacheKey = 'rapidapi_google_reviews_' . md5($this->businessId);
 
-        return Cache::remember($cacheKey, 60 * 60, function () use ($limit) {
+        $result = Cache::remember($cacheKey, 60 * 60, function () use ($limit) {
             $url = "https://{$this->host}/business_reviews";
 
             $response = Http::withHeaders([
@@ -44,7 +44,7 @@ class GoogleExtractorService
             ]);
 
             if (! $response->ok()) {
-                return collect();
+                return [];
             }
 
             $json = $response->json();
@@ -60,7 +60,9 @@ class GoogleExtractorService
                     'relative_time_description' => data_get($r, 'time', ''),
                     'source' => 'Google',
                 ];
-            })->take($limit);
+            })->take($limit)->toArray();
         });
+
+        return collect($result);
     }
 }

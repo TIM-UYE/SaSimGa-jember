@@ -304,14 +304,12 @@
                 }
             });
 
-            const menuCards = document.querySelectorAll('.menu-frame');
-            const grid = menuCards[0]?.parentElement;
+            const menuCards = document.querySelectorAll('.menu-card');
             let visibleCount = 0;
 
             // 3. Animate cards out with leave animation
             menuCards.forEach(card => {
                 const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
-                const innerCard = card.querySelector('.menu-card');
                 const filterCategoryId = parseInt(categoryId);
 
                 if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
@@ -325,18 +323,28 @@
 
             // 4. After leave animation completes, swap display and animate in
             setTimeout(() => {
-                menuCards.forEach(card => {
+                let shownCount = 0;
+                menuCards.forEach((card, index) => {
                     const menuCategoryId = parseInt(card.getAttribute('data-kategori-id'));
                     const filterCategoryId = parseInt(categoryId);
 
                     if (filterCategoryId === 0 || menuCategoryId === filterCategoryId) {
-                        card.style.display = 'block';
-                        // Remove any previous classes
-                        card.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
-                        // Force reflow
-                        void card.offsetWidth;
-                        // Add enter animation
-                        card.classList.add('filter-card-entering');
+                        if (shownCount < 8) {
+                            card.style.display = 'block';
+                            // Remove any previous classes that may hide the card
+                            card.classList.remove('hidden', 'extra-menu', 'md:hidden');
+                            // Remove any previous classes
+                            card.classList.remove('filter-card-leaving', 'menu-card-enter', 'menu-card-visible');
+                            // Force reflow
+                            void card.offsetWidth;
+                            // Add enter animation with staggered delay
+                            card.style.animationDelay = `${index * 0.08}s`;
+                            card.classList.add('filter-card-entering');
+                            shownCount++;
+                        } else {
+                            card.style.display = 'none';
+                            card.classList.remove('filter-card-leaving', 'filter-card-entering');
+                        }
                         visibleCount++;
                     } else {
                         card.style.display = 'none';
@@ -348,6 +356,7 @@
                 setTimeout(() => {
                     menuCards.forEach(card => {
                         card.classList.remove('filter-card-entering');
+                        card.style.animationDelay = '';
                     });
                 }, 700);
 

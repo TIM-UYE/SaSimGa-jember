@@ -22,15 +22,29 @@ class MenuAnimations {
     // Staggered card reveal on scroll
     initCardReveal() {
         const cards = document.querySelectorAll('.menu-card');
-        if (!cards.length) return;
+        const specials = document.querySelectorAll('.special-card');
+        const allItems = [...cards, ...specials];
+        if (!allItems.length) return;
 
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    // Add staggered delay based on index
-                    const delay = Array.from(cards).indexOf(entry.target) * 0.08;
+                    const all = Array.from(allItems);
+                    const idx = all.indexOf(entry.target);
+                    const delay = idx * 0.08;
+
                     entry.target.style.transitionDelay = `${delay}s`;
                     entry.target.classList.add('menu-card-visible');
+
+                    // Sync frame border animation with the card
+                    const frame = entry.target.closest('.menu-frame, .special-frame');
+                    if (frame) {
+                        const isSpecial = frame.classList.contains('special-frame');
+                        const frameDelay = Math.min(delay, 0.4); // cap delay agar border tidak terlalu lambat
+                        frame.style.transitionDelay = `${frameDelay}s`;
+                        frame.classList.add(isSpecial ? 'special-frame-visible' : 'menu-frame-visible');
+                    }
+
                     observer.unobserve(entry.target);
                 }
             });
@@ -39,9 +53,15 @@ class MenuAnimations {
             rootMargin: '0px 0px -50px 0px'
         });
 
-        cards.forEach(card => {
-            card.classList.add('menu-card-enter');
-            observer.observe(card);
+        allItems.forEach(item => {
+            item.classList.add('menu-card-enter');
+            // Also add entrance class to parent frame for border animation
+            const frame = item.closest('.menu-frame, .special-frame');
+            if (frame) {
+                const isSpecial = frame.classList.contains('special-frame');
+                frame.classList.add(isSpecial ? 'special-frame-enter' : 'menu-frame-enter');
+            }
+            observer.observe(item);
         });
     }
 
