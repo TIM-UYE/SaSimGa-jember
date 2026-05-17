@@ -46,6 +46,9 @@ Route::get('/', [HomeController::class, 'index'])
 Route::get('/menu', [MenuController::class, 'frontend'])
     ->name('frontend.menu');
 
+Route::get('/testimoni', [TestimoniController::class, 'frontendIndex'])
+    ->name('frontend.testimoni.index');
+
 Route::get('/about', function () {
     return redirect()->route('frontend.information.show', 'about');
 })->name('frontend.about');

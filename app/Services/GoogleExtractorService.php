@@ -20,49 +20,101 @@ class GoogleExtractorService
     }
 
     /**
-     * Fetch reviews from RapidAPI Google Maps extractor
-     * Returns a Collection of normalized reviews or empty collection on failure.
+     * Normalize review item
+     */
+    protected function normalizeReview(array $r): array
+    {
+        return [
+            'author_name' => data_get($r, 'user_name', 'Anonymous'),
+            'text' => data_get($r, 'text', ''),
+            'rating' => (int) data_get($r, 'rating', 0),
+            'profile_photo_url' => data_get($r, 'user_avatar')
+                ?: asset('images/avatar-default.png'),
+
+            'relative_time_description' => data_get($r, 'time', ''),
+            'source' => 'Google',
+        ];
+    }
+
+    /**
+     * Get limited reviews
      */
     public function getReviews(int $limit = 6): Collection
     {
-        if (empty($this->apiKey) || empty($this->businessId)) {
-            return collect();
-        }
+        return $this->getAllReviews()->take($limit);
+    }
 
-        $cacheKey = 'rapidapi_google_reviews_' . md5($this->businessId);
+    /**
+     * Fetch ALL reviews with pagination support
+     */
+    public function getAllReviews(): Collection
+{
+    if (empty($this->apiKey) || empty($this->businessId)) {
+        return collect();
+    }
 
-        $result = Cache::remember($cacheKey, 60 * 60, function () use ($limit) {
-            $url = "https://{$this->host}/business_reviews";
+    $cacheKey = 'rapidapi_google_reviews_all_' . md5($this->businessId);
 
-            $response = Http::withHeaders([
-                'x-rapidapi-host' => $this->host,
-                'x-rapidapi-key' => $this->apiKey,
-            ])->get($url, [
+    $result = Cache::remember($cacheKey, now()->addHour(), function () {
+
+        $url = "https://{$this->host}/business_reviews";
+
+        $allReviews = collect();
+
+        $nextPageToken = null;
+
+        do {
+
+            $query = [
                 'business_id' => $this->businessId,
                 'lang' => 'id',
-                'limit' => $limit,
-            ]);
+                'limit' => 100,
+            ];
+
+            if ($nextPageToken) {
+                $query['next_page_token'] = $nextPageToken;
+            }
+
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'x-rapidapi-host' => $this->host,
+                    'x-rapidapi-key' => $this->apiKey,
+                ])
+                ->get($url, $query);
 
             if (! $response->ok()) {
-                return [];
+                break;
             }
 
             $json = $response->json();
 
-            $items = data_get($json, 'data', []);
+            $items = collect(data_get($json, 'data', []));
 
-            return collect($items)->map(function ($r) {
-                return [
-                    'author_name' => data_get($r, 'user_name', 'Anonymous'),
-                    'text' => data_get($r, 'text', ''),
-                    'rating' => (int) data_get($r, 'rating', 0),
-                    'profile_photo_url' => data_get($r, 'user_avatar') ?: asset('images/avatar-default.png'),
-                    'relative_time_description' => data_get($r, 'time', ''),
-                    'source' => 'Google',
-                ];
-            })->take($limit)->toArray();
-        });
+            if ($items->isEmpty()) {
+                break;
+            }
 
-        return collect($result);
-    }
+            $normalized = $items->map(function ($r) {
+                return $this->normalizeReview($r);
+            });
+
+            $allReviews = $allReviews->merge($normalized);
+
+            $nextPageToken = data_get($json, 'next_page_token');
+
+        } while ($nextPageToken);
+
+        return $allReviews
+            ->unique(function ($item) {
+                return md5(
+                    $item['author_name'] .
+                    $item['text']
+                );
+            })
+            ->values()
+            ->toArray();
+    });
+
+    return collect($result);
+}
 }

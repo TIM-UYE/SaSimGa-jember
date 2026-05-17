@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Testimoni;
+use App\Services\GoogleExtractorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -15,6 +16,65 @@ class TestimoniController extends Controller
         $testimonis = Testimoni::orderByDesc('review_date')->paginate(15);
 
         return view('admin.testimoni.index', compact('testimonis'));
+    }
+
+    public function frontendIndex(GoogleExtractorService $extractor)
+    {
+        // Ambil dari database
+        $dbTestimonis = Testimoni::where('is_active', true)
+            ->orderByDesc('review_date')
+            ->get()
+            ->map(function ($t) {
+                return [
+                    'author_name' => $t->author_name,
+                    'text' => $t->text,
+                    'rating' => (int) $t->rating,
+                    'profile_photo_url' => $t->profile_photo_url ?: asset('images/avatar-default.png'),
+                    'relative_time_description' => $t->relative_time_description ?: ($t->review_date?->diffForHumans() ?? 'Baru saja'),
+                    'source' => $t->source ?? 'Manual',
+                    'review_date' => $t->review_date,
+                ];
+            });
+
+        // Ambil SEMUA review dari Google Maps (tanpa limit)
+        $googleReviews = $extractor->getAllReviews();
+
+        // Merge semua testimoni
+        $allTestimonis = collect($dbTestimonis)->merge($googleReviews);
+
+        // Apply filter/sort
+        $sort = request()->get('sort', 'terbaru');
+
+        switch ($sort) {
+            case 'tertinggi':
+                $allTestimonis = $allTestimonis->sortByDesc('rating')->values();
+                break;
+            case 'terendah':
+                $allTestimonis = $allTestimonis->sortBy('rating')->values();
+                break;
+            case 'terbaru':
+            default:
+                $allTestimonis = $allTestimonis->sortByDesc(function ($item) {
+                    return data_get($item, 'review_date') ?? now();
+                })->values();
+                break;
+        }
+
+        // Manual pagination karena data adalah Collection
+        $perPage = 12;
+        $currentPage = request()->get('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+        $paginatedTestimonis = $allTestimonis->slice($offset, $perPage)->values();
+
+        $testimonis = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedTestimonis,
+            $allTestimonis->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('frontend.testimoni.index', compact('testimonis', 'sort'));
     }
 
     public function create()
