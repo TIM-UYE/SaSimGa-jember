@@ -470,15 +470,31 @@
             }).format(menu.harga);
             document.getElementById('modalPrice').textContent = price;
 
-            document.getElementById('modalStatus').innerHTML = menu.is_available ?
-                `<div class="flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-green-400 font-semibold">Tersedia</span>
-                </div>` :
-                `<div class="flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
-                    <span class="text-red-400 font-semibold">Tidak Tersedia</span>
-                </div>`;
+            // Check both is_available flag AND calculated_stock
+            const calculatedStock = menu.calculated_stock !== undefined ? menu.calculated_stock : null;
+            const hasStock = calculatedStock === null || calculatedStock > 0;
+            const isAvailable = menu.is_available && hasStock;
+
+            if (isAvailable) {
+                document.getElementById('modalStatus').innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-green-400 font-semibold">Tersedia</span>
+                        ${calculatedStock !== null ? `<span class="text-gray-500 text-sm ml-2">(${calculatedStock} porsi)</span>` : ''}
+                    </div>`;
+            } else {
+                let reason = 'Tidak Tersedia';
+                if (!menu.is_available) {
+                    reason = 'Menu tidak aktif';
+                } else if (calculatedStock !== null && calculatedStock <= 0) {
+                    reason = 'Stok Habis';
+                }
+                document.getElementById('modalStatus').innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-red-400 font-semibold">${reason}</span>
+                    </div>`;
+            }
 
             document.getElementById('modalDescription').textContent = menu.deskripsi || 'Tidak ada deskripsi';
 
@@ -504,12 +520,14 @@
             }
 
             const orderBtn = document.getElementById('modalOrderBtn');
-            if (!menu.is_available) {
+            if (!isAvailable) {
                 orderBtn.disabled = true;
                 orderBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                orderBtn.innerHTML = '<i class="fas fa-times-circle mr-2"></i>' + (reason === 'Stok Habis' ? 'Stok Tidak Mencukupi' : 'Tidak Tersedia');
             } else {
                 orderBtn.disabled = false;
                 orderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                orderBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang';
             }
 
             document.getElementById('menuDetailModal').classList.remove('hidden');

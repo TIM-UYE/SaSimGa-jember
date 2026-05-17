@@ -64,14 +64,16 @@
                         placeholder="25000" min="0" step="100" required>
                 </div>
 
-                <!-- Stok -->
+                <!-- Stok (Auto-calculated from ingredients) -->
                 <div class="mb-4">
                     <label class="mb-2 block text-sm font-semibold text-slate-700" for="stok">
-                        Stok
+                        Stok Menu
                     </label>
-                    <input type="number" name="stok" id="stok" value="{{ old('stok', 0) }}"
-                        class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
-                        placeholder="0" min="0">
+                    <div class="flex items-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 py-2.5 text-sm text-orange-700">
+                        <i class="fas fa-calculator"></i>
+                        <span>Stok akan dihitung otomatis dari bahan baku yang ditambahkan di bawah</span>
+                    </div>
+                    <input type="hidden" name="stok" value="0">
                 </div>
 
                 <!-- Ukuran -->
@@ -143,24 +145,31 @@
 
                 <div id="bahan-wrapper" class="space-y-3">
                     <div class="grid grid-cols-1 gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-200 md:grid-cols-12">
-                        <div class="md:col-span-6">
+                        <div class="md:col-span-4">
                             <label class="mb-1 block text-xs font-semibold text-slate-500">Bahan</label>
                             <select name="bahan_stok_id[]"
                                 class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200">
                                 <option value="">Pilih Bahan</option>
                                 @foreach($stoks as $stok)
-                                    <option value="{{ $stok->id }}">
-                                        {{ $stok->nama_bahan }} - Stok: {{ number_format($stok->jumlah_stok, 0, ',', '.') }} {{ $stok->satuan }}
+                                    <option value="{{ $stok->id }}" data-satuan="{{ $stok->satuan }}">
+                                        {{ $stok->nama_bahan }} ({{ number_format($stok->jumlah_stok, 0, ',', '.') }} {{ $stok->satuan }})
                                     </option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="md:col-span-4">
-                            <label class="mb-1 block text-xs font-semibold text-slate-500">Jumlah Dibutuhkan / Porsi</label>
+                        <div class="md:col-span-3">
+                            <label class="mb-1 block text-xs font-semibold text-slate-500">Jumlah / Porsi</label>
                             <input type="number" step="0.01" name="jumlah_dibutuhkan[]"
-                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 quantity-input"
                                 placeholder="Contoh: 150">
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <label class="mb-1 block text-xs font-semibold text-slate-500">Satuan</label>
+                            <input type="text" name="satuan_bahan[]" readonly
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500 satuan-input"
+                                placeholder="Otomatis" value="gram">
                         </div>
 
                         <div class="flex items-end md:col-span-2">
@@ -219,24 +228,31 @@ function addBahanRow() {
     row.className = 'grid grid-cols-1 gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-200 md:grid-cols-12';
 
     row.innerHTML = `
-        <div class="md:col-span-6">
+        <div class="md:col-span-4">
             <label class="mb-1 block text-xs font-semibold text-slate-500">Bahan</label>
-            <select name="bahan_stok_id[]"
+            <select name="bahan_stok_id[]" onchange="autoFillSatuan(this)"
                 class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200">
                 <option value="">Pilih Bahan</option>
                 @foreach($stoks as $stok)
-                    <option value="{{ $stok->id }}">
-                        {{ $stok->nama_bahan }} - Stok: {{ number_format($stok->jumlah_stok, 0, ',', '.') }} {{ $stok->satuan }}
+                    <option value="{{ $stok->id }}" data-satuan="{{ $stok->satuan }}">
+                        {{ $stok->nama_bahan }} ({{ number_format($stok->jumlah_stok, 0, ',', '.') }} {{ $stok->satuan }})
                     </option>
                 @endforeach
             </select>
         </div>
 
-        <div class="md:col-span-4">
-            <label class="mb-1 block text-xs font-semibold text-slate-500">Jumlah Dibutuhkan / Porsi</label>
+        <div class="md:col-span-3">
+            <label class="mb-1 block text-xs font-semibold text-slate-500">Jumlah / Porsi</label>
             <input type="number" step="0.01" name="jumlah_dibutuhkan[]"
-                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200"
+                class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-200 quantity-input"
                 placeholder="Contoh: 150">
+        </div>
+
+        <div class="md:col-span-3">
+            <label class="mb-1 block text-xs font-semibold text-slate-500">Satuan</label>
+            <input type="text" name="satuan_bahan[]" readonly
+                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500 satuan-input"
+                placeholder="Otomatis" value="gram">
         </div>
 
         <div class="flex items-end md:col-span-2">
@@ -257,9 +273,29 @@ function removeBahanRow(button) {
         button.closest('.grid').remove();
     } else {
         const row = button.closest('.grid');
-        row.querySelector('select').value = '';
-        row.querySelector('input').value = '';
+        const select = row.querySelector('select');
+        if (select) select.value = '';
+        const inputs = row.querySelectorAll('input');
+        inputs.forEach(inp => { if (inp.type !== 'hidden') inp.value = ''; });
     }
 }
-</script>
+
+function autoFillSatuan(selectEl) {
+    const row = selectEl.closest('.grid');
+    const satuanInput = row.querySelector('.satuan-input');
+    const selectedOption = selectEl.options[selectEl.selectedIndex];
+    const satuan = selectedOption ? selectedOption.getAttribute('data-satuan') : 'gram';
+    if (satuanInput) {
+        satuanInput.value = satuan || 'gram';
+    }
+}
+
+// Initialize auto-fill for existing rows
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#bahan-wrapper select[name="bahan_stok_id[]"]').forEach(function(sel) {
+        sel.addEventListener('change', function() { autoFillSatuan(this); });
+        // Trigger on load if a value is selected
+        if (sel.value) autoFillSatuan(sel);
+    });
+});
 @endsection

@@ -49,9 +49,12 @@
                                             </span>
                                         </div>
 
-                                        <!-- Availability Badge -->
+                                        <!-- Availability Badge (check both is_available AND calculated stock) -->
                                         <div class="absolute top-3 right-3 z-10">
-                                            @if ($menu->is_available)
+                                            @php
+                                                $menuHasStock = $menu->is_available && $menu->calculated_stock > 0;
+                                            @endphp
+                                            @if ($menuHasStock)
                                                 <span
                                                     class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1.5">
                                                     <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
@@ -86,7 +89,7 @@
                                             <div class="flex gap-2">
                                                 <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
                                                     class="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed text-xs"
-                                                    {{ !$menu->is_available ? 'disabled' : '' }}>
+                                                    {{ (!$menu->is_available || $menu->calculated_stock <= 0) ? 'disabled' : '' }}>
                                                     <i class="fas fa-plus"></i>
                                                 </button>
 

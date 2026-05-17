@@ -7,20 +7,33 @@ use App\Models\KategoriMenu;
 use App\Models\MenuSpecial;
 use App\Models\Stok;
 use App\Models\MenuBahan;
+use App\Services\StockCalculationService;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
+    protected StockCalculationService $stockService;
+
+    public function __construct(StockCalculationService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
+
     public function index()
     {
-        $menus = Menu::with('kategori')->orderBy('created_at', 'desc')->get();
+        $menus = Menu::with('kategori', 'komposisiBahan.stok')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('admin.menu.index', compact('menus'));
+        $stockData = $this->stockService->calculateMenusStock($menus);
+        $lowStockIngredients = $this->stockService->getLowStockIngredients();
+
+        return view('admin.menu.index', compact('menus', 'stockData', 'lowStockIngredients'));
     }
 
     public function frontend()
     {
-        $menus = Menu::with('kategori')
+        $menus = Menu::with('kategori', 'komposisiBahan.stok')
             ->where('is_available', true)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -60,7 +73,6 @@ class MenuController extends Controller
             'kategori_id' => 'nullable|exists:kategori_menu,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
-            'stok' => 'nullable|integer|min:0',
             'ukuran' => 'nullable|string|max:100',
             'bahan' => 'nullable|string',
             'durasi_persiapan' => 'nullable|integer|min:1',
@@ -69,15 +81,19 @@ class MenuController extends Controller
             'bahan_stok_id.*' => 'nullable|exists:stok,id',
             'jumlah_dibutuhkan' => 'nullable|array',
             'jumlah_dibutuhkan.*' => 'nullable|numeric|min:0',
+            'satuan_bahan' => 'nullable|array',
+            'satuan_bahan.*' => 'nullable|string|max:50',
         ]);
 
         $data = $request->except([
             'gambar',
             'bahan_stok_id',
             'jumlah_dibutuhkan',
+            'satuan_bahan',
         ]);
 
         $data['is_available'] = $request->has('is_available');
+        $data['stok'] = 0; // Stock is auto-calculated
 
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
@@ -91,13 +107,21 @@ class MenuController extends Controller
         if ($request->has('bahan_stok_id')) {
             foreach ($request->bahan_stok_id as $index => $stokId) {
                 $jumlah = $request->jumlah_dibutuhkan[$index] ?? null;
+                $satuan = $request->satuan_bahan[$index] ?? null;
 
                 if ($stokId && $jumlah && $jumlah > 0) {
+                    // Auto-detect satuan from stok if not provided
+                    if (!$satuan) {
+                        $stok = Stok::find($stokId);
+                        $satuan = $stok ? $stok->satuan : 'gram';
+                    }
+
                     MenuBahan::create([
                         'menuable_id' => $menu->id,
                         'menuable_type' => Menu::class,
                         'stok_id' => $stokId,
                         'jumlah_dibutuhkan' => $jumlah,
+                        'satuan' => $satuan,
                     ]);
                 }
             }
@@ -109,13 +133,14 @@ class MenuController extends Controller
 
     public function show(Menu $menu)
     {
-        $menu->load('kategori');
+        $menu->load('kategori', 'komposisiBahan.stok');
+        $stockCalc = $menu->getStockCalculationDetails();
 
-        return view('admin.menu.show', compact('menu'));
+        return view('admin.menu.show', compact('menu', 'stockCalc'));
     }
 
     public function edit(Menu $menu)
-    {$menu->komposisiBahan()->delete();
+    {
         $kategoris = KategoriMenu::where('is_active', true)
             ->orderBy('nama_kategori')
             ->get();
@@ -124,7 +149,12 @@ class MenuController extends Controller
 
         $menu->load('komposisiBahan.stok');
 
-        return view('admin.menu.edit', compact('menu', 'kategoris', 'stoks'));
+        $stockCalc = $menu->getStockCalculationDetails();
+
+        // Dapatkan stok_id yang sudah dipilih untuk opsi ini saja
+        $selectedStokIds = $menu->komposisiBahan->pluck('stok_id')->toArray();
+
+        return view('admin.menu.edit', compact('menu', 'kategoris', 'stoks', 'stockCalc', 'selectedStokIds'));
     }
 
     public function update(Request $request, Menu $menu)
@@ -136,7 +166,6 @@ class MenuController extends Controller
             'kategori_id' => 'nullable|exists:kategori_menu,id',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'is_available' => 'boolean',
-            'stok' => 'nullable|integer|min:0',
             'ukuran' => 'nullable|string|max:100',
             'bahan' => 'nullable|string',
             'durasi_persiapan' => 'nullable|integer|min:1',
@@ -145,15 +174,20 @@ class MenuController extends Controller
             'bahan_stok_id.*' => 'nullable|exists:stok,id',
             'jumlah_dibutuhkan' => 'nullable|array',
             'jumlah_dibutuhkan.*' => 'nullable|numeric|min:0',
+            'satuan_bahan' => 'nullable|array',
+            'satuan_bahan.*' => 'nullable|string|max:50',
         ]);
 
         $data = $request->except([
             'gambar',
             'bahan_stok_id',
             'jumlah_dibutuhkan',
+            'satuan_bahan',
         ]);
 
         $data['is_available'] = $request->has('is_available');
+        // Keep stok as auto-calculated
+        $data['stok'] = 0;
 
         if ($request->hasFile('gambar')) {
             if ($menu->gambar && file_exists(public_path('storage/menu/' . $menu->gambar))) {
@@ -173,13 +207,20 @@ class MenuController extends Controller
         if ($request->has('bahan_stok_id')) {
             foreach ($request->bahan_stok_id as $index => $stokId) {
                 $jumlah = $request->jumlah_dibutuhkan[$index] ?? null;
+                $satuan = $request->satuan_bahan[$index] ?? null;
 
                 if ($stokId && $jumlah && $jumlah > 0) {
+                    if (!$satuan) {
+                        $stok = Stok::find($stokId);
+                        $satuan = $stok ? $stok->satuan : 'gram';
+                    }
+
                     MenuBahan::create([
                         'menuable_id' => $menu->id,
                         'menuable_type' => Menu::class,
                         'stok_id' => $stokId,
                         'jumlah_dibutuhkan' => $jumlah,
+                        'satuan' => $satuan,
                     ]);
                 }
             }

@@ -50,14 +50,14 @@
         </div>
     </div>
 
-    <!-- Stok Menipis -->
+                <!-- Bahan Baku Menipis -->
     <div class="group flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10 hover:ring-red-200">
         <div>
             <p class="text-xs font-medium uppercase tracking-wider text-slate-400">
-                Stok Menipis (&lt; 5)
+                Bahan Baku Menipis
             </p>
             <p class="mt-1 text-3xl font-bold text-slate-800">
-                {{ $menus->where('stok', '<', 5)->count() }}
+                {{ $lowStockIngredients->count() }}
             </p>
         </div>
 
@@ -67,6 +67,28 @@
     </div>
 
 </div>
+
+<!-- Low Stock Warning Banner -->
+@if($lowStockIngredients->count() > 0)
+<div class="rounded-2xl border border-red-200 bg-red-50 p-4">
+    <div class="flex items-start gap-3">
+        <i class="fas fa-exclamation-circle mt-0.5 text-red-500"></i>
+        <div class="flex-1">
+            <p class="text-sm font-semibold text-red-700">Peringatan Stok Bahan Baku</p>
+            <p class="mt-1 text-xs text-red-600">Berikut bahan baku yang stoknya menipis atau habis:</p>
+            <div class="mt-2 flex flex-wrap gap-2">
+                @foreach($lowStockIngredients as $ingredient)
+                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold
+                        {{ $ingredient->status_label === 'Habis' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700' }}">
+                        <i class="fas {{ $ingredient->status_label === 'Habis' ? 'fa-times-circle' : 'fa-exclamation-triangle' }}"></i>
+                        {{ $ingredient->nama_bahan }} ({{ $ingredient->formatted_stok }})
+                    </span>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
     <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
         <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
@@ -85,12 +107,18 @@
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Kategori</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Harga</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Stok</th>
+                        <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Bahan</th>
                         <th class="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
                         <th class="px-6 py-4 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                         @forelse($menus as $menu)
+                        @php
+                            $menuStock = $stockData[$menu->id] ?? ['stock' => 0, 'details' => collect([])];
+                            $calcStock = $menuStock['stock'];
+                            $hasIngredients = $menu->komposisiBahan->count() > 0;
+                        @endphp
                         <tr class="group transition-all duration-200 hover:bg-slate-50/60">
                             <td class="px-6 py-4 align-middle">
                                 @if($menu->gambar)
@@ -114,7 +142,44 @@
                                 <p class="mb-0 text-sm font-semibold text-slate-700">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
                             </td>
                             <td class="px-6 py-4 align-middle">
-                                <p class="mb-0 text-sm">{{ $menu->stok }}</p>
+                                <div class="flex items-center gap-1">
+                                    @if($hasIngredients)
+                                        <span class="text-sm font-semibold {{ $calcStock <= 0 ? 'text-red-600' : ($calcStock < 5 ? 'text-orange-600' : 'text-slate-700') }}">
+                                            {{ $calcStock }}
+                                        </span>
+                                        <span class="text-xs text-slate-400">porsi</span>
+                                        @if($calcStock <= 0)
+                                            <i class="fas fa-times-circle text-xs text-red-500 ml-1"></i>
+                                        @elseif($calcStock < 5)
+                                            <i class="fas fa-exclamation-triangle text-xs text-orange-500 ml-1"></i>
+                                        @else
+                                            <i class="fas fa-check-circle text-xs text-emerald-500 ml-1"></i>
+                                        @endif
+                                    @else
+                                        <span class="text-xs text-slate-400">-</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 align-middle">
+                                @if($hasIngredients)
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($menu->komposisiBahan as $bahan)
+                                            @php
+                                                $stokItem = $bahan->stok;
+                                                $isLow = $stokItem && $stokItem->jumlah_stok <= $stokItem->stok_minimum;
+                                            @endphp
+                                            <span class="inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium
+                                                {{ $isLow ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-500' }}">
+                                                {{ $bahan->stok->nama_bahan ?? '?' }}
+                                                @if($isLow)
+                                                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                                                @endif
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-xs text-slate-400">-</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 align-middle">
                                 <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $menu->is_available ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }}">
@@ -135,7 +200,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-16 text-center">
+                            <td colspan="8" class="px-6 py-16 text-center">
                                 <div class="mx-auto max-w-sm text-slate-500">
                                     <i class="fas fa-utensils mb-3 text-2xl text-slate-300"></i>
                                     <p class="mb-1 font-semibold text-slate-600">Menu belum tersedia</p>

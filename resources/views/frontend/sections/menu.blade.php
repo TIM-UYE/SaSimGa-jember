@@ -80,9 +80,12 @@
                                     {{ $menu->kategori->nama_kategori ?? 'Menu' }}
                                 </span>
                             </div>
-                            <!-- Availability Badge -->
+                            <!-- Availability Badge (check both is_available AND calculated stock) -->
                             <div class="absolute top-4 right-4">
-                                @if ($menu->is_available)
+                                @php
+                                    $menuHasStock = $menu->is_available && $menu->calculated_stock > 0;
+                                @endphp
+                                @if ($menuHasStock)
                                     <span
                                         class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1">
                                         <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
@@ -116,7 +119,7 @@
                                     <!-- Quick Add Button -->
                                     <button type="button" onclick="quickAddToCart({{ $menu->id }}, this)"
                                         class="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        {{ !$menu->is_available ? 'disabled' : '' }} title="Tambah ke keranjang">
+                                        {{ (!$menu->is_available || $menu->calculated_stock <= 0) ? 'disabled' : '' }} title="Tambah ke keranjang">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                     <!-- Detail Button -->
@@ -564,16 +567,33 @@
             }).format(menu.harga);
             document.getElementById('modalPrice').textContent = price;
 
+            // Check both is_available flag AND calculated_stock
+            const calculatedStock = menu.calculated_stock !== undefined ? menu.calculated_stock : null;
+            const hasStock = calculatedStock === null || calculatedStock > 0;
+            const isAvailable = menu.is_available && hasStock;
+
             // Set status
-            const statusHtml = menu.is_available ?
-                `<div class="flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-green-400 font-semibold">Tersedia</span>
-                </div>` :
-                `<div class="flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
-                    <span class="text-red-400 font-semibold">Tidak Tersedia</span>
-                </div>`;
+            let statusHtml;
+            if (isAvailable) {
+                statusHtml = `
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-green-400 font-semibold">Tersedia</span>
+                        ${calculatedStock !== null ? `<span class="text-gray-500 text-sm ml-2">(${calculatedStock} porsi)</span>` : ''}
+                    </div>`;
+            } else {
+                let reason = 'Tidak Tersedia';
+                if (!menu.is_available) {
+                    reason = 'Menu tidak aktif';
+                } else if (calculatedStock !== null && calculatedStock <= 0) {
+                    reason = 'Stok Habis';
+                }
+                statusHtml = `
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                        <span class="text-red-400 font-semibold">${reason}</span>
+                    </div>`;
+            }
             document.getElementById('modalStatus').innerHTML = statusHtml;
 
             // Set description
@@ -605,12 +625,18 @@
 
             // Set button state
             const orderBtn = document.getElementById('modalOrderBtn');
-            if (!menu.is_available) {
+            if (!isAvailable) {
                 orderBtn.disabled = true;
                 orderBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                if (reason === 'Stok Habis') {
+                    orderBtn.innerHTML = '<i class="fas fa-times-circle mr-2"></i>Stok Tidak Mencukupi';
+                } else {
+                    orderBtn.innerHTML = '<i class="fas fa-times-circle mr-2"></i>Tidak Tersedia';
+                }
             } else {
                 orderBtn.disabled = false;
                 orderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                orderBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang';
             }
 
             // Open modal

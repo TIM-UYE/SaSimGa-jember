@@ -13,6 +13,7 @@ class MenuBahan extends Model
         'menuable_type',
         'stok_id',
         'jumlah_dibutuhkan',
+        'satuan',
     ];
 
     public function menuable()
