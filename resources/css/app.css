@@ -663,7 +663,7 @@
     z-index: 2;
     pointer-events: none;
     border-radius: inherit;
-    background: url('/images/border/menu.png') no-repeat center / cover;
+    background: url('../../public/images/border/menu.png') no-repeat center / cover;
     transition: filter 0.5s ease, box-shadow 0.5s ease;
 }
 
@@ -721,7 +721,7 @@
     z-index: 2;
     pointer-events: none;
     border-radius: inherit;
-    background: url('/images/border/menu-specials.png') no-repeat center / cover;
+    background: url('../../public/images/border/menu-specials.png') no-repeat center / cover;
     transition: filter 0.5s ease, box-shadow 0.5s ease;
 }
 
