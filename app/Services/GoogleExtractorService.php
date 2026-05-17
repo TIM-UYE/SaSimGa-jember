@@ -37,11 +37,15 @@ class GoogleExtractorService
     }
 
     /**
-     * Get limited reviews
+     * Get reviews with optional limit.
+     *
+     * If no limit is provided, returns all available reviews.
      */
-    public function getReviews(int $limit = 6): Collection
+    public function getReviews(?int $limit = null): Collection
     {
-        return $this->getAllReviews()->take($limit);
+        $reviews = $this->getAllReviews();
+
+        return $limit === null ? $reviews : $reviews->take($limit);
     }
 
     /**
@@ -54,66 +58,78 @@ class GoogleExtractorService
     }
 
     $cacheKey = 'rapidapi_google_reviews_all_' . md5($this->businessId);
+    $cached = Cache::get($cacheKey, []);
 
-    $result = Cache::remember($cacheKey, now()->addHour(), function () {
+    try {
+        $result = Cache::remember($cacheKey, now()->addHour(), function () {
 
-        $url = "https://{$this->host}/business_reviews";
+            $url = "https://{$this->host}/business_reviews";
 
-        $allReviews = collect();
+            $allReviews = collect();
 
-        $nextPageToken = null;
+            $nextToken = null;
 
-        do {
+            do {
 
-            $query = [
-                'business_id' => $this->businessId,
-                'lang' => 'id',
-                'limit' => 100,
-            ];
+                $query = [
+                    'business_id' => $this->businessId,
+                    'lang' => 'id',
+                    'limit' => 100,
+                ];
 
-            if ($nextPageToken) {
-                $query['next_page_token'] = $nextPageToken;
-            }
+                if ($nextToken) {
+                    $query['next_token'] = $nextToken;
+                }
 
-            $response = Http::timeout(30)
-                ->withHeaders([
-                    'x-rapidapi-host' => $this->host,
-                    'x-rapidapi-key' => $this->apiKey,
-                ])
-                ->get($url, $query);
+                $response = Http::timeout(30)
+                    ->withHeaders([
+                        'x-rapidapi-host' => $this->host,
+                        'x-rapidapi-key' => $this->apiKey,
+                    ])
+                    ->get($url, $query);
 
-            if (! $response->ok()) {
-                break;
-            }
+                if (! $response->ok()) {
+                    throw new \RuntimeException(sprintf(
+                        'RapidAPI review fetch failed with status %s.',
+                        $response->status()
+                    ));
+                }
 
-            $json = $response->json();
+                $json = $response->json();
 
-            $items = collect(data_get($json, 'data', []));
+                $items = collect(data_get($json, 'data', []));
 
-            if ($items->isEmpty()) {
-                break;
-            }
+                if ($items->isEmpty()) {
+                    break;
+                }
 
-            $normalized = $items->map(function ($r) {
-                return $this->normalizeReview($r);
-            });
+                $normalized = $items->map(function ($r) {
+                    return $this->normalizeReview($r);
+                });
 
-            $allReviews = $allReviews->merge($normalized);
+                $allReviews = $allReviews->merge($normalized);
 
-            $nextPageToken = data_get($json, 'next_page_token');
+                $nextToken = data_get($json, 'next_token') ?: data_get($json, 'next_page_token');
 
-        } while ($nextPageToken);
+            } while ($nextToken);
 
-        return $allReviews
-            ->unique(function ($item) {
-                return md5(
-                    $item['author_name'] .
-                    $item['text']
-                );
-            })
-            ->values()
-            ->toArray();
-    });
+            return $allReviews
+                ->unique(function ($item) {
+                    return md5(
+                        $item['author_name'] .
+                        $item['text']
+                    );
+                })
+                ->values()
+                ->toArray();
+        });
+    } catch (\Throwable $exception) {
+        if (! empty($cached)) {
+            return collect($cached);
+        }
+
+        return collect();
+    }
 
     return collect($result);
 }

@@ -20,27 +20,8 @@ class TestimoniController extends Controller
 
     public function frontendIndex(GoogleExtractorService $extractor)
     {
-        // Ambil dari database
-        $dbTestimonis = Testimoni::where('is_active', true)
-            ->orderByDesc('review_date')
-            ->get()
-            ->map(function ($t) {
-                return [
-                    'author_name' => $t->author_name,
-                    'text' => $t->text,
-                    'rating' => (int) $t->rating,
-                    'profile_photo_url' => $t->profile_photo_url ?: asset('images/avatar-default.png'),
-                    'relative_time_description' => $t->relative_time_description ?: ($t->review_date?->diffForHumans() ?? 'Baru saja'),
-                    'source' => $t->source ?? 'Manual',
-                    'review_date' => $t->review_date,
-                ];
-            });
-
         // Ambil SEMUA review dari Google Maps (tanpa limit)
-        $googleReviews = $extractor->getAllReviews();
-
-        // Merge semua testimoni
-        $allTestimonis = collect($dbTestimonis)->merge($googleReviews);
+        $allTestimonis = $extractor->getAllReviews();
 
         // Apply filter/sort
         $sort = request()->get('sort', 'terbaru');
