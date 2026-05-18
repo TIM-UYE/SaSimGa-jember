@@ -19,6 +19,11 @@ return [
         'reservation_button' => 'Reservasi Sekarang',
     ],
 
+    'showcase' => [
+        'white' => 'Pengalaman Kuliner',
+        'orange' => 'Autentik',
+    ],
+
     'about-header' => [
         // header
         'pre-title' => 'SATE SIMPANG TIGA',
@@ -43,9 +48,19 @@ return [
         'description-card2' => 'Menggunakan bahan-bahan segar dan rempah-rempah pilihan terbaik.',
     ],
 
-    'showcase' => [
-        'white' => 'Pengalaman Kuliner',
-        'orange' => 'Autentik',
+    'menu' => [
+        // header
+        'pre-title' => 'MENU KAMI',
+        'white-title' => 'Semua',
+        'orange-title' => 'Menu',
+        'description' => 'Nikmati beragam pilihan menu terbaik dari Simpang Tiga.',
+        'menu_button' => 'Lihat Semua Menu',
+        'more_button' => 'Lihat Selengkapnya',
+        // card
+        'available' => 'Tersedia',
+        'non_available' => 'Tidak Tersedia',
+        'empty' => 'Habis',
+        'available_soon' => 'Menu akan segera tersedia',
     ],
 
     'orbit' => [
@@ -53,5 +68,55 @@ return [
         'orange' => 'Autentik',
         'subtitle' => 'Suasana hangat dalam setiap sajian',
         'description' => 'Nikmati momen kebersamaan dengan cita rasa autentik, aroma bakaran arang, dan pengalaman kuliner khas Sate Simpang Tiga.',
+    ],
+
+    'reservation' => [
+        'pre-title' => 'RESERVASI MEJA',
+        'white-title' => 'Pilih',
+        'orange-title' => 'Meja Anda',
+        'description' => 'Pilih meja favorit Anda seperti memilih tempat duduk di bioskop.',
+        // card
+        'location' => 'Jember, Jawa Timur',
+        'info' => 'Keterangan',
+        'available' => 'Tersedia',
+        'table' => 'Meja',
+        'non_available' => 'Tidak Tersedia',
+        'chosen' => 'Dipilih',
+        'attention1' => 'Reservasi harus dilakukan setidaknya',
+        'attention_strong' => '12 Jam',
+        'attention2' => 'sebelum waktu reservasi.',
+        // form
+        'name' => 'Nama Lengkap',
+        'no' => 'Nomor WhatsApp',
+        'date' => 'Tanggal',
+        'time' => 'Waktu',
+        'qty' => 'Jumlah Orang',
+        'select_table' => 'Pilih Meja',
+        'chosen_table' => 'Dipilih',
+        'area' => 'Area Restoran',
+        'full' => 'Reservasi penuh pada tanggal dan jam ini.',
+        'reserve_table' => 'Meja yang dipilih',
+        'serve_btn' => 'Reservasi Sekarang',
+        'attention' => 'Dengan mengirimkan formulir ini, Anda menyetujui syarat dan ketentuan reservasi yang berlaku.',
+        // placeholder
+        'placeholder' => [
+            'name' => 'Masukkan nama Anda',
+            'no' => 'Contoh: 08XXXXXXXXXX',
+            'qty' => 'Jumlah orang',
+        ],
+    ],
+
+    'gallery' => [
+        'pre-title' => 'PELANGGAN KAMI',
+        'white-title' => 'Kenangan',
+        'orange-title' => 'Pecinta Rajanya Sate',
+        'description' => 'Ribuan pelanggan telah menikmati pengalaman kuliner terbaik bersama keluarga, sahabat, dan orang tercinta di Sate Simpangtiga.',
+    ],
+
+    'testimoni' => [
+        'pre-title' => 'TESTIMONI KAMI',
+        'white-title' => 'Cerita dari',
+        'orange-title' => 'Pelanggan Kami',
+        'description' => 'Pengalaman para Pecinta Rajanya Sate yang telah menikmati cita rasa autentik dari Sate Simpangtiga.',
     ],
 ];

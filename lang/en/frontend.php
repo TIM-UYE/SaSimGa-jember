@@ -19,6 +19,11 @@ return [
         'reservation_button' => 'Reserve Now',
     ],
 
+    'showcase' => [
+        'white' => 'Authentic',
+        'orange' => 'Culinary Experience',
+    ],
+
     'about-header' => [
         // header
         'pre-title' => 'SATE SIMPANG TIGA',
@@ -43,9 +48,19 @@ return [
         'description-card2' => 'Using fresh ingredients and the best selected spices.',
     ],
 
-    'showcase' => [
-        'white' => 'Authentic',
-        'orange' => 'Culinary Experience',
+    'menu' => [
+        // header
+        'pre-title' => 'OUR MENU',
+        'white-title' => 'All',
+        'orange-title' => 'Menu',
+        'description' => 'Enjoy a variety of the best menu choices from Simpang Tiga.',
+        'menu_button' => 'View All Menus',
+        'more_button' => 'See More',
+        // card
+        'available' => 'Available',
+        'non_available' => 'Not Available',
+        'empty' => 'Out of Stock',
+        'available_soon' => 'Menu will be available soon',
     ],
 
     'orbit' => [
@@ -53,5 +68,55 @@ return [
         'orange' => 'Culinary Experience',
         'subtitle' => 'Warm moments in every dish',
         'description' => 'Enjoy togetherness with authentic flavors, charcoal-grilled aroma, and a memorable culinary experience at Sate Simpang Tiga.',
+    ],
+
+    'reservation' => [
+        'pre-title' => 'TABLE RESERVATION',
+        'white-title' => 'Choose',
+        'orange-title' => 'Your Table',
+        'description' => 'Choose your favorite table like choosing a seat in a cinema.',
+        // card
+        'location' => 'Jember, East Java',
+        'info' => 'Information',
+        'available' => 'Available',
+        'table' => 'Table',
+        'non_available' => 'Not Available',
+        'chosen' => 'Chosen',
+        'attention1' => 'Reservations must be made at least',
+        'attention_strong' => '12 hours',
+        'attention2' => 'before the reservation time.',
+        // form
+        'name' => 'Full Name',
+        'no' => 'WhatsApp Number',
+        'date' => 'Date',
+        'time' => 'Time',
+        'qty' => 'number of people',
+        'select_table' => 'Select Table',
+        'chosen_table' => 'selected',
+        'area' => 'Restaurant Area',
+        'full' => 'Reservasi penuh pada tanggal dan jam ini.',
+        'reserve_table' => 'Meja yang dipilih',
+        'serve_btn' => 'Reserve Now',
+        'attention' => 'By submitting the form, you agree to the applicable reservation terms.',
+        // placeholder
+         'placeholder' => [
+            'name' => 'Enter your name',
+            'no' => 'Example: 08XXXXXXXXXX',
+            'qty' => 'Number of people',
+        ],
+    ],
+
+    'gallery' => [
+        'pre-title' => 'OUR CUSTOMERS',
+        'white-title' => 'Memories of',
+        'orange-title' => 'Pecinta Rajanya Sate',
+        'description' => 'Thousands of customers have enjoyed the best culinary experience with family, friends, and loved ones at Sate SimpangTiga.',
+    ],
+
+    'testimoni' => [
+        'pre-title' => 'OUR TESTIMONI',
+        'white-title' => 'Stories from',
+        'orange-title' => 'Our Customers',
+        'description' => 'The experience of Pecinta Rajanya Sate who have enjoyed the authentic taste of Sate Simpang Tiga.',
     ],
 ];
