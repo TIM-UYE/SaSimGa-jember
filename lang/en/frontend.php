@@ -99,7 +99,7 @@ return [
         'serve_btn' => 'Reserve Now',
         'attention' => 'By submitting the form, you agree to the applicable reservation terms.',
         // placeholder
-         'placeholder' => [
+        'placeholder' => [
             'name' => 'Enter your name',
             'no' => 'Example: 08XXXXXXXXXX',
             'qty' => 'Number of people',
@@ -115,8 +115,36 @@ return [
 
     'testimoni' => [
         'pre-title' => 'OUR TESTIMONI',
-        'white-title' => 'Stories from',
+        'white-title' => 'Stories',
         'orange-title' => 'Our Customers',
         'description' => 'The experience of Pecinta Rajanya Sate who have enjoyed the authentic taste of Sate Simpang Tiga.',
+    ],
+
+    'footer' => [
+        'brand' => [
+            'badge' => 'Sate Simpang Tiga',
+            'title_white' => 'Authentic Taste',
+            'title_dark' => 'Indonesian Specialty',
+            'description' => 'Serving Indonesian satay with fresh ingredients, authentic spices, and a warm, memorable dining experience.',
+        ],
+
+        'location' => [
+            'title' => 'Our Location',
+        ],
+
+        'information' => [
+            'title' => 'Information',
+            'faq' => 'FAQ',
+            'about' => 'About Us',
+            'privacy' => 'Privacy Policy',
+            'terms' => 'Terms & Conditions',
+        ],
+
+        'contact' => [
+            'title' => 'Contact Us',
+            'address' => 'Jl. Otto Iskandardinata No.2, Karang Miuwo, Mangli, Kaliwates District, Jember Regency, East Java 68131',
+        ],
+
+        'copyright' => '© :year Sate Simpang Tiga. All Rights Reserved.',
     ],
 ];

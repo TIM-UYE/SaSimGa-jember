@@ -115,8 +115,36 @@ return [
 
     'testimoni' => [
         'pre-title' => 'TESTIMONI KAMI',
-        'white-title' => 'Cerita dari',
+        'white-title' => 'Cerita',
         'orange-title' => 'Pelanggan Kami',
         'description' => 'Pengalaman para Pecinta Rajanya Sate yang telah menikmati cita rasa autentik dari Sate Simpangtiga.',
+    ],
+
+    'footer' => [
+        'brand' => [
+            'badge' => 'Sate Simpang Tiga',
+            'title_white' => 'Cita Rasa Autentik',
+            'title_dark' => 'Khas Indonesia',
+            'description' => 'Menghadirkan sate khas Indonesia dengan bahan segar, bumbu autentik, dan pengalaman makan yang hangat serta berkesan.',
+        ],
+
+        'location' => [
+            'title' => 'Lokasi Kami',
+        ],
+
+        'information' => [
+            'title' => 'Informasi',
+            'faq' => 'FAQ',
+            'about' => 'Tentang Kami',
+            'privacy' => 'Kebijakan Privasi',
+            'terms' => 'Syarat & Ketentuan',
+        ],
+
+        'contact' => [
+            'title' => 'Hubungi Kami',
+            'address' => 'Jl. Otto Iskandardinata No.2, Karang Miuwo, Mangli, Kec. Kaliwates, Kabupaten Jember, Jawa Timur 68131',
+        ],
+
+        'copyright' => '© :year Sate Simpang Tiga. Semua Hak Dilindungi.',
     ],
 ];
