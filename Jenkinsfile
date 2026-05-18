@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Checking out source code...'
                 dir('sasimga-jember') {
-                    git branch: 'main', url: "${GIT_REPO}"
+                    git branch: 'Nandita', url: "${GIT_REPO}"
                 }
             }
         }
