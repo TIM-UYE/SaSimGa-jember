@@ -624,52 +624,7 @@
             }
             updateFloatingCheckout();
 
-            // 🔧 Sticky filter fix for Lenis smooth scroll compatibility
-            setTimeout(function() {
-                const filter = document.getElementById('filterSection');
-                const navbar = document.querySelector('.fixed.top-0');
-                if (!filter) return;
-
-                const navbarHeight = navbar ? navbar.offsetHeight : 64;
-                let isFixed = false;
-
-                function updateSticky() {
-                    const hero = filter.previousElementSibling;
-                    const heroHeight = hero ? hero.offsetHeight : 0;
-                    const scrollY = window.scrollY || window.pageYOffset;
-
-                    if (scrollY >= heroHeight - navbarHeight) {
-                        if (!isFixed) {
-                            isFixed = true;
-                            filter.style.position = 'fixed';
-                            filter.style.top = navbarHeight + 'px';
-                            filter.style.left = '0';
-                            filter.style.right = '0';
-                            filter.style.zIndex = '30';
-                            filter.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
-                            if (!filter.nextElementSibling || !filter.nextElementSibling.classList.contains('filter-placeholder')) {
-                                const placeholder = document.createElement('div');
-                                placeholder.className = 'filter-placeholder';
-                                placeholder.style.height = filter.offsetHeight + 'px';
-                                filter.parentNode.insertBefore(placeholder, filter.nextElementSibling);
-                            }
-                        }
-                    } else if (isFixed) {
-                        isFixed = false;
-                        filter.style.position = 'relative';
-                        filter.style.top = '';
-                        filter.style.left = '';
-                        filter.style.right = '';
-                        filter.style.boxShadow = '';
-                        const placeholder = filter.parentNode.querySelector('.filter-placeholder');
-                        if (placeholder) placeholder.remove();
-                    }
-                }
-
-                updateSticky();
-                window.addEventListener('scroll', updateSticky, { passive: true });
-                window.addEventListener('resize', updateSticky, { passive: true });
-            }, 200);
+            // Sticky handled via CSS (sticky top-*) for simplicity and Lenis compatibility
         });
 
         document.addEventListener('visibilitychange', function() {
