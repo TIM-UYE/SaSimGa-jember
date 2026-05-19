@@ -61,27 +61,12 @@
                 <div class="group relative bg-zinc-900/70 backdrop-blur-sm border border-white/5 rounded-3xl overflow-hidden hover:border-orange-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 reveal"
                     style="animation-delay: {{ $index * 0.1 }}s">
 
-                    {{-- IMAGE / AVATAR --}}
-                    <div class="relative h-52 overflow-hidden flex items-center justify-center bg-zinc-800">
-
-                        @php
-                            $photoUrl = data_get($testimoni, 'profile_photo_url', data_get($testimoni, 'profile_photo', ''));
-                        @endphp
-
-                        @if($photoUrl)
-                            <img src="{{ $photoUrl }}"
-                                onerror="this.parentElement.innerHTML = '<div class=\'flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-orange-600\'><i class=\'fas fa-user text-5xl text-white/60\'></i></div>'"
-                                class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                                alt="{{ data_get($testimoni, 'author_name', 'User') }}">
-                        @else
-                            <div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-orange-600">
-                                <i class="fas fa-user text-5xl text-white/60"></i>
-                            </div>
-                        @endif
+                    {{-- BANNER GRADIENT --}}
+                    <div class="relative h-52 overflow-hidden flex items-center justify-center bg-gradient-to-br from-orange-500/30 via-orange-600/20 to-amber-500/10">
+                        <div class="absolute inset-0 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 40px)"></div>
 
                         {{-- OVERLAY --}}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent">
-                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
                         {{-- SOURCE & SENTIMENT --}}
                         <div class="absolute top-4 right-4 flex gap-2">
@@ -123,18 +108,33 @@
                             “{{ data_get($testimoni, 'text', data_get($testimoni, 'review_text', 'Belum ada testimoni.')) }}”
                         </p>
 
-                        {{-- USER --}}
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="text-white font-semibold text-lg">
+                        {{-- USER WITH GOOGLE PROFILE PHOTO --}}
+                        <div class="flex items-center gap-3">
+                            @php
+                                $photoUrl = data_get($testimoni, 'profile_photo_url', data_get($testimoni, 'profile_photo', ''));
+                            @endphp
+                            <div class="flex-shrink-0">
+                                @if($photoUrl)
+                                    <img src="{{ $photoUrl }}"
+                                        onerror="this.parentElement.innerHTML = '<div class=\'w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center\'><i class=\'fas fa-user text-white\'></i></div>'"
+                                        class="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500/30"
+                                        alt="{{ data_get($testimoni, 'author_name', 'User') }}">
+                                @else
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-white font-semibold text-lg truncate">
                                     {{ data_get($testimoni, 'author_name', 'Anonymous') }}
                                 </h3>
                                 <p class="text-zinc-500 text-sm">
                                     {{ data_get($testimoni, 'relative_time_description', 'Baru saja') }}
                                 </p>
                             </div>
-                            <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center">
-                                <i class="fas fa-quote-right text-orange-400"></i>
+                            <div class="flex-shrink-0 w-10 h-10 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                                <i class="fas fa-quote-right text-orange-400 text-sm"></i>
                             </div>
                         </div>
 

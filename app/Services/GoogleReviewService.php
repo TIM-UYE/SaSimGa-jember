@@ -324,21 +324,30 @@ class GoogleReviewService
                 $parsed['review_text'],
                 $parsed['review_date']
             )) {
-                // Update metadata tempat jika ada perubahan
-                if ($placeName) {
-                    GoogleReview::where('review_id', $parsed['review_id'])
-                        ->orWhere(function ($q) use ($parsed) {
-                            $q->where('author_name', $parsed['author_name'])
-                                ->where('review_text', $parsed['review_text']);
-                        })
-                        ->update([
-                            'total_rating' => $totalRatingValue,
-                            'total_reviews' => $totalReviewsCount,
-                            'place_name' => $placeName,
-                            'place_id' => $placeId,
-                            'scraped_at' => now(),
-                        ]);
+                // Update metadata tempat dan foto profil
+                $updateData = [
+                    'total_rating' => $totalRatingValue,
+                    'total_reviews' => $totalReviewsCount,
+                    'place_name' => $placeName,
+                    'place_id' => $placeId,
+                    'scraped_at' => now(),
+                ];
+
+                // Update foto profil jika ada yang baru
+                if (!empty($parsed['profile_photo'])) {
+                    $updateData['profile_photo'] = $parsed['profile_photo'];
                 }
+                if (!empty($parsed['author_url'])) {
+                    $updateData['author_url'] = $parsed['author_url'];
+                }
+
+                GoogleReview::where('review_id', $parsed['review_id'])
+                    ->orWhere(function ($q) use ($parsed) {
+                        $q->where('author_name', $parsed['author_name'])
+                            ->where('review_text', $parsed['review_text']);
+                    })
+                    ->update($updateData);
+
                 $stats['updated']++;
                 return $stats;
             }
@@ -955,20 +964,46 @@ class GoogleReviewService
      */
     private function parseApifyReviewItem(array $item): ?array
     {
-        $authorName = data_get($item, 'authorName', data_get($item, 'author_name', data_get($item, 'name', '')));
-        $reviewText = data_get($item, 'reviewText', data_get($item, 'review_text', data_get($item, 'text', '')));
-        $rating = data_get($item, 'stars', data_get($item, 'rating', data_get($item, 'starRating', 0)));
-        $reviewDate = data_get($item, 'publishedAtDate', data_get($item, 'publishedAt', data_get($item, 'review_date', data_get($item, 'reviewDate', ''))));
-        $reviewId = data_get($item, 'reviewId', data_get($item, 'review_id', ''));
-        $profilePhoto = data_get($item, 'authorPhotoUrl', data_get($item, 'profilePhotoUrl', data_get($item, 'profile_photo', data_get($item, 'authorPhoto', ''))));
-        $reviewPhoto = data_get($item, 'reviewPhotoUrl', data_get($item, 'reviewPhoto', data_get($item, 'review_photo', '')));
-        $authorUrl = data_get($item, 'authorUrl', data_get($item, 'author_url', data_get($item, 'authorLink', '')));
+        $keys = array_keys($item);
+
+        // Coba semua kemungkinan field nama author
+        $authorName = $item['authorName'] ?? $item['author_name'] ?? $item['name'] ?? $item['userName'] ?? $item['reviewerName'] ?? '';
+
+        // Coba semua kemungkinan field teks review
+        $reviewText = $item['reviewText'] ?? $item['review_text'] ?? $item['text'] ?? $item['comment'] ?? '';
+
+        // Coba semua kemungkinan field rating
+        $rating = $item['stars'] ?? $item['rating'] ?? $item['starRating'] ?? $item['score'] ?? 0;
+
+        // Coba semua kemungkinan field tanggal
+        $reviewDate = $item['publishedAtDate'] ?? $item['publishedAt'] ?? $item['review_date'] ?? $item['reviewDate'] ?? $item['timestamp'] ?? $item['time'] ?? '';
+
+        // Coba semua kemungkinan field ID review
+        $reviewId = $item['reviewId'] ?? $item['review_id'] ?? $item['id'] ?? $item['reviewPk'] ?? '';
+
+        // Coba SEMUA kemungkinan field foto profil dari Google Maps / Apify
+        $profilePhoto = $item['authorPhotoUrl'] ?? $item['profilePhotoUrl'] ?? $item['profile_photo_url'] ?? $item['profile_photo'] ?? $item['authorPhoto'] ?? $item['userPhoto'] ?? $item['photoUrl'] ?? $item['avatarUrl'] ?? $item['avatar'] ?? $item['photo'] ?? $item['picture'] ?? $item['authorImageUrl'] ?? $item['reviewerPhotoUrl'] ?? $item['userImage'] ?? $item['profilePhoto'] ?? '';
+
+        // Coba semua kemungkinan field foto review
+        $reviewPhoto = $item['reviewPhotoUrl'] ?? $item['reviewPhoto'] ?? $item['review_photo'] ?? $item['reviewImageUrl'] ?? $item['photo'] ?? '';
+
+        // Coba semua kemungkinan field URL author
+        $authorUrl = $item['authorUrl'] ?? $item['author_url'] ?? $item['authorLink'] ?? $item['profileUrl'] ?? $item['userUrl'] ?? '';
 
         if (empty($authorName) && empty($reviewText)) {
+            Log::info('[GoogleReviewService] parseApifyReviewItem skipped - keys', ['keys' => $keys]);
             return null;
         }
 
         $parsedDate = $this->parseDate($reviewDate);
+
+        Log::info('[GoogleReviewService] parseApifyReviewItem parsed', [
+            'author_name' => $authorName,
+            'has_photo' => !empty($profilePhoto),
+            'photo_preview' => $profilePhoto ? substr($profilePhoto, 0, 80) : 'none',
+            'rating' => $rating,
+            'review_id' => $reviewId ? substr($reviewId, 0, 20) : 'none',
+        ]);
 
         return [
             'place_name' => null,
