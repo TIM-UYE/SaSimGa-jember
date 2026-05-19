@@ -13,7 +13,7 @@
     <div class="relative max-w-7xl mx-auto">
 
         {{-- HEADER --}}
-        <div class="text-center mb-16">
+        <div class="text-center mb-16 reveal">
 
             <span
                 class="inline-flex items-center gap-2 bg-orange-500/10 text-orange-400 px-5 py-2 rounded-full text-sm font-semibold border border-orange-500/20">
@@ -51,7 +51,7 @@
 
             @forelse($galeris as $gallery)
                 <div
-                    class="group relative overflow-hidden rounded-[2rem] h-80 border border-white/10 shadow-xl hover:shadow-orange-500/20 transition duration-500">
+                    class="group relative overflow-hidden rounded-[2rem] h-80 border border-white/10 shadow-xl hover:shadow-orange-500/20 transition duration-500 reveal">
 
                     {{-- IMAGE --}}
                     <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}"
@@ -141,7 +141,7 @@
 
 
             {{-- VIDEO GRID --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 reveal">
 
                 @forelse($videos as $video)
 

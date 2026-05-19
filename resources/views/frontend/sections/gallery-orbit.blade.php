@@ -33,7 +33,7 @@
 
 
     {{-- ORBIT SCENE --}}
-    <div class="orbit-scene">
+    <div class="orbit-scene reveal">
 
         {{-- ORBIT WORLD --}}
         <div class="orbit-world" id="orbitWorld">
@@ -118,7 +118,8 @@
         class="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2
         z-[70]
         w-full max-w-3xl px-6
-        text-center pointer-events-none">
+        text-center pointer-events-none
+        reveal">
 
         <p
             class="text-white text-lg md:text-xl font-semibold leading-tight
