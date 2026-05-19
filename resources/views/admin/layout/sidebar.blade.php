@@ -1,5 +1,5 @@
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 my-4 ml-4 w-64 rounded-2xl bg-linear-to-b from-orange-500 via-orange-600 to-orange-700 shadow-soft-2xl overflow-y-auto custom-scrollbar transition-all duration-500 ease-in-out transform opacity-100 scale-100 translate-x-0">
- 
+
   <!-- LOGO -->
   <div class="px-6 py-6">
     <a href="" class="flex items-center text-white">
@@ -18,12 +18,12 @@
       </div>
     </a>
   </div>
- 
+
   <hr class="border-white/20 mx-4">
- 
+
   <!-- MENU -->
   <ul class="mt-4 space-y-1 px-3">
- 
+
     <!-- DASHBOARD -->
     <li>
       <a href="{{ route('admin.dashboard') }}"
@@ -34,7 +34,7 @@
         Dashboard
       </a>
     </li>
- 
+
     @if(Auth::user()->role === 'manager')
     <!-- MANAJEMEN MENU -->
     <li>
@@ -61,8 +61,10 @@
         </a>
       </div>
     </li>
- 
+    @endif
+
     <!-- INVENTORI -->
+    @if(Auth::user()->role === 'manager')
     <li>
       <button onclick="toggleSection(this)"
               class="w-full group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -84,7 +86,7 @@
       </div>
     </li>
     @endif
- 
+
     <!-- TRANSAKSI -->
     <li>
       <button onclick="toggleSection(this)"
@@ -110,7 +112,7 @@
         </a>
       </div>
     </li>
- 
+
     @if(Auth::user()->role === 'manager')
     <!-- KONTEN WEBSITE -->
     <li>
@@ -135,14 +137,16 @@
            class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.information.*') ? 'bg-white/20' : '' }}">
           <i class="fas fa-info-circle mr-3 text-sm"></i> Informasi
         </a>
-        <a href="{{ route('admin.testimoni.index') }}"
-           class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.testimoni.*') ? 'bg-white/20' : '' }}">
-          <i class="fas fa-comments mr-3 text-sm"></i> Testimoni
+        <a href="{{ route('admin.google-reviews.index') }}"
+           class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.google-reviews.*') ? 'bg-white/20' : '' }}">
+          <i class="fab fa-google mr-3 text-sm"></i> Google Reviews
         </a>
       </div>
     </li>
- 
+    @endif
+
     <!-- PENGGUNA -->
+    @if(Auth::user()->role === 'manager')
     <li>
       <a href="{{ route('admin.user.index') }}"
          class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition">
@@ -153,7 +157,7 @@
       </a>
     </li>
     @endif
- 
+
     <!-- KEMBALI KE WEBSITE -->
     <li class="pt-4">
       <a href="{{ url('/') }}"
@@ -164,7 +168,7 @@
         Kembali ke Website
       </a>
     </li>
- 
+
     <!-- LOGOUT -->
     <li>
       <form action="{{ route('logout') }}" method="POST">
@@ -178,16 +182,16 @@
         </button>
       </form>
     </li>
- 
+
   </ul>
- 
+
 </aside>
- 
+
 <script>
 function toggleSection(btn) {
   const submenu = btn.nextElementSibling;
   const chevron = btn.querySelector('.fa-chevron-down');
-  
+
   if (submenu.classList.contains('hidden')) {
     submenu.classList.remove('hidden');
     chevron.style.transform = 'rotate(180deg)';
@@ -196,14 +200,14 @@ function toggleSection(btn) {
     chevron.style.transform = 'rotate(0deg)';
   }
 }
- 
+
 // Auto open sections that have active children
 document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('#sidebar .mt-1.mb-1');
   sections.forEach(section => {
     const submenu = section.querySelector('.ml-11');
     if (!submenu) return;
-    
+
     const hasActive = submenu.querySelector('.bg-white\\/20');
     if (hasActive) {
       submenu.classList.remove('hidden');
@@ -213,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
- 
+
 <style>
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;

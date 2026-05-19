@@ -20,42 +20,68 @@ class TestimoniController extends Controller
 
     public function frontendIndex(GoogleExtractorService $extractor)
     {
-        // Ambil SEMUA review dari Google Maps (tanpa limit)
-        $allTestimonis = $extractor->getAllReviews();
+        // Ambil data dari GoogleReview (hasil scraping Apify) dan Testimoni (data lama)
+        $googleReviews = \App\Models\GoogleReview::query();
 
-        // Apply filter/sort
         $sort = request()->get('sort', 'terbaru');
+        $showAll = request()->get('show') === 'all';
 
         switch ($sort) {
             case 'tertinggi':
-                $allTestimonis = $allTestimonis->sortByDesc('rating')->values();
+                $googleReviews->orderBy('rating', 'desc');
                 break;
             case 'terendah':
-                $allTestimonis = $allTestimonis->sortBy('rating')->values();
+                $googleReviews->orderBy('rating', 'asc');
                 break;
             case 'terbaru':
             default:
-                $allTestimonis = $allTestimonis->sortByDesc(function ($item) {
-                    return data_get($item, 'review_date') ?? now();
-                })->values();
+                $googleReviews->orderBy('review_date', 'desc');
                 break;
         }
 
-        // Manual pagination karena data adalah Collection
-        $perPage = 12;
-        $currentPage = request()->get('page', 1);
-        $offset = ($currentPage - 1) * $perPage;
-        $paginatedTestimonis = $allTestimonis->slice($offset, $perPage)->values();
+        // Jika bukan "show all", batasi hanya 6 review
+        if (!$showAll) {
+            $googleReviews->take(6);
+        }
 
-        $testimonis = new \Illuminate\Pagination\LengthAwarePaginator(
-            $paginatedTestimonis,
-            $allTestimonis->count(),
-            $perPage,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $googleReviewsData = $googleReviews->get();
 
-        return view('frontend.testimoni.index', compact('testimonis', 'sort'));
+        // Konversi ke format yang sama dengan testimoni lama untuk konsistensi view
+        $allTestimonis = $googleReviewsData->map(function ($review) {
+            return [
+                'id' => $review->id,
+                'author_name' => $review->author_name,
+                'text' => $review->review_text,
+                'rating' => (int) $review->rating,
+                'profile_photo_url' => $review->profile_photo,
+                'source' => 'Google',
+                'review_date' => $review->review_date,
+                'relative_time_description' => $review->review_date
+                    ? $review->review_date->diffForHumans()
+                    : 'Baru saja',
+                'sentiment' => $review->sentiment,
+            ];
+        })->values();
+
+        // Jika show=all, gunakan pagination, jika tidak tampilkan langsung 6
+        if ($showAll) {
+            $perPage = 12;
+            $currentPage = request()->get('page', 1);
+            $offset = ($currentPage - 1) * $perPage;
+            $paginatedTestimonis = $allTestimonis->slice($offset, $perPage)->values();
+
+            $testimonis = new \Illuminate\Pagination\LengthAwarePaginator(
+                $paginatedTestimonis,
+                $allTestimonis->count(),
+                $perPage,
+                $currentPage,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
+        } else {
+            $testimonis = $allTestimonis;
+        }
+
+        return view('frontend.testimoni.index', compact('testimonis', 'sort', 'showAll'));
     }
 
     public function create()

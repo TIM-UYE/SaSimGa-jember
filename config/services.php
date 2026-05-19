@@ -50,4 +50,26 @@ return [
         'group_id' => env('FONNTE_GROUP_ID'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google Reviews Scraper (Apify)
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for scraping Google Maps reviews using Apify's
+    | Google Maps Scraper actor: compass~crawler-google-places
+    |
+    */
+
+    'google_reviews' => [
+        'apify_token' => env('APIFY_TOKEN'),
+        'actor_id' => env('APIFY_ACTOR_ID', 'compass~crawler-google-places'),
+        'search_url' => env('GOOGLE_MAPS_SEARCH_URL', ''),
+        'place_ids' => env('GOOGLE_PLACE_ID') ? [env('GOOGLE_PLACE_ID')] : [],
+        'max_reviews' => env('GOOGLE_REVIEWS_MAX', 50),
+        'timeout' => env('GOOGLE_REVIEWS_TIMEOUT', 120),
+        'max_wait_seconds' => env('GOOGLE_REVIEWS_MAX_WAIT', 300),
+        'wait_interval' => env('GOOGLE_REVIEWS_WAIT_INTERVAL', 10),
+        'place_name' => env('GOOGLE_PLACE_NAME', ''),
+    ],
+
 ];

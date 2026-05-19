@@ -380,7 +380,7 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::get('/menu/{menu}', [MenuController::class, 'show'])
                 ->name('menu.show');
-            
+
             /*
             |--------------------------------------------------------------------------
             | STOK BAHAN CRUD
@@ -389,7 +389,7 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::resource('stok', StokController::class)
                 ->except(['show']);
-            
+
             Route::get('stok-log', [StokLogController::class, 'index'])
                 ->name('stok-log.index');
 
@@ -444,6 +444,47 @@ Route::middleware(['auth', 'role:admin,manager'])
             ->name('reservasi.destroy');
 
         Route::resource('meja', MejaController::class)->only(['index', 'store', 'destroy']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | GOOGLE REVIEWS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::prefix('google-reviews')
+            ->name('google-reviews.')
+            ->group(function () {
+                Route::get('/', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'index'])
+                    ->name('index');
+
+                Route::post('/scrape-all', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'syncScrapeAll'])
+                    ->name('scrape-all');
+
+                Route::post('/update-data', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'syncUpdateData'])
+                    ->name('update-data');
+
+                Route::post('/sync-async', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'syncAsync'])
+                    ->name('sync-async');
+
+                Route::get('/check-status', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'checkStatus'])
+                    ->name('check-status');
+
+                // API endpoints for AJAX
+                Route::get('/api/reviews', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'apiReviews'])
+                    ->name('api.reviews');
+
+                Route::get('/api/stats', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'apiStats'])
+                    ->name('api.stats');
+
+                Route::get('/api/recent', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'apiRecentReviews'])
+                    ->name('api.recent');
+
+                Route::get('/api/sync-status', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'apiSyncStatus'])
+                    ->name('api.sync-status');
+
+                Route::delete('/{id}', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'destroy'])
+                    ->name('destroy');
+            });
     });
 
 

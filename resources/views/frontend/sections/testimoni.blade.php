@@ -26,63 +26,58 @@
         </div>
 
         @php
-            $displayTestimonials = collect($testimonis ?? [])->whenEmpty(function () {
-                return collect([
-                    [
-                        'author_name' => 'Dema',
-                        'text' => 'Innal fatta man yakuulu haanadaa liasa man yakuulu kaana abii',
-                        'rating' => 5,
-                        'profile_photo_url' => asset('images/menu/sate.jpg'),
-                        'relative_time_description' => '1 hari lalu',
-                        'source' => 'Manual',
-                    ],
-                    [
-                        'author_name' => 'Aisyah',
-                        'text' => 'Pelayanan cepat dan rasa makanannya sangat enak. Recommended!',
-                        'rating' => 5,
-                        'profile_photo_url' => asset('images/menu/nasi-kebuli.jpg'),
-                        'relative_time_description' => '2 hari lalu',
-                        'source' => 'Manual',
-                    ],
-                    [
-                        'author_name' => 'Rudi',
-                        'text' => 'Tempat nyaman, harga terjangkau, dan suasana sangat cocok untuk keluarga.',
-                        'rating' => 5,
-                        'profile_photo_url' => asset('images/menu/food-plate.jpg'),
-                        'relative_time_description' => '3 hari lalu',
-                        'source' => 'Manual',
-                    ],
-                ]);
-            });
+            $hasReviews = collect($testimonis ?? [])->isNotEmpty();
         @endphp
 
         {{-- CARD GRID --}}
         <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
 
-            @foreach ($displayTestimonials as $index => $testimoni)
+            @forelse ($testimonis as $index => $testimoni)
                 <div class="group relative bg-zinc-900/70 backdrop-blur-sm border border-white/5 rounded-3xl overflow-hidden hover:border-orange-500/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 reveal"
                     style="animation-delay: {{ $index * 0.1 }}s">
 
-                    {{-- IMAGE --}}
-                    <div class="relative h-52 overflow-hidden">
+                    {{-- IMAGE / AVATAR --}}
+                    <div class="relative h-52 overflow-hidden flex items-center justify-center bg-zinc-800">
 
-                        <img src="{{ data_get($testimoni, 'profile_photo_url', asset('images/menu/sate.jpg')) }}"
-                            class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110">
+                        @php
+                            $photoUrl = data_get($testimoni, 'profile_photo_url', '');
+                            $imgSrc = $photoUrl ?: asset('images/avatar-default.png');
+                            $isGooglePhoto = str_contains($photoUrl, 'googleusercontent.com') || str_contains($photoUrl, 'ggpht.com');
+                        @endphp
+
+                        @if($photoUrl)
+                            <img src="{{ $imgSrc }}"
+                                onerror="this.parentElement.innerHTML = '<div class=\'flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-orange-600\'><i class=\'fas fa-user text-5xl text-white/60\'></i></div>'"
+                                class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                                alt="{{ data_get($testimoni, 'author_name', 'User') }}">
+                        @else
+                            <div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-orange-400 to-orange-600">
+                                <i class="fas fa-user text-5xl text-white/60"></i>
+                            </div>
+                        @endif
 
                         {{-- OVERLAY --}}
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent">
                         </div>
 
                         {{-- SOURCE --}}
-                        <div class="absolute top-4 right-4">
-
-                            <span
-                                class="px-3 py-1 rounded-full bg-orange-500/90 backdrop-blur-sm text-white text-xs font-semibold">
-
-                                {{ data_get($testimoni, 'source', 'Manual') }}
-
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            @if(data_get($testimoni, 'sentiment'))
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm
+                                    {{ data_get($testimoni, 'sentiment') === 'positif' ? 'bg-emerald-500/90 text-white' : '' }}
+                                    {{ data_get($testimoni, 'sentiment') === 'netral' ? 'bg-zinc-500/90 text-white' : '' }}
+                                    {{ data_get($testimoni, 'sentiment') === 'negatif' ? 'bg-red-500/90 text-white' : '' }}">
+                                    <i class="fas
+                                        {{ data_get($testimoni, 'sentiment') === 'positif' ? 'fa-smile' : '' }}
+                                        {{ data_get($testimoni, 'sentiment') === 'netral' ? 'fa-meh' : '' }}
+                                        {{ data_get($testimoni, 'sentiment') === 'negatif' ? 'fa-frown' : '' }}
+                                    mr-1"></i>
+                                    {{ data_get($testimoni, 'sentiment') }}
+                                </span>
+                            @endif
+                            <span class="px-3 py-1 rounded-full bg-orange-500/90 backdrop-blur-sm text-white text-xs font-semibold">
+                                Google
                             </span>
-
                         </div>
 
                     </div>
@@ -137,7 +132,15 @@
                     </div>
 
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-full text-center py-12">
+                    <div class="mx-auto max-w-sm">
+                        <i class="fab fa-google mb-4 text-5xl text-zinc-600"></i>
+                        <p class="text-zinc-400 mb-2">Belum ada testimoni dari Google.</p>
+                        <p class="text-zinc-500 text-sm">Testimoni akan muncul setelah Admin melakukan scraping Google Reviews.</p>
+                    </div>
+                </div>
+            @endforelse
 
         </div>
 
