@@ -94,28 +94,34 @@
         <div class="flex flex-wrap gap-2">
             {{-- Tombol Scrape All: Ambil SEMUA rating & review --}}
             <button onclick="triggerScrapeAll()" id="scrapeAllBtn"
-                    class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
+                class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-orange-600 shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
+
                 <div class="flex items-center justify-center h-8 w-8 rounded-lg bg-white text-orange-600 mr-2">
                     <i id="scrapeAllIcon" class="fas fa-database text-xs"></i>
                 </div>
+
                 <span id="scrapeAllText">Scraping (Ambil Semua Rating)</span>
             </button>
 
             {{-- Tombol Update Data: Hanya review TERBARU --}}
             <button onclick="triggerUpdateData()" id="updateDataBtn"
-                    class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
+                class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-orange-600 shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
+
                 <div class="flex items-center justify-center h-8 w-8 rounded-lg bg-white text-orange-600 mr-2">
                     <i id="updateDataIcon" class="fas fa-cloud-upload-alt text-xs"></i>
                 </div>
-                <span id="updateDataText">Update Data Scraping (Review Terbaru)</span>
+
+                <span id="updateDataText">Update Data (Update Review Terbaru Saja)</span>
             </button>
 
             <button onclick="refreshStats()"
-                    class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg">
+                class="group inline-flex items-center rounded-xl bg-linear-to-r from-orange-400 to-orange-600 px-5 py-2.5 text-sm font-bold text-orange-600 shadow-md shadow-orange-200/50 transition-all hover:from-orange-500 hover:to-orange-700 hover:shadow-lg">
+
                 <div class="flex items-center justify-center h-8 w-8 rounded-lg bg-white text-orange-600 mr-2">
                     <i class="fas fa-refresh text-xs"></i>
                 </div>
-                Refresh
+
+                Refresh Data Review
             </button>
         </div>
     </div>
