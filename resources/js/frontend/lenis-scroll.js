@@ -8,6 +8,8 @@ import Lenis from 'lenis';
         wheelMultiplier: 0.9,
     });
 
+    window.lenis = lenis;
+
     function raf(time) {
         lenis.raf(time);
 

@@ -5,6 +5,7 @@ import './frontend/lenis-scroll';
 import './frontend/reveal';
 import './frontend/video-parallax';
 import './frontend/navbar-scroll';
+import './frontend/scroll-to-top';
 
 
 // =========================
