@@ -25,7 +25,7 @@
 
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
 
-                    Sate Simpang Tiga
+                    {{ __('frontend.footer.brand.badge') }}
 
                 </span>
 
@@ -33,10 +33,10 @@
                 {{-- TITLE --}}
                 <h2 class="text-3xl font-bold text-white leading-tight mb-5">
 
-                    Cita Rasa Autentik
+                    {{ __('frontend.footer.brand.title_white') }}
 
                     <span class="block text-black">
-                        Khas Indonesia
+                        {{ __('frontend.footer.brand.title_dark') }}
                     </span>
 
                 </h2>
@@ -45,9 +45,7 @@
                 {{-- DESC --}}
                 <p class="text-black/80 leading-relaxed text-sm max-w-sm">
 
-                    Menghadirkan sate khas Indonesia dengan bahan segar,
-                    bumbu autentik, dan pengalaman makan yang hangat
-                    serta berkesan.
+                    {{ __('frontend.footer.brand.description') }}
 
                 </p>
 
@@ -59,7 +57,7 @@
             <div>
 
                 <h3 class="text-xl font-bold text-white mb-5">
-                    Lokasi Kami
+                    {{ __('frontend.footer.location.title') }}
                 </h3>
 
                 <div class="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
@@ -80,53 +78,45 @@
             <div>
 
                 <h3 class="text-xl font-bold text-white mb-5">
-                    Information
+                    {{ __('frontend.footer.information.title') }}
                 </h3>
 
                 <ul class="space-y-4 text-sm">
 
                     <li>
-
                         <a href="{{ route('frontend.faq') }}"
                             class="text-black/80 hover:text-white transition-all duration-300">
 
-                            FAQ'S
+                            {{ __('frontend.footer.information.faq') }}
 
                         </a>
-
                     </li>
 
                     <li>
-
                         <a href="{{ route('frontend.about') }}"
                             class="text-black/80 hover:text-white transition-all duration-300">
 
-                            About
+                            {{ __('frontend.footer.information.about') }}
 
                         </a>
-
                     </li>
 
                     <li>
-
                         <a href="{{ route('frontend.privacy') }}"
                             class="text-black/80 hover:text-white transition-all duration-300">
 
-                            Privacy Policy
+                            {{ __('frontend.footer.information.privacy') }}
 
                         </a>
-
                     </li>
 
                     <li>
-
                         <a href="{{ route('frontend.terms') }}"
                             class="text-black/80 hover:text-white transition-all duration-300">
 
-                            Terms & Conditions
+                            {{ __('frontend.footer.information.terms') }}
 
                         </a>
-
                     </li>
 
                 </ul>
@@ -139,7 +129,7 @@
             <div>
 
                 <h3 class="text-xl font-bold text-white mb-5">
-                    Contact Us
+                    {{ __('frontend.footer.contact.title') }}
                 </h3>
 
                 <div class="space-y-5 text-sm">
@@ -157,10 +147,7 @@
 
                             <p class="text-black/80 leading-relaxed">
 
-                                Jl. Otto Iskandardinata No.2,
-                                Karang Miuwo, Mangli,
-                                Kec. Kaliwates, Kabupaten Jember,
-                                Jawa Timur 68131
+                                {{ __('frontend.footer.contact.address') }}
 
                             </p>
 
@@ -227,7 +214,7 @@
 
             {{-- COPYRIGHT --}}
             <p>
-                © 2026 Sate Simpang Tiga. All Rights Reserved.
+                {{ __('frontend.footer.copyright', ['year' => date('Y')]) }}
             </p>
 
 

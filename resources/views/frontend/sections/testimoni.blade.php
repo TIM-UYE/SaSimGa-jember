@@ -8,20 +8,23 @@
             <span
                 class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium tracking-wider uppercase mb-5 ring-1 ring-orange-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-                Testimoni
+                {{ __('frontend.testimoni.pre-title') }}
             </span>
 
             <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
                 <span class="text-white">
-                    Apa Kata
+                    {{ __('frontend.testimoni.white-title') }}
+
                 </span>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
-                    Mereka
+                    {{ __('frontend.testimoni.orange-title') }}
+
                 </span>
             </h2>
 
             <p class="text-zinc-400 text-base leading-relaxed">
-                Pengalaman para PEcinta Rajanya Sate yang telah menikmati cita rasa autentik dari Sate Simpangtiga.
+                {{ __('frontend.testimoni.description') }}
+
             </p>
         </div>
 
@@ -148,7 +151,8 @@
         <div class="flex justify-center mt-12">
             <a href="{{ route('frontend.testimoni.index') }}"
                 class="inline-flex items-center gap-3 px-8 py-3.5 bg-white text-black rounded-2xl font-semibold text-sm tracking-wider hover:bg-orange-500 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95">
-                <span>LIHAT SEMUA TESTIMONI</span>
+                <span> {{ __('frontend.menu.more_button') }}
+                </span>
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>

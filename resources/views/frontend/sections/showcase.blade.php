@@ -48,7 +48,7 @@
                 font-bold leading-[0.95] tracking-tight">
 
                 <span class="text-white">
-                    Authentic
+                    {{ __('frontend.showcase.white') }}
                 </span>
                 <span
                     class="text-transparent bg-clip-text
@@ -57,7 +57,7 @@
                     via-orange-500
                     to-amber-500">
 
-                    Culinary Experience
+                    {{ __('frontend.showcase.orange') }}
 
                 </span>
 

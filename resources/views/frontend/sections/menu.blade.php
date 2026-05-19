@@ -13,21 +13,21 @@
             <span
                 class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium tracking-wider uppercase mb-5 ring-1 ring-orange-500/20">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-                Best Menu
+                {{ __('frontend.menu.pre-title') }}
             </span>
             <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
-                <span class="text-white">Semua</span>
+                <span class="text-white">{{ __('frontend.menu.white-title') }}</span>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
-                    Menu
+                    {{ __('frontend.menu.orange-title') }}
                 </span>
             </h2>
             <p class="text-zinc-400 text-base leading-relaxed">
-                Nikmati berbagai pilihan menu terbaik dari Simpang Tiga.
+                {{ __('frontend.menu.description') }}
             </p>
             <div class="mt-8">
                 <a href="{{ route('frontend.menu') }}"
                     class="inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-full font-semibold transition-all hover:scale-105">
-                    <i class="fas fa-utensils mr-2"></i>Lihat Semua Menu
+                    <i class="fas fa-utensils mr-2"></i>{{ __('frontend.menu.menu_button') }}
                 </a>
             </div>
         </div>
@@ -89,12 +89,12 @@
                                     <span
                                         class="px-3 py-1 bg-green-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold flex items-center gap-1">
                                         <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                                        Tersedia
+                                        {{ __('frontend.menu.available') }}
                                     </span>
                                 @else
                                     <span
                                         class="px-3 py-1 bg-red-500/90 backdrop-blur-sm rounded-full text-xs text-white font-semibold">
-                                        Habis
+                                        {{ __('frontend.menu.empty') }}
                                     </span>
                                 @endif
                             </div>
@@ -139,7 +139,7 @@
                         <i class="fas fa-utensils text-4xl text-gray-600"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-400 mb-2">Belum Ada Menu</h3>
-                    <p class="text-gray-500">Menu akan segera tersedia</p>
+                    <p class="text-gray-500">{{ __('frontend.menu.available_soon') }}</p>
                 </div>
             @endforelse
         </div>
@@ -149,7 +149,7 @@
                 <a href="{{ route('frontend.menu') }}"
                     class="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold transition-all hover:scale-105 shadow-lg shadow-orange-500/20">
 
-                    <span>Lihat Selengkapnya</span>
+                    <span> {{ __('frontend.menu.more_button') }} </span>
 
                     <i class="fas fa-arrow-right"></i>
 
@@ -578,7 +578,7 @@
                 statusHtml = `
                     <div class="flex items-center gap-2">
                         <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-green-400 font-semibold">Tersedia</span>
+                        <span class="text-green-400 font-semibold">{{ __('frontend.menu.available') }}</span>
                         ${calculatedStock !== null ? `<span class="text-gray-500 text-sm ml-2">(${calculatedStock} porsi)</span>` : ''}
                     </div>`;
             } else {

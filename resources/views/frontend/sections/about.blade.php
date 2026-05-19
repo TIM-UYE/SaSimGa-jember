@@ -5,16 +5,16 @@
         <span
             class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium tracking-wider uppercase mb-5 ring-1 ring-orange-500/20">
             <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-            Sate Simpang Tiga
+            {{ __('frontend.about-header.pre-title') }}
         </span>
         <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
-            <span class="text-white">Tentang</span>
+            <span class="text-white">{{ __('frontend.about-header.white-title') }}</span>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
-                Kami
+                {{ __('frontend.about-header.orange-title') }}
             </span>
         </h2>
         <p class="text-zinc-400 text-base leading-relaxed">
-            Mengenal lebih dekat cita rasa autentik khas Sate Simpang Tiga.
+            {{ __('frontend.about-header.sub-title') }}
         </p>
     </div>
 
@@ -35,10 +35,10 @@
             <div
                 class="absolute bottom-6 left-6 bg-black/70 backdrop-blur-md border border-white/10 rounded-2xl px-5 py-4">
                 <p class="text-white text-lg font-semibold">
-                    Sejak 1975
+                    {{ __('frontend.about.bold-image-title') }}
                 </p>
                 <p class="text-zinc-400 text-sm">
-                    Menyajikan cita rasa terbaik
+                    {{ __('frontend.about.medium-image-title') }}
                 </p>
             </div>
         </div>
@@ -50,26 +50,24 @@
             <span
                 class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-xs font-medium tracking-[0.2em] uppercase ring-1 ring-orange-500/20 mb-6">
                 <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-                Rajanya Sate
+                {{ __('frontend.about.pre-title') }}
             </span>
             
             {{-- TITLE --}}
             <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
                 <span class="text-white">
-                    Cita Rasa Autentik
+                    {{ __('frontend.about.white-title') }}
                 </span>
                 <br>
                 <span
                     class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500">
-                    Sate Simpang Tiga
+                    {{ __('frontend.about.orange-title') }}
                 </span>
             </h2>
 
             {{-- DESCRIPTION --}}
             <p class="text-zinc-400 mt-6 text-base leading-relaxed max-w-xl">
-                Menghadirkan sate khas Indonesia dengan bahan segar, bumbu autentik,
-                dan aroma bakaran arang yang khas untuk menciptakan pengalaman makan
-                yang hangat, lezat, dan berkesan di setiap sajian.
+                {{ __('frontend.about.description') }}
             </p>
 
             {{-- FEATURES --}}
@@ -81,10 +79,10 @@
                         <i class="fas fa-fire text-orange-400"></i>
                     </div>
                     <h3 class="text-white font-medium mb-2">
-                        Dibakar Arang
+                        {{ __('frontend.about.title-card1') }}
                     </h3>
                     <p class="text-zinc-400 text-sm">
-                        Aroma khas bakaran tradisional yang menggugah selera.
+                        {{ __('frontend.about.description-card1') }}
                     </p>
                 </div>
 
@@ -94,10 +92,10 @@
                         <i class="fas fa-utensils text-orange-400"></i>
                     </div>
                     <h3 class="text-white font-medium mb-2">
-                        Bahan Premium
+                        {{ __('frontend.about.title-card2') }}
                     </h3>
                     <p class="text-zinc-400 text-sm">
-                        Menggunakan bahan segar dan bumbu pilihan terbaik.
+                        {{ __('frontend.about.description-card2') }}
                     </p>
                 </div>
             </div>

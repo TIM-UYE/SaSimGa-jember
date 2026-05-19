@@ -89,7 +89,7 @@
                     tracking-tight">
 
                     <span class="headline-white inline-block text-white pb-1">
-                        Authentic
+                        {{ __('frontend.orbit.white') }}
                     </span>
 
                     <span
@@ -100,7 +100,7 @@
                         via-orange-500
                         to-amber-500">
 
-                        Culinary Experience
+                        {{ __('frontend.orbit.orange') }}
 
                     </span>
 
@@ -124,7 +124,7 @@
             class="text-white text-lg md:text-xl font-semibold leading-tight
             drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
 
-            Suasana hangat dalam setiap sajian
+            {{ __('frontend.orbit.subtitle') }}
 
         </p>
 
@@ -133,8 +133,7 @@
             max-w-2xl mx-auto
             drop-shadow-[0_4px_18px_rgba(0,0,0,0.8)]">
 
-            Nikmati momen kebersamaan dengan cita rasa autentik,
-            aroma bakaran arang, dan pengalaman kuliner khas Sate Simpang Tiga.
+            {{ __('frontend.orbit.description') }}
 
         </p>
 
