@@ -13,12 +13,7 @@
     @stack('preloads')
 
     {{-- GLOBAL ASSET --}}
-    @vite([
-        'resources/css/app.css',
-        'resources/css/google-translate.css',
-        'resources/js/app.js',
-        'resources/js/frontend/google-translate.js'
-    ])
+    @vite(['resources/css/app.css', 'resources/css/google-translate.css', 'resources/js/app.js', 'resources/js/frontend/google-translate.js'])
 
     {{-- PAGE / SECTION SPECIFIC STYLE --}}
     @stack('styles')
@@ -42,18 +37,13 @@
 
     {{-- LOADER --}}
     <div id="loader" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
-        <img src="{{ asset('images/logo/logo.png') }}"
-            alt="Loader"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            data-critical-asset
-            class="loader-image w-28 md:w-36">
+        <img src="{{ asset('images/logo/logo.png') }}" alt="Loader" loading="eager" fetchpriority="high"
+            decoding="async" data-critical-asset class="loader-image w-28 md:w-36">
     </div>
 
     {{-- HIDDEN GOOGLE TRANSLATE WIDGET --}}
-    <div id="google_translate_element"></div>
-
+    <div id="google_translate_element" style="display: none;"></div>
+    
     @include('sweetalert::alert')
 
     @include('frontend.sections.navbar')

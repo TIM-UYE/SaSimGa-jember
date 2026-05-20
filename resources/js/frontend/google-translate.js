@@ -1,55 +1,87 @@
 (function () {
     const SOURCE_LANG = 'id';
     const LANG_STORAGE_KEY = 'selectedLanguage';
+    const GOOGLE_COOKIE_NAME = 'googtrans';
+    const RELOAD_FLAG_KEY = 'googleTranslateReloadedOnce';
 
-    function getRootDomain() {
+    function isLocalhost(hostname) {
+        return (
+            hostname === 'localhost' || hostname === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(hostname)
+        );
+    }
+
+    function getCookieDomains() {
         const hostname = window.location.hostname;
+        const domains = [null];
 
-        if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.split('.').length <= 1) {
-            return null;
+        if (!isLocalhost(hostname)) {
+            domains.push(hostname);
+
+            const parts = hostname.split('.');
+
+            if (parts.length >= 2) {
+                domains.push('.' + parts.slice(-2).join('.'));
+            }
         }
 
-        return '.' + hostname
-            .split('.')
-            .slice(-2)
-            .join('.');
+        return [...new Set(domains)];
     }
 
-    function setCookie(name, value) {
-        document.cookie = `${name}=${value}; path=/`;
+    function setCookie(name, value, domain = null) {
+        let cookie = `${name}=${value}; path=/; SameSite=Lax`;
 
-        const rootDomain = getRootDomain();
-
-        if (rootDomain) {
-            document.cookie = `${name}=${value}; path=/; domain=${rootDomain}`;
+        if (domain) {
+            cookie += `; domain=${domain}`;
         }
+
+        document.cookie = cookie;
     }
 
-    function deleteCookie(name) {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    function deleteCookie(name, domain = null) {
+        let cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 
-        const rootDomain = getRootDomain();
-
-        if (rootDomain) {
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${rootDomain}`;
+        if (domain) {
+            cookie += ` domain=${domain};`;
         }
+
+        document.cookie = cookie;
     }
 
-    function changeLanguage(lang) {
-        if (!lang) 
-            return;
-        
-        localStorage.setItem(LANG_STORAGE_KEY, lang);
+    function clearGoogleTranslateCookies() {
+        getCookieDomains().forEach(function (domain) {
+            deleteCookie(GOOGLE_COOKIE_NAME, domain);
+        });
+    }
 
-        if (lang === SOURCE_LANG) {
-            deleteCookie('googtrans');
-        } else {
-            setCookie('googtrans', `/${SOURCE_LANG}/${lang}`);
+    function clearGoogleTranslateState() {
+        localStorage.removeItem(LANG_STORAGE_KEY);
+        sessionStorage.removeItem(RELOAD_FLAG_KEY);
+        clearGoogleTranslateCookies();
+    }
+
+    function setGoogleTranslateCookie(lang) {
+        const value = `/${SOURCE_LANG}/${lang}`;
+
+        getCookieDomains().forEach(function (domain) {
+            setCookie(GOOGLE_COOKIE_NAME, value, domain);
+        });
+    }
+
+    function getGoogleCombo() {
+        return document.querySelector('.goog-te-combo');
+    }
+
+    function triggerGoogleTranslate(lang) {
+        const combo = getGoogleCombo();
+
+        if (!combo) {
+            return false;
         }
 
-        window
-            .location
-            .reload();
+        combo.value = lang;
+        combo.dispatchEvent(new Event('change', {bubbles: true}));
+
+        return true;
     }
 
     function updateLanguageUI(lang) {
@@ -81,6 +113,65 @@
             });
     }
 
+    function applyLanguage(lang, reloadOnFail = false) {
+        if (!lang || lang === SOURCE_LANG) {
+            return;
+        }
+
+        setGoogleTranslateCookie(lang);
+
+        let attempt = 0;
+
+        const interval = setInterval(function () {
+            const success = triggerGoogleTranslate(lang);
+
+            if (success) {
+                clearInterval(interval);
+                sessionStorage.removeItem(RELOAD_FLAG_KEY);
+                return;
+            }
+
+            attempt++;
+
+            if (attempt >= 30) {
+                clearInterval(interval);
+
+                if (reloadOnFail && sessionStorage.getItem(RELOAD_FLAG_KEY) !== lang) {
+                    sessionStorage.setItem(RELOAD_FLAG_KEY, lang);
+                    location.reload();
+                }
+            }
+        }, 250);
+    }
+
+    function changeLanguage(lang) {
+        if (!lang) {
+            return;
+        }
+
+        closeAllDropdowns();
+
+        if (lang === SOURCE_LANG) {
+            resetLanguage();
+            return;
+        }
+
+        clearGoogleTranslateCookies();
+
+        localStorage.setItem(LANG_STORAGE_KEY, lang);
+        sessionStorage.removeItem(RELOAD_FLAG_KEY);
+
+        updateLanguageUI(lang);
+        setGoogleTranslateCookie(lang);
+        applyLanguage(lang, true);
+    }
+
+    function resetLanguage() {
+        clearGoogleTranslateState();
+        updateLanguageUI(SOURCE_LANG);
+        location.reload();
+    }
+
     function initLanguageDropdown() {
         const savedLanguage = localStorage.getItem(LANG_STORAGE_KEY) || SOURCE_LANG;
 
@@ -92,9 +183,10 @@
                 const toggle = dropdown.querySelector('[data-language-toggle]');
                 const items = dropdown.querySelectorAll('[data-lang]');
 
-                if (!toggle) 
+                if (!toggle) {
                     return;
-                
+                }
+
                 toggle.addEventListener('click', function (event) {
                     event.stopPropagation();
 
@@ -135,13 +227,23 @@
                 includedLanguages: 'id,en,ja,ko,ar',
                 autoDisplay: false
             }, 'google_translate_element');
+
+        const savedLanguage = localStorage.getItem(LANG_STORAGE_KEY);
+
+        if (savedLanguage && savedLanguage !== SOURCE_LANG) {
+            setTimeout(function () {
+                applyLanguage(savedLanguage, false);
+            }, 500);
+        }
     };
 
     function loadGoogleTranslateScript() {
-        if (document.getElementById('google-translate-script')) 
+        if (document.getElementById('google-translate-script')) {
             return;
-        
+        }
+
         const script = document.createElement('script');
+
         script.id = 'google-translate-script';
         script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementI' +
                 'nit';
@@ -156,4 +258,7 @@
         initLanguageDropdown();
         loadGoogleTranslateScript();
     });
+
+    window.changeLanguage = changeLanguage;
+    window.resetLanguage = resetLanguage;
 })();

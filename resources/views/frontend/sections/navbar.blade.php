@@ -87,13 +87,13 @@
                         <span class="language-dropdown__name">English</span>
                     </button>
 
-                    <button type="button" class="language-dropdown__item" data-lang="ja" data-label="JP">
-                        <span class="language-dropdown__code">JP</span>
+                    <button type="button" class="language-dropdown__item" data-lang="ja" data-label="JA">
+                        <span class="language-dropdown__code">JA</span>
                         <span class="language-dropdown__name">Japanese</span>
                     </button>
 
-                    <button type="button" class="language-dropdown__item" data-lang="ko" data-label="KR">
-                        <span class="language-dropdown__code">KR</span>
+                    <button type="button" class="language-dropdown__item" data-lang="ko" data-label="KO">
+                        <span class="language-dropdown__code">KO</span>
                         <span class="language-dropdown__name">Korean</span>
                     </button>
 
