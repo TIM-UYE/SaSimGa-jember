@@ -424,7 +424,7 @@ Route::get('/laporan/orders/xlsx',
 
 Route::get('/laporan/orders/csv',
     [LaporanController::class, 'exportOrdersCsv'])
-    ->name('laporan.orders.csv');   
+    ->name('laporan.orders.csv');
             /*
             |--------------------------------------------------------------------------
             | KATEGORI CRUD
@@ -455,6 +455,36 @@ Route::get('/laporan/orders/csv',
             Route::resource('user', UserController::class);
         });
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | AI PREDIKSI PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/prediksi', [\App\Http\Controllers\Admin\PredictionController::class, 'index'])
+            ->name('prediksi.index');
+
+        Route::post('/prediksi/run', [\App\Http\Controllers\Admin\PredictionController::class, 'runPrediction'])
+            ->name('prediksi.run');
+
+        Route::get('/prediksi/ai-status', [\App\Http\Controllers\Admin\PredictionController::class, 'checkAiStatus'])
+            ->name('prediksi.ai-status');
+
+        /*
+        |--------------------------------------------------------------------------
+        | AI PREDIKSI PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/prediksi', [\App\Http\Controllers\Admin\PredictionController::class, 'index'])
+            ->name('prediksi.index');
+
+        Route::post('/prediksi/run', [\App\Http\Controllers\Admin\PredictionController::class, 'runPrediction'])
+            ->name('prediksi.run');
+
+        Route::get('/prediksi/ai-status', [\App\Http\Controllers\Admin\PredictionController::class, 'checkAiStatus'])
+            ->name('prediksi.ai-status');
 
         /*
         |--------------------------------------------------------------------------
