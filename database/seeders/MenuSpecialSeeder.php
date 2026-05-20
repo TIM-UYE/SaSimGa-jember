@@ -55,11 +55,21 @@ class MenuSpecialSeeder extends Seeder
             unset($specialData['items']);
             $specialData['slug'] = \Illuminate\Support\Str::slug($specialData['title']);
 
-            $special = MenuSpecial::create($specialData);
+            $special = MenuSpecial::firstOrCreate(
+                ['slug' => $specialData['slug']],
+                $specialData
+            );
 
             foreach ($items as $item) {
                 $item['menu_special_id'] = $special->id;
-                MenuSpecialItem::create($item);
+
+        MenuSpecialItem::firstOrCreate(
+            [
+                'menu_special_id' => $special->id,
+                'name' => $item['name']
+            ],
+            $item
+        );
             }
         }
     }
