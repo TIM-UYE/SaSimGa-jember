@@ -62,7 +62,47 @@
         {{-- RIGHT MENU --}}
         <div class="flex items-center gap-4">
 
-            <x-frontend::language-switch />
+            {{-- LANGUAGE TOGGLE --}}
+            <div class="language-dropdown notranslate" translate="no" data-language-dropdown>
+                <button type="button" class="language-dropdown__button" data-language-toggle>
+                    <span class="language-dropdown__globe">
+                        <i class="fa-solid fa-globe"></i>
+                    </span>
+
+                    <span class="language-dropdown__current" data-language-current>
+                        ID
+                    </span>
+
+                    <i class="fa-solid fa-chevron-down language-dropdown__chevron"></i>
+                </button>
+
+                <div class="language-dropdown__menu" data-language-menu>
+                    <button type="button" class="language-dropdown__item" data-lang="id" data-label="ID">
+                        <span class="language-dropdown__code">ID</span>
+                        <span class="language-dropdown__name">Indonesia</span>
+                    </button>
+
+                    <button type="button" class="language-dropdown__item" data-lang="en" data-label="EN">
+                        <span class="language-dropdown__code">EN</span>
+                        <span class="language-dropdown__name">English</span>
+                    </button>
+
+                    <button type="button" class="language-dropdown__item" data-lang="ja" data-label="JP">
+                        <span class="language-dropdown__code">JP</span>
+                        <span class="language-dropdown__name">Japanese</span>
+                    </button>
+
+                    <button type="button" class="language-dropdown__item" data-lang="ko" data-label="KR">
+                        <span class="language-dropdown__code">KR</span>
+                        <span class="language-dropdown__name">Korean</span>
+                    </button>
+
+                    <button type="button" class="language-dropdown__item" data-lang="ar" data-label="AR">
+                        <span class="language-dropdown__code">AR</span>
+                        <span class="language-dropdown__name">Arabic</span>
+                    </button>
+                </div>
+            </div>
 
             {{-- CART --}}
             <a href="{{ route('cart.index') }}" data-cart-icon
