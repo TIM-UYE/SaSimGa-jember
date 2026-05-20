@@ -44,6 +44,19 @@
             </a>
         </li>
 
+        <!-- AI PREDIKSI -->
+        @if (Auth::user()->role === 'manager')
+        <li>
+            <a href="{{ route('admin.prediksi.index') }}"
+               class="group flex items-center px-4 py-3 rounded-lg text-white font-semibold bg-linear-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 transition {{ request()->routeIs('admin.prediksi.*') ? 'bg-white/20' : '' }}">
+                <div class="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-orange-600 mr-3">
+                    <i class="fas fa-robot text-sm"></i>
+                </div>
+                AI Prediksi Stok
+            </a>
+        </li>
+        @endif
+{{--  --}}
         @if (Auth::user()->role === 'manager')
             <!-- MANAJEMEN MENU -->
             <li>
@@ -123,7 +136,7 @@
                 </a>
                 <a href="{{ route('admin.meja.index') }}"
                     class="flex items-center pl-12 pr-4 py-2.5 rounded-lg text-white font-semibold hover:bg-white/10 transition {{ request()->routeIs('admin.meja.*') ? 'bg-white/20' : '' }}">
-                    <i class="fas fa-chair mr-3 text-sm"></i> Meja
+            {{--  --}}        <i class="fas fa-chair mr-3 text-sm"></i> Meja
                 </a>
             </div>
         </li>
