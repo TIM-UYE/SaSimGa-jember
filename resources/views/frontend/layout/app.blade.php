@@ -42,8 +42,7 @@
     </div>
 
     {{-- HIDDEN GOOGLE TRANSLATE WIDGET --}}
-    <div id="google_translate_element" style="display: none;"></div>
-    
+    <div id="google_translate_element" class="google-translate-box notranslate" translate="no"></div>
     @include('sweetalert::alert')
 
     @include('frontend.sections.navbar')

@@ -140,6 +140,26 @@ iframe.skiptranslate {
     font-weight: 600;
 }
 
+.google-translate-box {
+    position: absolute;
+    top: 0;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+body {
+    top: 0 !important;
+}
+
 /* Mobile */
 @media (max-width: 640px) {
     .language-dropdown__button {

@@ -2,7 +2,6 @@
     const SOURCE_LANG = 'id';
     const LANG_STORAGE_KEY = 'selectedLanguage';
     const GOOGLE_COOKIE_NAME = 'googtrans';
-    const RELOAD_FLAG_KEY = 'googleTranslateReloadedOnce';
 
     function isLocalhost(hostname) {
         return (
@@ -16,6 +15,7 @@
 
         if (!isLocalhost(hostname)) {
             domains.push(hostname);
+            domains.push('.' + hostname);
 
             const parts = hostname.split('.');
 
@@ -53,35 +53,12 @@
         });
     }
 
-    function clearGoogleTranslateState() {
-        localStorage.removeItem(LANG_STORAGE_KEY);
-        sessionStorage.removeItem(RELOAD_FLAG_KEY);
-        clearGoogleTranslateCookies();
-    }
-
     function setGoogleTranslateCookie(lang) {
         const value = `/${SOURCE_LANG}/${lang}`;
 
         getCookieDomains().forEach(function (domain) {
             setCookie(GOOGLE_COOKIE_NAME, value, domain);
         });
-    }
-
-    function getGoogleCombo() {
-        return document.querySelector('.goog-te-combo');
-    }
-
-    function triggerGoogleTranslate(lang) {
-        const combo = getGoogleCombo();
-
-        if (!combo) {
-            return false;
-        }
-
-        combo.value = lang;
-        combo.dispatchEvent(new Event('change', {bubbles: true}));
-
-        return true;
     }
 
     function updateLanguageUI(lang) {
@@ -113,33 +90,43 @@
             });
     }
 
-    function applyLanguage(lang, reloadOnFail = false) {
-        if (!lang || lang === SOURCE_LANG) {
+    function triggerGoogleTranslate(lang) {
+        const combo = document.querySelector('.goog-te-combo');
+
+        if (!combo) {
+            return false;
+        }
+
+        combo.value = lang;
+        combo.dispatchEvent(new Event('change', {bubbles: true}));
+
+        return true;
+    }
+
+    function applySavedLanguage() {
+        const savedLanguage = localStorage.getItem(LANG_STORAGE_KEY);
+
+        if (!savedLanguage || savedLanguage === SOURCE_LANG) {
             return;
         }
 
-        setGoogleTranslateCookie(lang);
+        setGoogleTranslateCookie(savedLanguage);
 
         let attempt = 0;
 
         const interval = setInterval(function () {
-            const success = triggerGoogleTranslate(lang);
+            const success = triggerGoogleTranslate(savedLanguage);
 
             if (success) {
                 clearInterval(interval);
-                sessionStorage.removeItem(RELOAD_FLAG_KEY);
                 return;
             }
 
             attempt++;
 
-            if (attempt >= 30) {
+            if (attempt >= 40) {
                 clearInterval(interval);
-
-                if (reloadOnFail && sessionStorage.getItem(RELOAD_FLAG_KEY) !== lang) {
-                    sessionStorage.setItem(RELOAD_FLAG_KEY, lang);
-                    location.reload();
-                }
+                console.warn('Google Translate combo belum muncul.');
             }
         }, 250);
     }
@@ -159,16 +146,17 @@
         clearGoogleTranslateCookies();
 
         localStorage.setItem(LANG_STORAGE_KEY, lang);
-        sessionStorage.removeItem(RELOAD_FLAG_KEY);
-
-        updateLanguageUI(lang);
         setGoogleTranslateCookie(lang);
-        applyLanguage(lang, true);
+        updateLanguageUI(lang);
+
+        location.reload();
     }
 
     function resetLanguage() {
-        clearGoogleTranslateState();
+        localStorage.removeItem(LANG_STORAGE_KEY);
+        clearGoogleTranslateCookies();
         updateLanguageUI(SOURCE_LANG);
+
         location.reload();
     }
 
@@ -220,6 +208,11 @@
     }
 
     window.googleTranslateElementInit = function () {
+        if (!window.google || !google.translate) {
+            console.warn('Google Translate belum tersedia.');
+            return;
+        }
+
         new google
             .translate
             .TranslateElement({
@@ -228,13 +221,7 @@
                 autoDisplay: false
             }, 'google_translate_element');
 
-        const savedLanguage = localStorage.getItem(LANG_STORAGE_KEY);
-
-        if (savedLanguage && savedLanguage !== SOURCE_LANG) {
-            setTimeout(function () {
-                applyLanguage(savedLanguage, false);
-            }, 500);
-        }
+        setTimeout(applySavedLanguage, 700);
     };
 
     function loadGoogleTranslateScript() {
@@ -248,6 +235,13 @@
         script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementI' +
                 'nit';
         script.async = true;
+
+        script.onerror = function () {
+            console.error(
+                'Gagal load script Google Translate. Cek koneksi, adblock, atau browser privacy' +
+                '.'
+            );
+        };
 
         document
             .body
