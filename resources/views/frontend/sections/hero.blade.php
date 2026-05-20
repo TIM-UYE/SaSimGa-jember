@@ -22,7 +22,6 @@
 
     </div>
 
-
     {{-- CONTENT --}}
     <div class="relative z-20 container-main min-h-screen grid lg:grid-cols-2 items-center gap-10 pt-32 pb-20">
 
@@ -37,7 +36,7 @@
             {{-- TITLE --}}
             <h1
                 class="text-3xl sm:text-4xl md:text-5xl xl:text-6xl
-                font-bold leading-[1] tracking-tight reveal delay-200">
+                font-bold leading-[1] tracking-tight reveal delay-200 notranslate">
 
                 <span class="text-white">
                     SATE

@@ -1,35 +1,140 @@
-// sidenav transition-burger
+// ========================================================= ADMIN SIDEBAR HIDE
+// / SHOW + MAIN EXPAND
+// =========================================================
 
-var sidenav = document.querySelector("aside");
-var sidenav_trigger = document.querySelector("[sidenav-trigger]");
-var sidenav_close_button = document.querySelector("[sidenav-close]");
-var burger = sidenav_trigger.firstElementChild;
-var top_bread = burger.firstElementChild;
-var bottom_bread = burger.lastElementChild;
+(function () {
+    function initSidebarToggle() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('adminMain');
+        const toggle = document.getElementById('sidebarToggle');
 
-sidenav_trigger.addEventListener("click", function () {
-  if (page == "virtual-reality") {
-    sidenav.classList.toggle("xl:left-[18%]");
-  }
-  sidenav_close_button.classList.toggle("hidden");
-  sidenav.classList.toggle("translate-x-0");
-  sidenav.classList.toggle("shadow-soft-xl");
-  if (page == "rtl") {
-    top_bread.classList.toggle("-translate-x-[5px]");
-    bottom_bread.classList.toggle("-translate-x-[5px]");
-  } else {
-    top_bread.classList.toggle("translate-x-[5px]");
-    bottom_bread.classList.toggle("translate-x-[5px]");
-  }
-});
-sidenav_close_button.addEventListener("click", function () {
-  sidenav_trigger.click();
-});
+        if (!sidebar || !main || !toggle) {
+            console.warn('Sidebar toggle element not found', {sidebar, main, toggle});
 
-window.addEventListener("click", function (e) {
-  if (!sidenav.contains(e.target) && !sidenav_trigger.contains(e.target)) {
-    if (sidenav.classList.contains("translate-x-0")) {
-      sidenav_trigger.click();
+            return;
+        }
+
+        const STORAGE_KEY = 'adminSidebarOpen';
+
+        let savedState = localStorage.getItem(STORAGE_KEY);
+
+        let isOpen = savedState === null
+            ? true
+            : savedState === 'true';
+
+        function showSidebar() {
+            isOpen = true;
+
+            sidebar
+                .classList
+                .remove('sidebar-is-hidden');
+            document
+                .body
+                .classList
+                .remove('sidebar-closed');
+
+            toggle.setAttribute('aria-expanded', 'true');
+
+            localStorage.setItem(STORAGE_KEY, 'true');
+        }
+
+        function hideSidebar() {
+            isOpen = false;
+
+            sidebar
+                .classList
+                .add('sidebar-is-hidden');
+            document
+                .body
+                .classList
+                .add('sidebar-closed');
+
+            toggle.setAttribute('aria-expanded', 'false');
+
+            localStorage.setItem(STORAGE_KEY, 'false');
+        }
+
+        function toggleSidebar() {
+            if (isOpen) {
+                hideSidebar();
+            } else {
+                showSidebar();
+            }
+        }
+
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();
+            toggleSidebar();
+        });
+
+        if (isOpen) {
+            showSidebar();
+        } else {
+            hideSidebar();
+        }
     }
-  }
-});
+
+    window.toggleSection = function (btn) {
+        const submenu = btn.nextElementSibling;
+        const chevron = btn.querySelector('.fa-chevron-down');
+
+        if (!submenu) 
+            return;
+        
+        if (submenu.classList.contains('hidden')) {
+            submenu
+                .classList
+                .remove('hidden');
+
+            if (chevron) {
+                chevron.style.transform = 'rotate(180deg)';
+            }
+        } else {
+            submenu
+                .classList
+                .add('hidden');
+
+            if (chevron) {
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+    };
+
+    function openActiveSubmenus() {
+        const buttons = document.querySelectorAll(
+            '#sidebar button[onclick^="toggleSection"]'
+        );
+
+        buttons.forEach((button) => {
+            const submenu = button.nextElementSibling;
+
+            if (!submenu) 
+                return;
+            
+            const hasActive = submenu.querySelector('.bg-white\\/20');
+
+            if (hasActive) {
+                submenu
+                    .classList
+                    .remove('hidden');
+
+                const chevron = button.querySelector('.fa-chevron-down');
+
+                if (chevron) {
+                    chevron.style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+    }
+
+    function init() {
+        initSidebarToggle();
+        openActiveSubmenus();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();

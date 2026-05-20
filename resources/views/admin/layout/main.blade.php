@@ -25,7 +25,8 @@
 
     @include('admin.layout.sidebar')
 
-    <main class="ease-soft-in-out xl:ml-68.5 relative h-full max-h-screen rounded-xl transition-all duration-200">
+    <main id="adminMain"
+        class="ease-soft-in-out xl:ml-68.5 relative h-full max-h-screen rounded-xl transition-all duration-500">
         @include('admin.layout.navbar')
 
         <div class="w-full px-6 py-6 mx-auto">
