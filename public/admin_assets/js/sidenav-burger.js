@@ -1,5 +1,5 @@
-// ========================================================= ADMIN SIDEBAR HIDE
-// / SHOW + MAIN EXPAND
+// =========================================================
+// ADMIN SIDEBAR HIDE / SHOW + MAIN EXPAND
 // =========================================================
 
 (function () {
@@ -9,7 +9,11 @@
         const toggle = document.getElementById('sidebarToggle');
 
         if (!sidebar || !main || !toggle) {
-            console.warn('Sidebar toggle element not found', {sidebar, main, toggle});
+            console.warn('Sidebar toggle element not found', {
+                sidebar,
+                main,
+                toggle,
+            });
 
             return;
         }
@@ -25,13 +29,8 @@
         function showSidebar() {
             isOpen = true;
 
-            sidebar
-                .classList
-                .remove('sidebar-is-hidden');
-            document
-                .body
-                .classList
-                .remove('sidebar-closed');
+            sidebar.classList.remove('sidebar-is-hidden');
+            document.body.classList.remove('sidebar-closed');
 
             toggle.setAttribute('aria-expanded', 'true');
 
@@ -41,13 +40,8 @@
         function hideSidebar() {
             isOpen = false;
 
-            sidebar
-                .classList
-                .add('sidebar-is-hidden');
-            document
-                .body
-                .classList
-                .add('sidebar-closed');
+            sidebar.classList.add('sidebar-is-hidden');
+            document.body.classList.add('sidebar-closed');
 
             toggle.setAttribute('aria-expanded', 'false');
 
@@ -64,6 +58,7 @@
 
         toggle.addEventListener('click', function (event) {
             event.preventDefault();
+
             toggleSidebar();
         });
 
@@ -74,31 +69,28 @@
         }
     }
 
+
     window.toggleSection = function (btn) {
         const submenu = btn.nextElementSibling;
         const chevron = btn.querySelector('.fa-chevron-down');
 
-        if (!submenu) 
-            return;
-        
+        if (!submenu) return;
+
         if (submenu.classList.contains('hidden')) {
-            submenu
-                .classList
-                .remove('hidden');
+            submenu.classList.remove('hidden');
 
             if (chevron) {
                 chevron.style.transform = 'rotate(180deg)';
             }
         } else {
-            submenu
-                .classList
-                .add('hidden');
+            submenu.classList.add('hidden');
 
             if (chevron) {
                 chevron.style.transform = 'rotate(0deg)';
             }
         }
     };
+
 
     function openActiveSubmenus() {
         const buttons = document.querySelectorAll(
@@ -108,15 +100,12 @@
         buttons.forEach((button) => {
             const submenu = button.nextElementSibling;
 
-            if (!submenu) 
-                return;
-            
+            if (!submenu) return;
+
             const hasActive = submenu.querySelector('.bg-white\\/20');
 
             if (hasActive) {
-                submenu
-                    .classList
-                    .remove('hidden');
+                submenu.classList.remove('hidden');
 
                 const chevron = button.querySelector('.fa-chevron-down');
 
@@ -127,10 +116,33 @@
         });
     }
 
+
+    function lockSidebarScroll() {
+        const sidebar = document.getElementById('sidebar');
+
+        if (!sidebar) return;
+
+        sidebar.addEventListener('wheel', function (event) {
+            const canScroll = sidebar.scrollHeight > sidebar.clientHeight;
+
+            if (!canScroll) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            sidebar.scrollTop += event.deltaY;
+        }, {
+            passive: false,
+        });
+    }
+
+
     function init() {
         initSidebarToggle();
         openActiveSubmenus();
+        lockSidebarScroll();
     }
+
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);

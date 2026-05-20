@@ -278,3 +278,20 @@
 #sidebarToggle[aria-expanded="false"] .sidebar-toggle-icon {
     transform: rotate(90deg);
 }
+
+/* =========================
+   SIDEBAR SCROLL FIX
+========================= */
+
+#sidebar {
+    height: calc(100vh - 2rem);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+#sidebar * {
+    overscroll-behavior: contain;
+}

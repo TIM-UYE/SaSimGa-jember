@@ -1,9 +1,11 @@
 <aside id="sidebar"
     class="fixed top-4 bottom-4 left-4 z-50
     w-64 rounded-2xl
+    h-[calc(100vh-2rem)]
+    max-h-[calc(100vh-2rem)]
     bg-linear-to-b from-orange-500 via-orange-600 to-orange-700
     shadow-soft-2xl
-    overflow-y-auto overscroll-contain
+    overflow-y-auto overflow-x-hidden overscroll-contain
     custom-scrollbar
     transition-all duration-500 ease-in-out
     transform opacity-100 scale-100 translate-x-0">
