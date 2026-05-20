@@ -1,0 +1,44 @@
+{
+  "public/images/border/menu-specials.png": {
+    "file": "assets/menu-specials-DT9H8POy.png",
+    "src": "public/images/border/menu-specials.png"
+  },
+  "public/images/border/menu.png": {
+    "file": "assets/menu-DWX_6xmN.png",
+    "src": "public/images/border/menu.png"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-tz6Aj1-t.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/menu-DWX_6xmN.png",
+      "assets/menu-specials-DT9H8POy.png"
+    ]
+  },
+  "resources/css/gallery-orbit.css": {
+    "file": "assets/gallery-orbit-AaNrAct7.css",
+    "name": "gallery-orbit",
+    "names": [
+      "gallery-orbit.css"
+    ],
+    "src": "resources/css/gallery-orbit.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-CEpPKURv.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/frontend/orbit-gallery.js": {
+    "file": "assets/orbit-gallery-CA8bqmt7.js",
+    "name": "orbit-gallery",
+    "src": "resources/js/frontend/orbit-gallery.js",
+    "isEntry": true
+  }
+}
