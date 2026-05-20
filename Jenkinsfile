@@ -69,6 +69,11 @@ pipeline {
                     --image ${APP_IMAGE} \
                     ${STACK_NAME}_app
 
+                    sleep 10
+
+                    echo "===== APP LOGS ====="
+                    docker service logs ${STACK_NAME}_app --tail 50 || true
+
                     docker service update \
                     --force \
                     --image ${NGINX_IMAGE} \
