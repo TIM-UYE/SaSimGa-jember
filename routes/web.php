@@ -23,6 +23,7 @@ use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Admin\StokController;
 use App\Http\Controllers\Admin\StokLogController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\Admin\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,10 +54,10 @@ Route::get('/about', function () {
     return redirect()->route('frontend.information.show', 'about');
 })->name('frontend.about');
 
+
 /*
 |--------------------------------------------------------------------------
-| MIDTRANS WEBHOOK ROUTES (NO CSRF, NO AUTH)
-| IMPORTANT: Must be excluded from CSRF validation in bootstrap/app.php
+| MIDTRANS WEBHOOK ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -72,8 +73,8 @@ Route::get('/midtrans/unfinish', [MidtransWebhookController::class, 'unfinish'])
 Route::get('/midtrans/error', [MidtransWebhookController::class, 'error'])
     ->name('midtrans.error');
 
-// Test endpoint - REMOVE IN PRODUCTION
 Route::post('/midtrans/test', function (\Illuminate\Http\Request $request) {
+
     \Illuminate\Support\Facades\Log::info('Midtrans Test Endpoint Hit', [
         'method' => $request->method(),
         'ip' => $request->ip(),
@@ -87,20 +88,19 @@ Route::post('/midtrans/test', function (\Illuminate\Http\Request $request) {
         'timestamp' => now(),
         'test_mode' => true,
     ], 200);
-})->name('midtrans.test');
 
+})->name('midtrans.test');
 
 
 /*
 |--------------------------------------------------------------------------
-| INFORMATION / STATIC PAGES (Now dynamic from database)
+| INFORMATION / STATIC PAGES
 |--------------------------------------------------------------------------
 */
 
 Route::get('/information/{information}', [InformationController::class, 'show'])
     ->name('frontend.information.show');
 
-// Redirect legacy static routes to new dynamic ones
 Route::get('/faq', function () {
     return redirect()->route('frontend.information.show', 'faq');
 })->name('frontend.faq');
@@ -188,7 +188,7 @@ Route::get('/checkout/success/{kodeOrder}', [CheckoutController::class, 'success
 
 /*
 |--------------------------------------------------------------------------
-| SNAP PAYMENT ROUTES (Midtrans Snap)
+| SNAP PAYMENT ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -208,15 +208,12 @@ Route::get('/payment/success/{kodeOrder}', [\App\Http\Controllers\PaymentControl
 |--------------------------------------------------------------------------
 */
 
-// Redirect login lama
 Route::get('/login-redirect', function () {
 
     return redirect()->route('login');
 
 });
 
-
-// Guest only
 Route::middleware('guest')->group(function () {
 
     Route::get('/login', [AuthController::class, 'showLoginForm'])
@@ -230,8 +227,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
@@ -257,7 +252,7 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| OWNER ROUTES (Read-only analytics dashboard)
+| OWNER ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -273,7 +268,7 @@ Route::middleware(['auth', 'role:owner'])
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN / MANAGER ROUTES (Full access backend)
+| ADMIN / MANAGER ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -281,12 +276,6 @@ Route::middleware(['auth', 'role:admin,manager'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD
-        |--------------------------------------------------------------------------
-        */
 
         Route::get('/dashboard', function () {
 
@@ -307,8 +296,6 @@ Route::middleware(['auth', 'role:admin,manager'])
         Route::get('/orders/stats', [OrderController::class, 'stats'])
             ->name('orders.stats');
 
-        // API endpoint for polling - returns JSON with updated order data
-        // MUST be before the {order} wildcard route to avoid conflict
         Route::get('/orders/poll/data', [OrderController::class, 'pollData'])
             ->name('orders.poll');
 
@@ -324,12 +311,6 @@ Route::middleware(['auth', 'role:admin,manager'])
         Route::delete('/orders/{order}', [OrderController::class, 'destroy'])
             ->name('orders.destroy');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SPECIAL MENU CRUD (Manager only - sensitive)
-        |--------------------------------------------------------------------------
-        */
 
         /*
         |--------------------------------------------------------------------------
@@ -354,6 +335,29 @@ Route::middleware(['auth', 'role:admin,manager'])
         */
 
         Route::resource('information', AdminInformationController::class);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESERVASI CRUD
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/reservasi', [ReservasiController::class, 'index'])
+            ->name('reservasi.index');
+
+        Route::get('/reservasi/export', [ReservasiController::class, 'export'])
+            ->name('reservasi.export');
+
+        Route::patch('/reservasi/{id}/status', [ReservasiController::class, 'updateStatus'])
+            ->name('reservasi.updateStatus');
+
+        Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])
+            ->name('reservasi.destroy');
+
+        Route::resource('meja', MejaController::class)
+            ->only(['index', 'store', 'destroy']);
+
 
         Route::middleware('role:manager')->group(function () {
 
@@ -392,8 +396,35 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::get('stok-log', [StokLogController::class, 'index'])
                 ->name('stok-log.index');
+            /*
+|--------------------------------------------------------------------------
+| LAPORAN EXPORT
+|--------------------------------------------------------------------------
+*/
 
+Route::get('/laporan/stok/csv',
+    [LaporanController::class, 'exportStokCsv'])
+    ->name('laporan.stok.csv');
 
+Route::get('/laporan/stok/xlsx',
+    [LaporanController::class, 'exportStokXlsx'])
+    ->name('laporan.stok.xlsx');
+
+Route::get('/laporan/reservasi/csv',
+    [LaporanController::class, 'exportReservasiCsv'])
+    ->name('laporan.reservasi.csv');
+
+Route::get('/laporan/reservasi/xlsx',
+    [LaporanController::class, 'exportReservasiXlsx'])
+    ->name('laporan.reservasi.xlsx');
+
+Route::get('/laporan/orders/xlsx',
+    [LaporanController::class, 'exportOrdersXlsx'])
+    ->name('laporan.orders.xlsx');
+
+Route::get('/laporan/orders/csv',
+    [LaporanController::class, 'exportOrdersCsv'])
+    ->name('laporan.orders.csv');   
             /*
             |--------------------------------------------------------------------------
             | KATEGORI CRUD
@@ -402,48 +433,28 @@ Route::middleware(['auth', 'role:admin,manager'])
 
             Route::resource('kategori', KategoriMenuController::class);
 
-
             /*
             |--------------------------------------------------------------------------
             | TESTIMONI CRUD
             |--------------------------------------------------------------------------
             */
 
-            Route::post(
-                '/testimoni/sync',
-                [TestimoniController::class, 'syncGoogleMaps']
-            )->name('testimoni.sync');
+            Route::post('/testimoni/sync',
+                [TestimoniController::class, 'syncGoogleMaps'])
+                ->name('testimoni.sync');
 
             Route::resource('testimoni', TestimoniController::class)
                 ->except(['show']);
 
-
             /*
             |--------------------------------------------------------------------------
-            | USER CRUD (Manager only)
+            | USER CRUD
             |--------------------------------------------------------------------------
             */
 
             Route::resource('user', UserController::class);
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | RESERVASI CRUD (Admin & Manager)
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/reservasi', [ReservasiController::class, 'index'])
-            ->name('reservasi.index');
-
-        Route::patch('/reservasi/{id}/status', [ReservasiController::class, 'updateStatus'])
-            ->name('reservasi.updateStatus');
-
-        Route::delete('/reservasi/{id}', [ReservasiController::class, 'destroy'])
-            ->name('reservasi.destroy');
-
-        Route::resource('meja', MejaController::class)->only(['index', 'store', 'destroy']);
 
         /*
         |--------------------------------------------------------------------------
@@ -454,6 +465,7 @@ Route::middleware(['auth', 'role:admin,manager'])
         Route::prefix('google-reviews')
             ->name('google-reviews.')
             ->group(function () {
+
                 Route::get('/', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'index'])
                     ->name('index');
 
@@ -469,7 +481,6 @@ Route::middleware(['auth', 'role:admin,manager'])
                 Route::get('/check-status', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'checkStatus'])
                     ->name('check-status');
 
-                // API endpoints for AJAX
                 Route::get('/api/reviews', [\App\Http\Controllers\Admin\GoogleReviewController::class, 'apiReviews'])
                     ->name('api.reviews');
 
@@ -490,7 +501,7 @@ Route::middleware(['auth', 'role:admin,manager'])
 
 /*
 |--------------------------------------------------------------------------
-| USER ROUTES (Public frontend users)
+| USER ROUTES
 |--------------------------------------------------------------------------
 */
 

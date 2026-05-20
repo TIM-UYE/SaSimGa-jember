@@ -3,12 +3,36 @@
 @section('content')
 <div class="space-y-6">
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold tracking-tight text-slate-800 md:text-3xl">Kelola Pesanan</h1>
-            <p class="mt-1 text-sm text-slate-500">Pantau transaksi pelanggan dan status proses pesanan.</p>
-        </div>
-        <a href="{{ route('admin.orders.index') }}" class="btn-admin"><i class="fas fa-sync-alt mr-1"></i>Refresh</a>
+    <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-800 md:text-3xl">Kelola Pesanan</h1>
+        <p class="mt-1 text-sm text-slate-500">Pantau transaksi pelanggan dan status proses pesanan.</p>
     </div>
+
+    <div class="flex items-center gap-2">
+
+    {{-- Download Excel --}}
+    <a href="{{ route('admin.laporan.orders.xlsx') }}"
+    class="inline-flex items-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-600">
+        <i class="fas fa-file-excel mr-2"></i>
+        Excel
+    </a>
+
+    {{-- Download CSV --}}
+    <a href="{{ route('admin.laporan.orders.csv') }}"
+    class="inline-flex items-center rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600">
+        <i class="fas fa-file-csv mr-2"></i>
+        CSV
+    </a>
+
+    {{-- Refresh --}}
+    <a href="{{ route('admin.orders.index') }}"
+       class="btn-admin">
+        <i class="fas fa-sync-alt mr-1"></i>
+        Refresh
+    </a>
+
+</div>
+</div>
 
     <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/80">
         <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-4 md:grid-cols-4">

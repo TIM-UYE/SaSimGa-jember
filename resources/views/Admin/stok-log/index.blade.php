@@ -48,13 +48,38 @@
     </div>
 
     <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
-        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+
+        <div class="flex flex-col gap-3 border-b border-slate-100 px-6 py-4 md:flex-row md:items-center md:justify-between">
+
             <div class="flex items-center gap-2">
                 <i class="fas fa-clock-rotate-left text-slate-400"></i>
-                <span class="text-sm font-semibold text-slate-700">Daftar Riwayat Stok</span>
-                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
-                    <i class="fas fa-database"></i>{{ $logs->count() }} Total
+
+                <span class="text-sm font-semibold text-slate-700">
+                    Daftar Riwayat Stok
                 </span>
+
+                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                    <i class="fas fa-database"></i>
+                    {{ $logs->count() }} Total
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+
+                <a href="{{ route('admin.laporan.stok.csv') }}"
+                   class="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-600">
+
+                    <i class="fas fa-file-csv"></i>
+                    CSV
+                </a>
+
+                <a href="{{ route('admin.laporan.stok.xlsx') }}"
+                   class="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-600">
+
+                    <i class="fas fa-file-excel"></i>
+                    Excel
+                </a>
+
             </div>
         </div>
 
