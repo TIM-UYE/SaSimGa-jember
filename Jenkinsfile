@@ -59,7 +59,8 @@ pipeline {
                 echo 'Deploying to Docker Swarm...'
 
                 sh '''
-                # Check apakah stack sudah ada
+                set +e
+
                 if docker stack ls | grep -q "${STACK_NAME}"; then
 
                     echo "Stack exists. Updating services..."
@@ -69,15 +70,31 @@ pipeline {
                     --image ${APP_IMAGE} \
                     ${STACK_NAME}_app
 
-                    sleep 10
+                    APP_STATUS=$?
 
-                    echo "===== APP LOGS ====="
-                    docker service logs ${STACK_NAME}_app --tail 50 || true
+                    echo "===== WAITING APP STARTUP ====="
+                    sleep 15
+
+                    echo "===== APP SERVICE LOGS ====="
+                    docker service logs ${STACK_NAME}_app --tail 100 || true
+
+                    echo "===== APP SERVICE TASKS ====="
+                    docker service ps ${STACK_NAME}_app || true
 
                     docker service update \
                     --force \
                     --image ${NGINX_IMAGE} \
                     ${STACK_NAME}_nginx
+
+                    NGINX_STATUS=$?
+
+                    echo "===== NGINX SERVICE LOGS ====="
+                    docker service logs ${STACK_NAME}_nginx --tail 50 || true
+
+                    if [ $APP_STATUS -ne 0 ] || [ $NGINX_STATUS -ne 0 ]; then
+                        echo "Deployment failed"
+                        exit 1
+                    fi
 
                 else
 
