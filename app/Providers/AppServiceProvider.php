@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Reservasi::observe(ReservasiObserver::class);
 
-        Blade::anonymousComponentPath(resource_path('views/frontend/Components'), 'frontend');
+        Blade::anonymousComponentPath(resource_path('views/Frontend/Components'), 'frontend');
 
         // Authorization Gates for Role-based Access Control
 
