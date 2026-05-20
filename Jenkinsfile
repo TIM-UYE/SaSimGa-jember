@@ -56,11 +56,36 @@ pipeline {
 
         stage('Deploy to Docker Swarm') {
             steps {
-                dir('sasimga-jember') {
-                    echo 'Deploying to Docker Swarm...'
-                    sh 'docker stack deploy -c docker-stack.yml ${STACK_NAME}'
-                }
+                echo 'Deploying to Docker Swarm...'
+
+                sh '''
+                # Check apakah stack sudah ada
+                if docker stack ls | grep -q "${STACK_NAME}"; then
+
+                    echo "Stack exists. Updating services..."
+
+                    docker service update \
+                    --force \
+                    --image ${APP_IMAGE} \
+                    ${STACK_NAME}_app
+
+                    docker service update \
+                    --force \
+                    --image ${NGINX_IMAGE} \
+                    ${STACK_NAME}_nginx
+
+                else
+
+                    echo "Stack not found. Creating new stack..."
+
+                    docker stack deploy \
+                    -c docker-stack.yml \
+                    ${STACK_NAME}
+
+                fi
+                '''
             }
+        }
         }
 
         stage('Verify Deployment') {
